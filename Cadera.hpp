@@ -1,12 +1,29 @@
 #pragma once
+#include "CADRender.hpp"
 
+namespace CADERA_APP_NAMESPACE {
 
-class Cadera {
+	class Cadera {
 
-public:
+	private:
+		CADRender Render;
 
-	void run();
+		std::vector<cad::Vertex> ptVertices = {
+			{{ 0.0f,   0.0f,  1.0f},  {1.0f, 1.0f, 1.0f}},
+			{{ 0.00f,  1.0f,  0.00f}, {1.0f, 1.0f, 0.0f}},
+			{{ 0.00f,  0.0f,  0.00f}, {1.0f, 0.0f, 1.0f}},
+			{{ 0.00f,  1.0f,  1.00f}, {1.0f, 0.0f, 1.0f}}
+		};
 
-	void mainLoop();
-};
+	public:
 
+		Cadera();
+
+		~Cadera();
+
+		void run();
+
+		void mainLoop();
+	};
+
+}

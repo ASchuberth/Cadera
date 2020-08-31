@@ -1,11 +1,45 @@
 #include "pch.hpp"
 #include "Cadera.hpp"
 
-void Cadera::run() {
+namespace CADERA_APP_NAMESPACE {
 
-	mainLoop();
-}
+	Cadera::Cadera() {
+		
+	}
 
-void Cadera::mainLoop() {
+	Cadera::~Cadera() {
+
+		Render.destroy();
+	}
+
+	void Cadera::run() {
+		
+		Render.setup();
+		Render.preparePipelines();
+
+		Render.initImgui();
+
+		Render.createDeviceBuffer(0, ptVertices, vk::BufferUsageFlagBits::eVertexBuffer);
+
+		mainLoop();
+	}
+
+	void Cadera::mainLoop() {
+
+		while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
+			
+			
+
+			Render.imguiRun();
+			Render.createCommandBuffers();
+
+
+			Render.drawFrame();
+
+			glfwPollEvents();
+		}
+
+
+	}
 
 }
