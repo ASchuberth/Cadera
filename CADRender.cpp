@@ -124,7 +124,7 @@ namespace CADERA_APP_NAMESPACE {
 		AttributeDescriptions[1].offset = offsetof(Vertex, col);
 
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
-			AttributeDescriptions.size(), AttributeDescriptions.data());
+			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
 		auto vertShaderCode = readFile("shaders\\vert.spv");
 		auto fragShaderCode = readFile("shaders\\frag.spv");
@@ -219,7 +219,7 @@ namespace CADERA_APP_NAMESPACE {
 		AttributeDescriptions[1].offset = offsetof(Vertex, col);
 
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
-			AttributeDescriptions.size(), AttributeDescriptions.data());
+			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
 		auto vertShaderCode = readFile("shaders\\vert.spv");
 		auto fragShaderCode = readFile("shaders\\frag.spv");
@@ -291,16 +291,132 @@ namespace CADERA_APP_NAMESPACE {
 		mDevice->destroyShaderModule(fragShaderModule, nullptr);
 	}
 
+	void CADRender::createSketchGridPipeline() {
+
+		vk::VertexInputBindingDescription BindingDescription(0, sizeof(Vertex), vk::VertexInputRate::eVertex);
+		vk::VertexInputBindingDescription BindingDescriptionInstance(1, sizeof(GridRotationAxis), 
+			                                                         vk::VertexInputRate::eInstance);
+
+
+		std::vector<vk::VertexInputBindingDescription> BindingDescriptions = {
+			BindingDescription,
+			BindingDescriptionInstance
+		};
+
+		std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(5);
+
+
+		AttributeDescriptions[0].binding = 0;
+		AttributeDescriptions[0].location = 0;
+		AttributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[0].offset = offsetof(Vertex, pos);
+
+		AttributeDescriptions[1].binding = 0;
+		AttributeDescriptions[1].location = 1;
+		AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[1].offset = offsetof(Vertex, col);
+
+		AttributeDescriptions[2].binding = 1;
+		AttributeDescriptions[2].location = 2;
+		AttributeDescriptions[2].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[2].offset = offsetof(GridRotationAxis, pos);
+
+		AttributeDescriptions[3].binding = 1;
+		AttributeDescriptions[3].location = 3;
+		AttributeDescriptions[3].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[3].offset = offsetof(GridRotationAxis, axis);
+
+		AttributeDescriptions[4].binding = 1;
+		AttributeDescriptions[4].location = 4;
+		AttributeDescriptions[4].format = vk::Format::eR32Sfloat;
+		AttributeDescriptions[4].offset = offsetof(GridRotationAxis, angle);
+		  
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
+			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
+
+		auto vertShaderCode = readFile("shaders\\gridvert.spv");
+		auto fragShaderCode = readFile("shaders\\frag.spv");
+
+		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
+		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+
+		vk::PipelineShaderStageCreateInfo VertShaderInfo({}, vk::ShaderStageFlagBits::eVertex, vertShaderModule, "main");
+		vk::PipelineShaderStageCreateInfo FragShaderInfo({}, vk::ShaderStageFlagBits::eFragment, fragShaderModule, "main");
+
+		vk::PipelineShaderStageCreateInfo ShaderStages[] = { VertShaderInfo, FragShaderInfo };
+
+		vk::PipelineInputAssemblyStateCreateInfo InputAssemblyInfo({}, vk::PrimitiveTopology::eLineList, VK_FALSE);
+
+		vk::PipelineRasterizationStateCreateInfo RasterizerInfo({}, VK_FALSE, VK_FALSE, vk::PolygonMode::eLine,
+			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
+			VK_FALSE, {}, {}, {}, 1.0f);
+
+		vk::Viewport ViewPort(0.0f, 0.0f, mMainCanvas.mExtent.width, mMainCanvas.mExtent.height, 0.0f, 1.0f);
+
+		vk::Rect2D Scissor({ 0, 0 }, mMainCanvas.mExtent);
+
+		vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1, &Scissor);
+
+		vk::PipelineMultisampleStateCreateInfo MultisampleInfo({}, vk::SampleCountFlagBits::e1, VK_FALSE,
+			1.0f, nullptr, VK_FALSE, VK_FALSE);
+
+		vk::PipelineColorBlendAttachmentState ColorBlendAttachment(VK_TRUE, vk::BlendFactor::eSrcAlpha,
+			vk::BlendFactor::eOneMinusSrcAlpha,
+			vk::BlendOp::eAdd, vk::BlendFactor::eOne,
+			vk::BlendFactor::eZero, vk::BlendOp::eAdd,
+			vk::ColorComponentFlagBits::eR |
+			vk::ColorComponentFlagBits::eG |
+			vk::ColorComponentFlagBits::eB |
+			vk::ColorComponentFlagBits::eA);
+
+
+		vk::PipelineColorBlendStateCreateInfo ColorBlendingInfo({}, VK_FALSE, vk::LogicOp::eCopy, 1, &ColorBlendAttachment,
+			{ 0.0f, 0.0f, 0.0f, 0.0f });
+
+
+		vk::PipelineDepthStencilStateCreateInfo depthStencilInfo({}, VK_TRUE, VK_TRUE, vk::CompareOp::eLess,
+			VK_TRUE, VK_FALSE, {}, {}, 0.0f, 1.0f);
+
+
+		vk::GraphicsPipelineCreateInfo PipelineCreateInfo;
+
+		PipelineCreateInfo.stageCount = 2;
+		PipelineCreateInfo.pStages = ShaderStages;
+		PipelineCreateInfo.pVertexInputState = &VertexInputInfo;
+		PipelineCreateInfo.pInputAssemblyState = &InputAssemblyInfo;
+		PipelineCreateInfo.pViewportState = &ViewportInfo;
+		PipelineCreateInfo.pRasterizationState = &RasterizerInfo;
+		PipelineCreateInfo.pMultisampleState = &MultisampleInfo;
+		PipelineCreateInfo.pDepthStencilState = &depthStencilInfo;
+		PipelineCreateInfo.pColorBlendState = &ColorBlendingInfo;
+
+		PipelineCreateInfo.renderPass = mRenderPass;
+		PipelineCreateInfo.subpass = 0;
+
+		PipelineCreateInfo.basePipelineIndex = -1;
+		PipelineCreateInfo.layout = mPipelineLayout;
+
+
+		Pipelines.SketchGrid = mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr);
+
+
+		mDevice->destroyShaderModule(vertShaderModule, nullptr);
+		mDevice->destroyShaderModule(fragShaderModule, nullptr);
+	}
+
 	void CADRender::preparePipelines() {
 
 		createSketchPointPipeline();
 		createSketchLinePipeline();
+		createSketchGridPipeline();
 	}
 
 	void CADRender::destroyPipelines() {
 
+	
 		mDevice->destroyPipeline(Pipelines.SketchPoint);
 		mDevice->destroyPipeline(Pipelines.SketchLine);
+		mDevice->destroyPipeline(Pipelines.SketchGrid);
 
 	}
 
@@ -331,6 +447,7 @@ namespace CADERA_APP_NAMESPACE {
 
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
+			// X
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
@@ -338,6 +455,11 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
 
+			// Grid
+			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
+			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
+			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
+			mCommandBuffers[i].draw(2, 202, 0, 0);
 
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -356,8 +478,8 @@ namespace CADERA_APP_NAMESPACE {
 	
 		pcs::ubo u{};
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.1f, 100.0f);
+		u.view = glm::lookAt(glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.1f, 10000.0f);
 		u.proj[1][1] *= -1;
 
 

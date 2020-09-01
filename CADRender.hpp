@@ -13,8 +13,11 @@ namespace CADERA_APP_NAMESPACE {
 		VkAllocationCallbacks* mGuiAllocator;
 
 		struct {
-			vk::Pipeline SketchLine;
+
 			vk::Pipeline SketchPoint;
+			vk::Pipeline SketchLine;
+			vk::Pipeline SketchGrid;
+
 		} Pipelines;
 
 	public:
@@ -27,6 +30,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		void createSketchPointPipeline();
 		void createSketchLinePipeline();
+
+		void createSketchGridPipeline();
 
 		void preparePipelines();
 

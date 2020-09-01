@@ -13,12 +13,39 @@ namespace CADERA_APP_NAMESPACE {
 		
 	};
 
-	inline std::vector<Vertex> createGridPoints() {
+	struct GridRotationAxis {
+		glm::vec3 pos;
+		glm::vec3 axis;
+		float angle;
+	};
 
-		std::vector<Vertex> points;
+	inline std::vector<GridRotationAxis> createGridInstanceAxii() {
 
-		return points;
+		std::vector<GridRotationAxis> axii;
+
+		float step = -50.0f;
+		for (int i = 0; i < 101; i++) {
+
+			GridRotationAxis axis = {
+				{0.0f, 0.0f, step},
+				{1.0f, 0.0f, 0.0f},
+				0.0f
+			};
+
+			axii.push_back(axis);
+
+			axis.angle = -90.0f;
+
+			axii.push_back(axis);
+
+			step += 1.0f;
+		}
+
+
+		return axii;
 	}
+
+	
 
 
 
