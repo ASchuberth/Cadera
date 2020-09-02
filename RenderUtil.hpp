@@ -23,18 +23,18 @@ namespace CADERA_APP_NAMESPACE {
 
 		std::vector<GridRotationAxis> axii;
 
-		float step = -50.0f;
-		for (int i = 0; i < 101; i++) {
+		float step = -1000.0f;
+		for (int i = 0; i < 2002; i++) {
 
 			GridRotationAxis axis = {
 				{0.0f, 0.0f, step},
 				{1.0f, 0.0f, 0.0f},
-				0.0f
+				45.0f
 			};
 
 			axii.push_back(axis);
 
-			axis.angle = -90.0f;
+			axis.angle = -45.0f;
 
 			axii.push_back(axis);
 

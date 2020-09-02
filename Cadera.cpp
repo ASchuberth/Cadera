@@ -1,7 +1,18 @@
 #include "pch.hpp"
 #include "Cadera.hpp"
+#include "gui.hpp"
+
 
 namespace CADERA_APP_NAMESPACE {
+	
+	void Cadera::initCallbacks() {
+	
+		glfwSetMouseButtonCallback(Render.mMainCanvas.window, mouse_button_callback);
+		glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
+		glfwSetWindowUserPointer(Render.mMainCanvas.window, &Render);
+	}
+
+	
 
 	Cadera::Cadera() {
 		
@@ -15,7 +26,7 @@ namespace CADERA_APP_NAMESPACE {
 	void Cadera::run() {
 		
 		Render.setup();
-		Render.preparePipelines();
+		Render.preparePipelines(); 
 
 		Render.initImgui();
 
@@ -25,14 +36,16 @@ namespace CADERA_APP_NAMESPACE {
 		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
 
 		Vertex p1, p2;
-		p1 = { {0.0f, -50.0f, 0.0f}, {.5f, .5f, .5f} };
-		p2 = { {0.0f,  50.0f, 0.0f}, {.5f, .5f, .5f} };
+		p1 = { {0.0f, -1000.0f, 0.0f}, {.5f, .5f, .5f} };
+		p2 = { {0.0f,  1000.0f, 0.0f}, {.5f, .5f, .5f} };
 
 		std::vector<Vertex> line = { p1, p2 };
 		 
 		Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
 		Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
 		// End Grid Test DELETE
+
+		initCallbacks();
 
 		mainLoop();
 	}
@@ -41,18 +54,20 @@ namespace CADERA_APP_NAMESPACE {
 
 		while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
 			
-			
+			glfwPollEvents();
+		
 
-			Render.imguiRun();
+			gui::imguiRun(Render);
 			Render.createCommandBuffers();
 
 
 			Render.drawFrame();
 
-			glfwPollEvents();
+		
 		}
 
 
 	}
 
+	
 }

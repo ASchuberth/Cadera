@@ -64,7 +64,6 @@ layout(location = 0) out vec4 fragColor;
 
 out gl_PerVertex {
 	vec4 gl_Position;
-	float gl_PointSize;
 };
 
 
@@ -74,10 +73,9 @@ void main()
 
 	vec3 P = rotate_vertex_position(inPosition + inTranslate, axis, angle);
 
-	gl_PointSize = 7.0;
 	vec4 pos = vec4(P, 1.0);
 	gl_Position = ubo.proj * ubo.view * ubo.model * pos;
 	
 
-	fragColor = vec4(inColor.xyz, 1.0);
+	fragColor = vec4(inColor.xyz, 0.5);
 }

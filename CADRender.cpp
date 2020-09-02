@@ -1,5 +1,7 @@
 #include "pch.hpp"
 #include "CADRender.hpp"
+#include "callbacks.hpp"
+
 
 namespace CADERA_APP_NAMESPACE {
 	
@@ -98,6 +100,9 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		ImGui::Render();
+		
+
+		
 
 	}
 
@@ -448,9 +453,9 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
 			// X
-			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
+			//mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
-			mCommandBuffers[i].draw(4, 1, 0, 0);
+			//mCommandBuffers[i].draw(4, 1, 0, 0);
 
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
@@ -459,7 +464,7 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
 			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
-			mCommandBuffers[i].draw(2, 202, 0, 0);
+			mCommandBuffers[i].draw(2, 4004, 0, 0);
 
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -478,7 +483,7 @@ namespace CADERA_APP_NAMESPACE {
 	
 		pcs::ubo u{};
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(glm::vec3(200.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		u.view = glm::lookAt(Cam.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.1f, 10000.0f);
 		u.proj[1][1] *= -1;
 
@@ -505,5 +510,10 @@ namespace CADERA_APP_NAMESPACE {
 
 		cleanup();
 
+	}
+
+	void CADRender::runCamera(float yoffset)
+	{
+		Cam.zoom(yoffset);
 	}
 }
