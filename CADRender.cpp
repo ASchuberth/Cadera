@@ -464,7 +464,7 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
 			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
-			mCommandBuffers[i].draw(2, 4004, 0, 0);
+			mCommandBuffers[i].draw(2, 402, 0, 0);
 
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -480,11 +480,10 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
-	
-		pcs::ubo u{};
+
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(Cam.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.1f, 10000.0f);
+		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 0.0f, 1.0f));
+		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.001f, 10000.0f);
 		u.proj[1][1] *= -1;
 
 
@@ -512,8 +511,30 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
-	void CADRender::runCamera(float yoffset)
-	{
+	void CADRender::runCameraScroll(float yoffset) {
+
 		Cam.zoom(yoffset);
 	}
+
+	void CADRender::runCamera() {
+		
+		static bool isFirstPressed = true;
+
+		
+
+		double x, y;
+		glfwGetCursorPos(mMainCanvas.window, &x, &y);
+		Cam.updateMouseRay(x, y, u.view, u.proj,
+						   mMainCanvas.mExtent.width,
+						   mMainCanvas.mExtent.height
+		);
+
+		if (Cam.flags.test(CAM_PAN)) {
+			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
+			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
+		}
+
+	}
+
+	
 }

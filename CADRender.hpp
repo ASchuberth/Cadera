@@ -25,6 +25,8 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 
+		pcs::ubo u;
+
 		Camera Cam;
 
 		void initImgui();
@@ -46,9 +48,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		void destroy();
 
-		void createWindow(std::string name);
+		void runCameraScroll(float yoffset);
 
-		void runCamera(float yoffset);
+		void runCamera();
 
 	};
 }
