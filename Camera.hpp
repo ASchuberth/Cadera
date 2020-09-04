@@ -7,10 +7,10 @@ namespace CADERA_APP_NAMESPACE {
 namespace cam {
 	
 	enum CameraFlags {
-		ortho,
-		mouseFirstPressed,
-		pan,
-		numFlags
+		ortho,                       // Toggle orthographics projection
+		mouseFirstPressed,           // Used for resetting functions such as pan() on first mouse click
+		pan,                         // Toggle the camera pan() function
+		numFlags                     // Bitset size
 	};
 
 

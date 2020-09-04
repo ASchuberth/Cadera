@@ -504,8 +504,8 @@ namespace CADERA_APP_NAMESPACE {
 		Cam.unprojRay = glm::unProject(glm::vec3(x, y, 0.0f), u.model, u.proj, 
 			                           glm::vec4(0.0f, 0.0f,
 								       mMainCanvas.mExtent.width, mMainCanvas.mExtent.height));
-		Cam.unprojRay.x += Cam.focus.y;
-		Cam.unprojRay.y += Cam.focus.z;
+		//Cam.unprojRay.x += Cam.focus.y;
+		//Cam.unprojRay.y += Cam.focus.z;
 
 		vk::MemoryMapFlags memMapFlags;
 

@@ -96,9 +96,9 @@ namespace cam {
 
 	
 
-		//pos.y -= diff.x;
+		pos.y -= diff.x;
 		pos.z -= diff.y;
-		//focus.y -= diff.x;
+		focus.y -= diff.x;
 		focus.z -= diff.y;
 		
 		std::cout << diff.y << std::endl;
