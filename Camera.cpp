@@ -3,31 +3,49 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-
+namespace cam {
 
 
 	Camera::Camera()
 	{
-		 pos = { 20.0f, 0.0f, 0.0f };
-		 focus = { 0.0f, 0.0f, 0.0f };
-		 cameraVec = { 1.0f, 0.0f, 0.0f };
-		 
-		 mouseRay = { 0.0f, 0.0f, 0.0f };
+		pos = { 20.0f, 0.0f, 0.0f };
+		focus = { 0.0f, 0.0f, 0.0f };
+		cameraVec = { 1.0f, 0.0f, 0.0f };
+		xpos = 0.0;
+		ypos = 0.0;
+		mouseRay = { 0.0f, 0.0f, 0.0f };
+		unprojRay = { 0.0f, 0.0f, 0.0f };
+		left = -10.0f;
+		right = 10.0f;
+		bottom = -10.0f;
+		top = 10.0f;
+
 	}
 
 	void Camera::zoom(float yoffset) {
 
-		if (yoffset > 0) {
-			pos -= 1.0f * glm::normalize(cameraVec);
+		if (flags.test(ortho)) {
+			
+			if (yoffset > 0) {
+				left -= 1.0f;
+			}
+			else if (yoffset < 0) {
+				left += 1.0f;
+			}
 		}
-		else if (yoffset < 0) {
-			pos += 1.0f * glm::normalize(cameraVec);
+		else {
+			if (yoffset > 0) {
+				pos -= 1.0f * glm::normalize(cameraVec);
+			}
+			else if (yoffset < 0) {
+				pos += 1.0f * glm::normalize(cameraVec);
+			}
 		}
 
 	}
 
-	void Camera::updateMouseRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width, 
-		                        uint32_t height) {
+	void Camera::updateMouseRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
+		uint32_t height) {
 
 		mouseRay = calcCurrentRay(x, y, viewMat, projMat, width, height);
 
@@ -35,14 +53,14 @@ namespace CADERA_APP_NAMESPACE {
 
 	void Camera::pan(glm::vec3 origin, glm::vec3 planeNormal) {
 
-	
+
 		static glm::vec3 prevMouseRay = mouseRay;
 		glm::vec3 p1, p2, diff;
 
-		if (flags.test(CAM_MOUSE_FIRST_PRESS)) {
-			
+		if (flags.test(mouseFirstPressed)) {
+
 			prevMouseRay = mouseRay;
-			flags.reset(CAM_MOUSE_FIRST_PRESS);
+			flags.reset(mouseFirstPressed);
 
 		}
 
@@ -51,15 +69,45 @@ namespace CADERA_APP_NAMESPACE {
 
 		diff = p2 - p1;
 
-		
+		if (flags.test(ortho)) diff = diff * .3f;
+
 		pos -= diff;
 		focus -= diff;
-		
+
 
 		prevMouseRay = mouseRay;
 
 	}
 
-}
+	void Camera::orthoPan(glm::vec3 origin, glm::vec3 planeNormal) {
+		
+		static glm::vec3 prevunprojRay = unprojRay;
+		glm::vec3 p1, p2, diff;
 
+		if (flags.test(mouseFirstPressed)) {
+
+			prevunprojRay = unprojRay;
+			flags.reset(mouseFirstPressed);
+
+		}
+
+
+		diff = unprojRay - prevunprojRay;
+
+	
+
+		//pos.y -= diff.x;
+		pos.z -= diff.y;
+		//focus.y -= diff.x;
+		focus.z -= diff.y;
+		
+		std::cout << diff.y << std::endl;
+
+
+		prevunprojRay = unprojRay;
+	}
+
+	
+}
+}
 

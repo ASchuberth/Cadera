@@ -453,9 +453,9 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
 			// X
-			//mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
+			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
-			//mCommandBuffers[i].draw(4, 1, 0, 0);
+			mCommandBuffers[i].draw(4, 1, 0, 0);
 
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
@@ -480,12 +480,32 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
+		double x, y;
+		glfwGetCursorPos(mMainCanvas.window, &x, &y);
 
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 0.0f, 1.0f));
-		u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 0.001f, 10000.0f);
+		
+		
+		if (Cam.flags.test(cam::ortho)) {
+
+			float screenRatio = (float)mMainCanvas.mExtent.height / (float)mMainCanvas.mExtent.width;
+			
+			u.proj = glm::ortho(Cam.left, -Cam.left, screenRatio * Cam.left, -screenRatio * Cam.left, 0.0f, 500.0f);
+		}
+		else {
+			u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 
+				                      0.001f, 100.0f);
+		}
+
 		u.proj[1][1] *= -1;
 
+
+		Cam.unprojRay = glm::unProject(glm::vec3(x, y, 0.0f), u.model, u.proj, 
+			                           glm::vec4(0.0f, 0.0f,
+								       mMainCanvas.mExtent.width, mMainCanvas.mExtent.height));
+		Cam.unprojRay.x += Cam.focus.y;
+		Cam.unprojRay.y += Cam.focus.z;
 
 		vk::MemoryMapFlags memMapFlags;
 
@@ -518,7 +538,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::runCamera() {
 		
-		static bool isFirstPressed = true;
+		
 
 		
 
@@ -529,9 +549,13 @@ namespace CADERA_APP_NAMESPACE {
 						   mMainCanvas.mExtent.height
 		);
 
-		if (Cam.flags.test(CAM_PAN)) {
+		if (Cam.flags.test(cam::pan) && !Cam.flags.test(cam::ortho)) {
 			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
+		}
+		else if (Cam.flags.test(cam::pan) && Cam.flags.test(cam::ortho)) {
+			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
+			Cam.orthoPan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
 
 	}

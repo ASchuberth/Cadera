@@ -17,7 +17,7 @@ namespace gui {
 		ImGui::Render();
 	}
 
-	void showDebugWindow(CADRender const& Render) {
+	void showDebugWindow(CADRender & Render) {
 
 		//ImGui::SetNextWindowPos({ 0, 40 });
 		ImGui::Begin("Debugging");
@@ -25,6 +25,21 @@ namespace gui {
 
 		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_None))
 		{
+
+			static bool orthoCheck = false;
+			ImGui::Checkbox("Demo Window", &orthoCheck);
+
+
+			if (orthoCheck && !Render.Cam.flags.test(cam::ortho)) {
+				
+				Render.Cam.flags.set(cam::ortho);
+			
+			}
+			else if (!orthoCheck && Render.Cam.flags.test(cam::ortho)) {
+
+				Render.Cam.flags.reset(cam::ortho);
+
+			}
 			
 			ImGui::Text("Position");
 			ImGui::Text("x: %f", Render.Cam.pos.x);
@@ -45,6 +60,12 @@ namespace gui {
 			ImGui::Text("y: %f", Render.Cam.mouseRay.y);
 			ImGui::Text("z: %f", Render.Cam.mouseRay.z);
 		
+			ImGui::NewLine();
+
+			ImGui::Text("Unproj Ray");
+			ImGui::Text("x: %f", Render.Cam.unprojRay.x);
+			ImGui::Text("y: %f", Render.Cam.unprojRay.y);
+			ImGui::Text("z: %f", Render.Cam.unprojRay.z);
 		}
 
 
@@ -53,7 +74,7 @@ namespace gui {
 
 	}
 
-	void imguiRun(CADRender const& Render) {
+	void imguiRun(CADRender & Render) {
 
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();

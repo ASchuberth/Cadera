@@ -8,14 +8,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 
-		app->Cam.flags.set(cad::CAM_PAN);
-		app->Cam.flags.set(cad::CAM_MOUSE_FIRST_PRESS);
+		app->Cam.flags.set(cad::cam::pan);
+		app->Cam.flags.set(cad::cam::mouseFirstPressed);
 		
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
 
-		app->Cam.flags.reset(cad::CAM_PAN);
+		app->Cam.flags.reset(cad::cam::pan);
 
 	}
 

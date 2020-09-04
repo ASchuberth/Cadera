@@ -27,7 +27,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		pcs::ubo u;
 
-		Camera Cam;
+		cam::Camera Cam;
 
 		void initImgui();
 
