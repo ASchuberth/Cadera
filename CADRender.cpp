@@ -532,9 +532,8 @@ namespace CADERA_APP_NAMESPACE {
 		
 		double x, y;
 		glfwGetCursorPos(mMainCanvas.window, &x, &y);
-		Cam.updateMouseRay(x, y, u.model, u.view, u.proj,
-						   mMainCanvas.mExtent.width,
-						   mMainCanvas.mExtent.height
+		Cam.updateMouseRay(static_cast<float>(x), static_cast<float>(y), u.model, u.view, u.proj,
+						   mMainCanvas.mExtent.width, mMainCanvas.mExtent.height
 		);
 
 		if (Cam.flags.test(cam::pan)) {

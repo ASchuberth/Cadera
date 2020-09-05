@@ -17,7 +17,56 @@ namespace gui {
 		ImGui::Render();
 	}
 
-	void showDebugWindow(CADRender & Render, sel::Selector& Sel) {
+	void startMenu(CADRender& Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
+
+		ImGui::Begin("Start Screen");
+
+		if (ImGui::Button("New Sketch")) {
+			
+			flags.set(gui_sketch_menu);
+
+			
+
+			flags.reset(gui_start_menu);
+		}
+
+		ImGui::End();
+
+	}
+
+	void sketchMenu(CADRender& Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
+
+		ImGui::SetNextWindowPos({ 0, 20 });
+		ImGui::SetNextWindowSize({ 300.0f,
+								   static_cast<float>(Render.mMainCanvas.mExtent.height - 20) });
+
+		ImGui::Begin("Sketching");
+
+#ifdef CADERA_DEBUG
+		static bool demoCheck = false;
+		ImGui::Checkbox("Demo Window", &demoCheck);
+
+
+		if (demoCheck) ImGui::ShowDemoWindow();
+
+		static bool debugCheck = false;
+		ImGui::Checkbox("Debug Window", &debugCheck);
+
+
+		if (debugCheck) showDebugWindow(Render, Sel, flags);
+
+
+#endif
+
+		if (ImGui::Button("Point")) {
+
+		}
+
+		ImGui::End();
+
+	}
+
+	void showDebugWindow(CADRender & Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
 
 		//ImGui::SetNextWindowPos({ 0, 40 });
 		ImGui::Begin("Debugging");
@@ -80,32 +129,19 @@ namespace gui {
 
 	void imguiRun(CADRender & Render, sel::Selector& Sel) {
 
+		static std::bitset<gui_num_flags> flags(gui_start_menu + 1);
+		
+
+
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();
 
-		ImGui::SetNextWindowPos({ 0, 20 });
-		ImGui::SetNextWindowSize({ 300.0f,
-								   static_cast<float>(Render.mMainCanvas.mExtent.height - 20) });
+		
+		if (flags.test(gui_start_menu))   startMenu(Render, Sel, flags);
+		if (flags.test(gui_sketch_menu))  sketchMenu(Render, Sel, flags);
 
-		ImGui::Begin("Main Window");
+		
 
-#ifdef CADERA_DEBUG
-		static bool demoCheck = false;
-		ImGui::Checkbox("Demo Window", &demoCheck);
-
-
-		if (demoCheck) ImGui::ShowDemoWindow();
-
-		static bool debugCheck = false;
-		ImGui::Checkbox("Debug Window", &debugCheck);
-
-
-		if (debugCheck) showDebugWindow(Render, Sel);
-
-
-#endif
-
-		ImGui::End();
 
 		// Cadera imgui end, not part of Dear Imgui
 		imguiEnd();

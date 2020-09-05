@@ -18,7 +18,7 @@ namespace CADERA_APP_NAMESPACE {
 	
 
 	Cadera::Cadera() {
-		
+		modelIdCounter = 0;
 	}
 
 	Cadera::~Cadera() {
