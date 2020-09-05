@@ -27,6 +27,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 	}
 
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		app->isWait = true;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+		app->isWait = false;
+	}
+
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {

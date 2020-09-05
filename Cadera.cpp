@@ -59,14 +59,14 @@ namespace CADERA_APP_NAMESPACE {
 			
 			glfwPollEvents();
 
-			
-
 			gui::imguiRun(Render, Render.Sel);
 			Render.createCommandBuffers();
 
 
 			Render.drawFrame();
 			Render.runCamera();
+
+			glfwWaitEvents();
 		
 		}
 

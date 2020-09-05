@@ -10,6 +10,7 @@ namespace cam {
 		ortho,                       // Toggle orthographics projection
 		mouseFirstPressed,           // Used for resetting functions such as pan() on first mouse click
 		pan,                         // Toggle the camera pan() function
+		scroll,						 // Toggle the camera zoom() function
 		numFlags                     // Bitset size
 	};
 

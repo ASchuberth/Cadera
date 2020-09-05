@@ -25,6 +25,8 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 
+		bool isWait;
+
 		pcs::ubo u;
 
 		cam::Camera Cam;

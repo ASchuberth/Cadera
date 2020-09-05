@@ -540,6 +540,10 @@ namespace CADERA_APP_NAMESPACE {
 			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
+
+		if (Cam.flags.test(cam::scroll)) {
+
+		}
 		
 
 	}
