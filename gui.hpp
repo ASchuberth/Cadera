@@ -8,13 +8,13 @@ namespace CADERA_APP_NAMESPACE {
 namespace gui {
 
 	
-	void imguiRun(CADRender & Render);
+	void imguiRun(CADRender &Render, Selector& Sel);
 
 	void imguiBegin();
 
 	void imguiEnd();
 
-	void showDebugWindow(pcs::PecosRender & Render);
+	void showDebugWindow(CADRender &Render, Selector &Sel);
 
 }
 }

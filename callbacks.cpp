@@ -6,6 +6,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 	auto app = reinterpret_cast<cad::CADRender*> (glfwGetWindowUserPointer(window));
 
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
+			app->Sel.select(app->Cam.mouseRay, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), app->Cam.pos,
+				app->Cam.flags.test(cad::cam::ortho));
+		}
+	}
+	
+
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 
 		app->Cam.flags.set(cad::cam::pan);
@@ -24,7 +32,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
 	auto app = reinterpret_cast<cad::CADRender*> (glfwGetWindowUserPointer(window));
-	app->runCameraScroll(yoffset);
+	
+	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
+		app->runCameraScroll(yoffset);
 
 }
 

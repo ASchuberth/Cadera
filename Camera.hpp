@@ -28,13 +28,10 @@ namespace cam {
 
 		// Ortho view
 		float left;
-		float right;
-		float top;
-		float bottom;
+	
 
-		// For selection
+		// For mouse input and selection
 		glm::vec3 mouseRay;
-		glm::vec3 unprojRay;
 
 		// For obtaining mouse position on screen
 		double xpos;
@@ -42,13 +39,11 @@ namespace cam {
 
 		void zoom(float yoffset);
 
-		void updateMouseRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
-			uint32_t height);
+		void updateMouseRay(float x, float y, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
+			                uint32_t height);
 
 		void pan(glm::vec3 origin, glm::vec3 planeNormal);
 		
-		void orthoPan(glm::vec3 origin, glm::vec3 planeNormal);
-
 
 	};
 

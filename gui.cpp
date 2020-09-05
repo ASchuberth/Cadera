@@ -17,7 +17,7 @@ namespace gui {
 		ImGui::Render();
 	}
 
-	void showDebugWindow(CADRender & Render) {
+	void showDebugWindow(CADRender & Render, Selector& Sel) {
 
 		//ImGui::SetNextWindowPos({ 0, 40 });
 		ImGui::Begin("Debugging");
@@ -27,7 +27,7 @@ namespace gui {
 		{
 
 			static bool orthoCheck = false;
-			ImGui::Checkbox("Demo Window", &orthoCheck);
+			ImGui::Checkbox("Orthogonal", &orthoCheck);
 
 
 			if (orthoCheck && !Render.Cam.flags.test(cam::ortho)) {
@@ -59,13 +59,17 @@ namespace gui {
 			ImGui::Text("x: %f", Render.Cam.mouseRay.x);
 			ImGui::Text("y: %f", Render.Cam.mouseRay.y);
 			ImGui::Text("z: %f", Render.Cam.mouseRay.z);
-		
-			ImGui::NewLine();
+	
+	
+		}
 
-			ImGui::Text("Unproj Ray");
-			ImGui::Text("x: %f", Render.Cam.unprojRay.x);
-			ImGui::Text("y: %f", Render.Cam.unprojRay.y);
-			ImGui::Text("z: %f", Render.Cam.unprojRay.z);
+		if (ImGui::CollapsingHeader("Selection", ImGuiTreeNodeFlags_None)) {
+
+			ImGui::Text("Slection Point");
+			ImGui::Text("x: %f", Sel.point.x);
+			ImGui::Text("y: %f", Sel.point.y);
+			ImGui::Text("z: %f", Sel.point.z);
+
 		}
 
 
@@ -74,7 +78,7 @@ namespace gui {
 
 	}
 
-	void imguiRun(CADRender & Render) {
+	void imguiRun(CADRender & Render, Selector& Sel) {
 
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();
@@ -96,7 +100,7 @@ namespace gui {
 		ImGui::Checkbox("Debug Window", &debugCheck);
 
 
-		if (debugCheck) showDebugWindow(Render);
+		if (debugCheck) showDebugWindow(Render, Sel);
 
 
 #endif

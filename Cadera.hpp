@@ -19,6 +19,7 @@ namespace CADERA_APP_NAMESPACE {
 		void initCallbacks();
 
 		// Sketches
+		sketch::Sketch Sketch;
 		// Parts
 		// Assemblies
 		// Drawings

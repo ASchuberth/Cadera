@@ -61,7 +61,7 @@ namespace CADERA_APP_NAMESPACE {
 
 			
 
-			gui::imguiRun(Render);
+			gui::imguiRun(Render, Render.Sel);
 			Render.createCommandBuffers();
 
 

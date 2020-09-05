@@ -14,12 +14,7 @@ namespace cam {
 		xpos = 0.0;
 		ypos = 0.0;
 		mouseRay = { 0.0f, 0.0f, 0.0f };
-		unprojRay = { 0.0f, 0.0f, 0.0f };
 		left = -10.0f;
-		right = 10.0f;
-		bottom = -10.0f;
-		top = 10.0f;
-
 	}
 
 	void Camera::zoom(float yoffset) {
@@ -27,10 +22,10 @@ namespace cam {
 		if (flags.test(ortho)) {
 			
 			if (yoffset > 0) {
-				left -= 1.0f;
+				left += 1.0f;
 			}
 			else if (yoffset < 0) {
-				left += 1.0f;
+				left -= 1.0f;
 			}
 		}
 		else {
@@ -44,10 +39,16 @@ namespace cam {
 
 	}
 
-	void Camera::updateMouseRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
-		uint32_t height) {
+	void Camera::updateMouseRay(float x, float y, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
+		                        uint32_t height) {
 
-		mouseRay = calcCurrentRay(x, y, viewMat, projMat, width, height);
+		if (flags.test(ortho)) {
+			mouseRay = glm::unProject(glm::vec3(x, y, 0.0f), modelMat, projMat,
+				                      glm::vec4(0.0f, 0.0f, width, height));
+		}
+		else {
+			mouseRay = calcCurrentRay(x, y, viewMat, projMat, width, height);
+		}
 
 	}
 
@@ -64,47 +65,29 @@ namespace cam {
 
 		}
 
-		p1 = calcPOnPlane(prevMouseRay, origin, planeNormal, pos);
-		p2 = calcPOnPlane(mouseRay, origin, planeNormal, pos);
+		if (flags.test(ortho)) {
 
-		diff = p2 - p1;
+			diff = mouseRay - prevMouseRay;
 
-		if (flags.test(ortho)) diff = diff * .3f;
+			pos.y -= diff.x;
+			pos.z -= diff.y;
+			focus.y -= diff.x;
+			focus.z -= diff.y;
 
-		pos -= diff;
-		focus -= diff;
+		}
+		else {
 
+			p1 = calcPOnPlane(prevMouseRay, origin, planeNormal, pos);
+			p2 = calcPOnPlane(mouseRay, origin, planeNormal, pos);
+
+			diff = p2 - p1;
+
+			pos -= diff;
+			focus -= diff;
+		}
 
 		prevMouseRay = mouseRay;
 
-	}
-
-	void Camera::orthoPan(glm::vec3 origin, glm::vec3 planeNormal) {
-		
-		static glm::vec3 prevunprojRay = unprojRay;
-		glm::vec3 p1, p2, diff;
-
-		if (flags.test(mouseFirstPressed)) {
-
-			prevunprojRay = unprojRay;
-			flags.reset(mouseFirstPressed);
-
-		}
-
-
-		diff = unprojRay - prevunprojRay;
-
-	
-
-		pos.y -= diff.x;
-		pos.z -= diff.y;
-		focus.y -= diff.x;
-		focus.z -= diff.y;
-		
-		std::cout << diff.y << std::endl;
-
-
-		prevunprojRay = unprojRay;
 	}
 
 	

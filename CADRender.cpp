@@ -480,9 +480,6 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
-		double x, y;
-		glfwGetCursorPos(mMainCanvas.window, &x, &y);
-
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 0.0f, 1.0f));
 		
@@ -500,12 +497,6 @@ namespace CADERA_APP_NAMESPACE {
 
 		u.proj[1][1] *= -1;
 
-
-		Cam.unprojRay = glm::unProject(glm::vec3(x, y, 0.0f), u.model, u.proj, 
-			                           glm::vec4(0.0f, 0.0f,
-								       mMainCanvas.mExtent.width, mMainCanvas.mExtent.height));
-		//Cam.unprojRay.x += Cam.focus.y;
-		//Cam.unprojRay.y += Cam.focus.z;
 
 		vk::MemoryMapFlags memMapFlags;
 
@@ -539,24 +530,18 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::runCamera() {
 		
 		
-
-		
-
 		double x, y;
 		glfwGetCursorPos(mMainCanvas.window, &x, &y);
-		Cam.updateMouseRay(x, y, u.view, u.proj,
+		Cam.updateMouseRay(x, y, u.model, u.view, u.proj,
 						   mMainCanvas.mExtent.width,
 						   mMainCanvas.mExtent.height
 		);
 
-		if (Cam.flags.test(cam::pan) && !Cam.flags.test(cam::ortho)) {
+		if (Cam.flags.test(cam::pan)) {
 			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
-		else if (Cam.flags.test(cam::pan) && Cam.flags.test(cam::ortho)) {
-			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
-			Cam.orthoPan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
-		}
+		
 
 	}
 

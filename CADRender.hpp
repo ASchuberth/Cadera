@@ -29,6 +29,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		cam::Camera Cam;
 
+		Selector Sel;
+
 		void initImgui();
 
 		void imguiRun();
