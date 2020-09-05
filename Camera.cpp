@@ -47,7 +47,7 @@ namespace cam {
 				                      glm::vec4(0.0f, 0.0f, width, height));
 		}
 		else {
-			mouseRay = calcCurrentRay(x, y, viewMat, projMat, width, height);
+			mouseRay = sel::calcCurrentRay(x, y, viewMat, projMat, width, height);
 		}
 
 	}
@@ -77,8 +77,8 @@ namespace cam {
 		}
 		else {
 
-			p1 = calcPOnPlane(prevMouseRay, origin, planeNormal, pos);
-			p2 = calcPOnPlane(mouseRay, origin, planeNormal, pos);
+			p1 = sel::calcPOnPlane(prevMouseRay, origin, planeNormal, pos);
+			p2 = sel::calcPOnPlane(mouseRay, origin, planeNormal, pos);
 
 			diff = p2 - p1;
 

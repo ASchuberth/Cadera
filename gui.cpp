@@ -17,7 +17,7 @@ namespace gui {
 		ImGui::Render();
 	}
 
-	void showDebugWindow(CADRender & Render, Selector& Sel) {
+	void showDebugWindow(CADRender & Render, sel::Selector& Sel) {
 
 		//ImGui::SetNextWindowPos({ 0, 40 });
 		ImGui::Begin("Debugging");
@@ -78,7 +78,7 @@ namespace gui {
 
 	}
 
-	void imguiRun(CADRender & Render, Selector& Sel) {
+	void imguiRun(CADRender & Render, sel::Selector& Sel) {
 
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();

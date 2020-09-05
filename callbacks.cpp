@@ -4,7 +4,7 @@
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 
-	auto app = reinterpret_cast<cad::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
@@ -31,7 +31,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
-	auto app = reinterpret_cast<cad::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
 	
 	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
 		app->runCameraScroll(yoffset);
@@ -40,7 +40,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
 void framebuffer_resize_callback(GLFWwindow* window, int width, int height) {
 
-	auto app = reinterpret_cast<cad::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
 
 
 	app->mMainCanvas.frameBufferResized = true;
