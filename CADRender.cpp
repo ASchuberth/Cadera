@@ -460,11 +460,21 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
 
+
+			// Sketch Points
+			if (!mBuffers[BUF_SKETCH_POINTS].isEmpty) {
+				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
+				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_POINTS].mBuffer, offsets);
+				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINTS].mPointSize, 1, 0, 0);
+			}
 			// Grid
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
 			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
 			mCommandBuffers[i].draw(2, 402, 0, 0);
+
+
+
 
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -541,10 +551,34 @@ namespace CADERA_APP_NAMESPACE {
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
 
-		if (Cam.flags.test(cam::scroll)) {
+	
+	}
+
+	void CADRender::render(Model &M) {
+
+		
+		if (M.getType() == cad_sketch)
+			renderSketchPoints(M);
+
+		flags.reset(render_update_sketch);
+	}
+
+	void CADRender::renderSketchPoints(Model &S) {
+
+		std::vector<glm::vec3> pointVertices = S.getVertices();
+		std::vector<Vertex> Vertices;
+
+		if (pointVertices.empty()) 
+			return;
+		
+
+		for (const auto& v : pointVertices) {
+
+			Vertices.push_back({ v, {1.0f, 1.0f, 1.0f} });
 
 		}
-		
+
+		updateBuffer(BUF_SKETCH_POINTS, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
 
 	}
 

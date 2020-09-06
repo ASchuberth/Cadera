@@ -17,7 +17,8 @@ namespace gui {
 		ImGui::Render();
 	}
 
-	void startMenu(CADRender& Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
+	void startMenu(sketch::Sketch& Sketch, CADRender& Render, sel::Selector& Sel, 
+		           std::bitset<gui_num_flags> &flags) {
 
 		ImGui::Begin("Start Screen");
 
@@ -34,7 +35,8 @@ namespace gui {
 
 	}
 
-	void sketchMenu(CADRender& Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
+	void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+		            std::bitset<gui_num_flags> &flags) {
 
 		ImGui::SetNextWindowPos({ 0, 20 });
 		ImGui::SetNextWindowSize({ 300.0f,
@@ -53,20 +55,22 @@ namespace gui {
 		ImGui::Checkbox("Debug Window", &debugCheck);
 
 
-		if (debugCheck) showDebugWindow(Render, Sel, flags);
+		if (debugCheck) showDebugWindow(Sketch, Render, Sel, flags);
 
 
 #endif
 
 		if (ImGui::Button("Point")) {
-
+			Sketch.flags.set(sketch::skt_point_tool);
+			Sketch.flags.set(sketch::skt_tool_active);
 		}
 
 		ImGui::End();
 
 	}
 
-	void showDebugWindow(CADRender & Render, sel::Selector& Sel, std::bitset<gui_num_flags> &flags) {
+	void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+		                 std::bitset<gui_num_flags> &flags) {
 
 		//ImGui::SetNextWindowPos({ 0, 40 });
 		ImGui::Begin("Debugging");
@@ -121,13 +125,29 @@ namespace gui {
 
 		}
 
+		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_None)) {
+			
+			ImGui::Text("Sketch Tools:");
+			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
+			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
+		
+			ImGui::NewLine();
+
+			for (const auto& p : Sketch.Points) {
+				ImGui::Text("Sketch Point: %d", p.first);
+				ImGui::Text("x: %f", p.second.pos.x);
+				ImGui::Text("y: %f", p.second.pos.y);
+				ImGui::Text("z: %f", p.second.pos.z);
+				ImGui::NewLine();
+			}
+		}
 
 		ImGui::End();
 
 
 	}
 
-	void imguiRun(CADRender & Render, sel::Selector& Sel) {
+	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel) {
 
 		static std::bitset<gui_num_flags> flags(gui_start_menu + 1);
 		
@@ -137,8 +157,8 @@ namespace gui {
 		imguiBegin();
 
 		
-		if (flags.test(gui_start_menu))   startMenu(Render, Sel, flags);
-		if (flags.test(gui_sketch_menu))  sketchMenu(Render, Sel, flags);
+		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, flags);
+		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, flags);
 
 		
 

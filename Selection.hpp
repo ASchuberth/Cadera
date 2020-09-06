@@ -34,6 +34,8 @@ namespace sel {
 		Selector();
 
 		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, bool isOrtho);
+
+		static void selectPoint();
 	};
 }
 }

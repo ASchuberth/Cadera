@@ -5,7 +5,7 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-	const uint32_t BUF_SKETCH_LINES = 0;
+	const uint32_t BUF_SKETCH_POINTS = 3;
 
 	struct Vertex {
 		glm::vec3 pos;

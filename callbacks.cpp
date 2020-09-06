@@ -1,57 +1,75 @@
 #include "pch.hpp"
 #include "callbacks.hpp"
-#include "CADRender.hpp"
+#include "Cadera.hpp"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 
-	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera*> (glfwGetWindowUserPointer(window));
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
-			app->Sel.select(app->Cam.mouseRay, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), app->Cam.pos,
-				app->Cam.flags.test(cad::cam::ortho));
+		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow) &&
+			app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
+			
+			app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(1.0f, 0.0f, 0.0f), 
+				                   glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
+				                   app->Render.Cam.flags.test(cad::cam::ortho));
+
+			app->Sketch.add(app->Render.Sel.point);
+
+			app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
+			
 		}
 	}
 	
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 
-		app->Cam.flags.set(cad::cam::pan);
-		app->Cam.flags.set(cad::cam::mouseFirstPressed);
+		app->Render.Cam.flags.set(cad::cam::pan);
+		app->Render.Cam.flags.set(cad::cam::mouseFirstPressed);
 		
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
 
-		app->Cam.flags.reset(cad::cam::pan);
+		app->Render.Cam.flags.reset(cad::cam::pan);
 
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		app->isWait = true;
+		
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
-		app->isWait = false;
+		
 	}
 
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
-	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera*> (glfwGetWindowUserPointer(window));
 	
 	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-		app->runCameraScroll(yoffset);
+		app->Render.runCameraScroll(yoffset);
 
 }
 
 void framebuffer_resize_callback(GLFWwindow* window, int width, int height) {
 
-	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::CADRender*> (glfwGetWindowUserPointer(window));
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera*> (glfwGetWindowUserPointer(window));
 
 
-	app->mMainCanvas.frameBufferResized = true;
+	app->Render.mMainCanvas.frameBufferResized = true;
+
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	
+	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera*> (glfwGetWindowUserPointer(window));
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		app->Sketch.deactivateTools();
+	}
 
 }
 

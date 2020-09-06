@@ -112,5 +112,9 @@ namespace sel {
 			point = calcPOnPlane(mouseRay, origin, normal, pos);
 		}
 	}
+	
+	void Selector::selectPoint() {
+
+	}
 }
 }

@@ -7,7 +7,7 @@ namespace CADERA_APP_NAMESPACE {
 	class Cadera {
 
 	private:
-		CADRender Render;
+		
 
 		std::vector<cad::Vertex> ptVertices = {
 			{{ 0.0f,   0.0f,  0.0f},  {0.0f, 1.0f, 0.0f}},
@@ -18,11 +18,15 @@ namespace CADERA_APP_NAMESPACE {
 
 		void initCallbacks();
 
+		
 		std::map<int, Model> Models;
 
 		int modelIdCounter;
 
 	public:
+		
+		CADRender Render;
+		sketch::Sketch Sketch;
 
 		Cadera();
 

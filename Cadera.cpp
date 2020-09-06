@@ -7,18 +7,22 @@ namespace CADERA_APP_NAMESPACE {
 	
 	void Cadera::initCallbacks() {
 		
-		glfwSetWindowUserPointer(Render.mMainCanvas.window, &Render);
+		glfwSetWindowUserPointer(Render.mMainCanvas.window, this);
 		
 		glfwSetMouseButtonCallback(Render.mMainCanvas.window, mouse_button_callback);
 		glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
 		glfwSetFramebufferSizeCallback(Render.mMainCanvas.window, framebuffer_resize_callback);
 		glfwSetCursorPosCallback(Render.mMainCanvas.window, cursor_position_callback);
+		glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
+
+		
 	}
 
 	
 
 	Cadera::Cadera() {
 		modelIdCounter = 0;
+		Sketch.setType(cad_sketch);
 	}
 
 	Cadera::~Cadera() {
@@ -59,9 +63,13 @@ namespace CADERA_APP_NAMESPACE {
 			
 			glfwPollEvents();
 
-			gui::imguiRun(Render, Render.Sel);
-			Render.createCommandBuffers();
+			gui::imguiRun(Sketch, Render, Render.Sel);
+			
 
+			if (Render.flags.test(render_update_sketch))
+				Render.render(Sketch);
+
+			Render.createCommandBuffers();
 
 			Render.drawFrame();
 			Render.runCamera();
@@ -69,9 +77,5 @@ namespace CADERA_APP_NAMESPACE {
 			glfwWaitEvents();
 		
 		}
-
-
 	}
-
-	
 }

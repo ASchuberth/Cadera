@@ -23,4 +23,14 @@ namespace CADERA_APP_NAMESPACE {
 		mType = type;
 	}
 
+	ModelType Model::getType() {
+
+		return mType;
+	}
+
+	std::vector<glm::vec3> Model::getVertices() {
+
+		return std::vector<glm::vec3>();
+	}
+
 }

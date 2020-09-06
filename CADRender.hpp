@@ -8,6 +8,12 @@
 
 namespace CADERA_APP_NAMESPACE {
 
+
+	enum RenderFlags {
+		render_update_sketch,
+		render_num_flags
+	};
+
 	class CADRender : public pcs::PecosRender {
 		
 		
@@ -25,13 +31,15 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 
-		bool isWait;
+
+		std::bitset<render_num_flags> flags;
 
 		pcs::ubo u;
 
 		cam::Camera Cam;
 
 		sel::Selector Sel;
+
 
 		void initImgui();
 
@@ -55,6 +63,10 @@ namespace CADERA_APP_NAMESPACE {
 		void runCameraScroll(float yoffset);
 
 		void runCamera();
+
+		void render(Model &M);
+
+		void renderSketchPoints(Model &S);
 
 	};
 }

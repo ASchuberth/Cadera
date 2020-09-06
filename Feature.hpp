@@ -3,7 +3,7 @@
 namespace CADERA_APP_NAMESPACE {
 	class Feature {
 
-		 int id;
+		 int mId;
 
 	public:
 

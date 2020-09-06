@@ -9,9 +9,6 @@ int main() {
 	cad::Cadera App;
 
 	 
-
-	
-	 
 	try {		
 		App.run();
 		

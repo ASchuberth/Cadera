@@ -7,11 +7,12 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
-	Feature::Feature(int i) {
-
+	Feature::Feature(int id) {
+		mId = id;
 	}
 
-	void Feature::setId(int i) {
-
+	void Feature::setId(int id) {
+		mId = id;
 	}
+	
 }
