@@ -17,6 +17,10 @@ namespace sketch {
 		featureCounter = 0;
 	}
 
+	void Sketch::setCameraDistance(float* camDistance) {
+		mCamDistance = camDistance;
+	}
+
 	void Sketch::activatePointTool() {
 		flags.set(skt_point_tool);
 		flags.set(skt_tool_active);

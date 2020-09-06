@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "callbacks.hpp"
 #include "Cadera.hpp"
+#include "Selection.hpp"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 
@@ -10,13 +11,25 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow) &&
 			app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
 			
-			app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(1.0f, 0.0f, 0.0f), 
+			app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f), 
 				                   glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
 				                   app->Render.Cam.flags.test(cad::cam::ortho));
 
 			app->Sketch.add(app->Render.Sel.point);
 
 			app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
+			
+		}
+		else if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
+			app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
+				app->Render.Cam.flags.test(cad::cam::ortho));
+
+			int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
+
+			if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
+				app->Render.flags.set(cad::render_update_sketch);
+			}
 			
 		}
 	}
@@ -69,6 +82,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		app->Sketch.deactivateTools();
+	}
+
+	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS) {
+		app->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::isCTRL);
+	}
+
+	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE) {
+		app->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::isCTRL);
 	}
 
 }

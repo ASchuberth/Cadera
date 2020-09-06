@@ -15,6 +15,14 @@ namespace cam {
 		ypos = 0.0;
 		mouseRay = { 0.0f, 0.0f, 0.0f };
 		left = -10.0f;
+		camDistance = 0.0f;
+
+	}
+
+	void Camera::update() {
+
+		camDistance = glm::length(pos - focus);
+
 	}
 
 	void Camera::zoom(float yoffset) {

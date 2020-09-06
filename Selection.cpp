@@ -111,10 +111,70 @@ namespace sel {
 		else {
 			point = calcPOnPlane(mouseRay, origin, normal, pos);
 		}
-	}
-	
-	void Selector::selectPoint() {
 
 	}
+
+	int Selector::selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale) {
+
+		std::vector<int> sortedIndices;
+		double sensitivity = skScale / 800.0f;
+
+		for (const auto& point : points) {
+			glm::vec3 pointVec;
+			double length;
+
+			pointVec = pointToAdd - point.second.pos;
+
+
+			length = glm::length2(pointVec);
+
+			if (length < sensitivity) {
+				return point.first;
+			}
+		}
+
+		return -1;
+	}
+
+	int Selector::add(glm::vec3 pointToAdd, std::map<int, Point>& points, float skScale) {
+
+		// Clear selected points if CTRL isn't pressed
+		if (!flags.test(isCTRL))
+			selectedPoints.clear();
+
+		int selectedPointId = selectPoint(pointToAdd, points, skScale);
+
+		// If a point is selected
+		if (selectedPointId >= 0) {
+
+			// If not in selectedPoints, add it, else remove it
+			if (selectedPoints.find(selectedPointId) == selectedPoints.end()) {
+				selectedPoints[selectedPointId] = points[selectedPointId];
+				return selectedPointId;
+			}
+			else {
+
+				selectedPoints.erase(selectedPointId);
+				return selectedPointId;
+			}
+		}
+
+		// If not CTRL and selectedPointId < 0
+		if (!flags.test(isCTRL))
+			selectedPoints.clear();
+		return selectedPointId;
+	}
+
+	std::vector<glm::vec3> Selector::getVertices() {
+
+		std::vector<glm::vec3> vertices;
+
+		for (const auto& p : selectedPoints) {
+			vertices.push_back(p.second.pos);
+		}
+
+		return vertices;
+	}
+	
 }
 }

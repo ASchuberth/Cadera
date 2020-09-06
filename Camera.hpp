@@ -25,6 +25,7 @@ namespace cam {
 		glm::vec3 pos;
 		glm::vec3 focus;
 		glm::vec3 cameraVec;
+		float camDistance;
 
 		// Ortho view
 		float left;
@@ -36,6 +37,8 @@ namespace cam {
 		// For obtaining mouse position on screen
 		double xpos;
 		double ypos;
+
+		void update();
 
 		void zoom(float yoffset);
 

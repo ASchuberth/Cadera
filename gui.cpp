@@ -26,7 +26,7 @@ namespace gui {
 			
 			flags.set(gui_sketch_menu);
 
-			
+			Sketch.setCameraDistance(&Render.Cam.camDistance);
 
 			flags.reset(gui_start_menu);
 		}
@@ -112,6 +112,12 @@ namespace gui {
 			ImGui::Text("x: %f", Render.Cam.mouseRay.x);
 			ImGui::Text("y: %f", Render.Cam.mouseRay.y);
 			ImGui::Text("z: %f", Render.Cam.mouseRay.z);
+
+			ImGui::NewLine();
+
+			ImGui::Text("Camera Distance");
+			ImGui::Text("Distance: %f", Render.Cam.camDistance);
+	
 	
 	
 		}
@@ -123,6 +129,17 @@ namespace gui {
 			ImGui::Text("y: %f", Sel.point.y);
 			ImGui::Text("z: %f", Sel.point.z);
 
+			ImGui::NewLine();
+
+			ImGui::Text("Selected Points");
+			for (const auto& p : Sel.selectedPoints) {
+				ImGui::Text("Selected Point: %d", p.first);
+				ImGui::Text("x: %f", p.second.pos.x);
+				ImGui::Text("y: %f", p.second.pos.y);
+				ImGui::Text("z: %f", p.second.pos.z);
+				ImGui::NewLine();
+			}
+
 		}
 
 		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_None)) {
@@ -131,6 +148,9 @@ namespace gui {
 			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
 			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
 		
+			ImGui::Text("Camera Distance");
+			ImGui::Text("Distance: %f", *Sketch.mCamDistance);
+
 			ImGui::NewLine();
 
 			for (const auto& p : Sketch.Points) {

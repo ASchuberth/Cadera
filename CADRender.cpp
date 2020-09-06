@@ -453,13 +453,17 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
 			// X
-			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
-			mCommandBuffers[i].draw(4, 1, 0, 0);
-
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
 			mCommandBuffers[i].draw(4, 1, 0, 0);
 
+
+			// Selection Points
+			if (!mBuffers[BUF_SELECTION_POINTS].isEmpty) {
+				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
+				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SELECTION_POINTS].mBuffer, offsets);
+				mCommandBuffers[i].draw(mBuffers[BUF_SELECTION_POINTS].mPointSize, 1, 0, 0);
+			}
 
 			// Sketch Points
 			if (!mBuffers[BUF_SKETCH_POINTS].isEmpty) {
@@ -467,6 +471,7 @@ namespace CADERA_APP_NAMESPACE {
 				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_POINTS].mBuffer, offsets);
 				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINTS].mPointSize, 1, 0, 0);
 			}
+
 			// Grid
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
@@ -551,7 +556,7 @@ namespace CADERA_APP_NAMESPACE {
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
 
-	
+		Cam.update();
 	}
 
 	void CADRender::render(Model &M) {
@@ -566,11 +571,21 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::renderSketchPoints(Model &S) {
 
 		std::vector<glm::vec3> pointVertices = S.getVertices();
+		std::vector<glm::vec3> selPointVertices = Sel.getVertices();
+		
 		std::vector<Vertex> Vertices;
 
 		if (pointVertices.empty()) 
 			return;
 		
+
+		if (!selPointVertices.empty()) {
+			for (const auto& v : selPointVertices) {
+
+				Vertices.push_back({ v, {0.0f, 1.0f, 0.0f} });
+
+			}
+		}
 
 		for (const auto& v : pointVertices) {
 
@@ -578,7 +593,10 @@ namespace CADERA_APP_NAMESPACE {
 
 		}
 
+	
+
 		updateBuffer(BUF_SKETCH_POINTS, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
+	
 
 	}
 

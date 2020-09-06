@@ -6,6 +6,7 @@
 namespace CADERA_APP_NAMESPACE {
 
 	const uint32_t BUF_SKETCH_POINTS = 3;
+	const uint32_t BUF_SELECTION_POINTS = 4;
 
 	struct Vertex {
 		glm::vec3 pos;

@@ -16,14 +16,19 @@ namespace sketch {
 
 		int featureCounter;
 
-	public:
+		
 
-		std::map<int32_t, Point> Points;
+	public:
+		float* mCamDistance;
+
+		std::map<int, Point> Points;
 
 		Sketch();
 		Sketch(int i);
 		
 		std::bitset<skt_num_flags> flags;
+
+		void setCameraDistance(float* camDistance);
 
 		void activatePointTool();
 
