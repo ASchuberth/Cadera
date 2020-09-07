@@ -14,5 +14,11 @@ namespace CADERA_APP_NAMESPACE {
 	void Feature::setId(int id) {
 		mId = id;
 	}
+
+	int Feature::getId() {
+		return mId;
+	}
+
+
 	
 }

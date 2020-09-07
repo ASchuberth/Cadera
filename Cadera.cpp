@@ -18,6 +18,15 @@ namespace CADERA_APP_NAMESPACE {
 		
 	}
 
+	void Cadera::switchCallbacks() {
+		if (ImGui::IsAnyWindowHovered()) {
+			glfwSetScrollCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_ScrollCallback);
+		}
+		else {
+			glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
+		}
+	}
+
 	
 
 	Cadera::Cadera() {
@@ -54,6 +63,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		initCallbacks();
 
+	
 		mainLoop();
 	}
 
@@ -61,6 +71,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
 			
+			switchCallbacks();
+
 			glfwPollEvents();
 
 			gui::imguiRun(Sketch, Render, Render.Sel);
@@ -75,7 +87,8 @@ namespace CADERA_APP_NAMESPACE {
 			Render.runCamera();
 
 			glfwWaitEvents();
-		
+			
+
 		}
 	}
 }

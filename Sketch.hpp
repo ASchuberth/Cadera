@@ -28,6 +28,8 @@ namespace sketch {
 		
 		std::bitset<skt_num_flags> flags;
 
+		int getFeatureCounter();
+
 		void setCameraDistance(float* camDistance);
 
 		void activatePointTool();
@@ -36,7 +38,7 @@ namespace sketch {
 
 		void add(glm::vec3 point);
 
-		void addPoint(glm::vec3 point);
+		Point* addPoint(glm::vec3 point);
 
 		std::vector<glm::vec3> getVertices();
 		

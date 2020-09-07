@@ -153,8 +153,8 @@ namespace gui {
 
 			ImGui::NewLine();
 
-			for (const auto& p : Sketch.Points) {
-				ImGui::Text("Sketch Point: %d", p.first);
+			for (auto& p : Sketch.Points) {
+				ImGui::Text("Sketch Point: %d", p.second.getId());
 				ImGui::Text("x: %f", p.second.pos.x);
 				ImGui::Text("y: %f", p.second.pos.y);
 				ImGui::Text("z: %f", p.second.pos.z);

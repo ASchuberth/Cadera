@@ -12,6 +12,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		void setId(int i);
 
+		int getId();
+
 	};
 }
 

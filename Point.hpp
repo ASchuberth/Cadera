@@ -6,6 +6,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 
+		
 		glm::vec3 pos;
 
 		Point();

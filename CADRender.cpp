@@ -131,8 +131,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\vert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -226,8 +226,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\vert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -339,8 +339,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\gridvert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
+		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);

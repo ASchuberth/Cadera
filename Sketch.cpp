@@ -8,13 +8,21 @@ namespace sketch {
 	Sketch::Sketch() {
 		
 		featureCounter = 0;
-
+		mCamDistance = nullptr;
 	}
 
 	Sketch::Sketch(int i) {
+		
 		setId(i);
 		setType(cad_sketch);
 		featureCounter = 0;
+
+		mCamDistance = nullptr;
+	}
+
+	int Sketch::getFeatureCounter() {
+
+		return featureCounter;
 	}
 
 	void Sketch::setCameraDistance(float* camDistance) {
@@ -39,11 +47,59 @@ namespace sketch {
 		featureCounter++;
 	}
 
-	void Sketch::addPoint(glm::vec3 point) {
-		
-		Points[featureCounter] = Point(featureCounter, point);
 
+	Point* Sketch::addPoint(glm::vec3 point) {
 
+		Point pointToAdd;
+
+		int16_t pointSketchId = -1;
+
+		// Already points in sketch
+		if (Points.size() > 0) {
+
+			if (mCamDistance == nullptr)
+				throw std::runtime_error("Sketch.addPoint(): Sketch.mCamDistance is nullptr!");
+
+			pointSketchId = sel::Selector::selectPoint(point, Points, *mCamDistance);
+
+			// Point already exists
+			if (pointSketchId >= 0) {
+
+				if (&Points[pointSketchId] == nullptr)
+					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+				return &Points[pointSketchId];
+
+			}
+			// Point doesn't exist
+			else {
+
+				pointToAdd.pos = point;
+				pointToAdd.setId(featureCounter);
+
+				Points[featureCounter] = pointToAdd;
+
+				if (&Points[pointSketchId] == nullptr)
+					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+				return &Points[featureCounter];
+
+			}
+		}
+		// No points in sketch
+		else {
+
+			pointToAdd.pos = point;
+			pointToAdd.setId(featureCounter);
+
+			Points[featureCounter] = pointToAdd;
+
+			if (&Points[pointSketchId] == nullptr)
+				throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+			return &Points[featureCounter];
+
+		}
 	}
 
 	std::vector<glm::vec3> Sketch::getVertices() {

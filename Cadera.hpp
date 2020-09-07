@@ -18,6 +18,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		void initCallbacks();
 
+		void switchCallbacks();
 		
 		std::map<int, Model> Models;
 
