@@ -78,11 +78,23 @@ namespace CADERA_APP_NAMESPACE {
 			gui::imguiRun(Sketch, Render, Render.Sel);
 			
 
+			if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
+				Sketch.deletion(Render.Sel.getSelectedPointIds());
+				Render.Sel.clear();
+				Render.Sel.setFlags();
+				Render.flags.set(render_update_sketch);
+				flags.reset(cadera_delete);
+			}
+			else {
+				flags.reset(cadera_delete);
+			}
+
 			if (Render.flags.test(render_update_sketch))
 				Render.render(Sketch);
 
+			
+			
 			Render.createCommandBuffers();
-
 			Render.drawFrame();
 			Render.runCamera();
 
@@ -91,4 +103,5 @@ namespace CADERA_APP_NAMESPACE {
 
 		}
 	}
+
 }

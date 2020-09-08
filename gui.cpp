@@ -124,7 +124,14 @@ namespace gui {
 
 		if (ImGui::CollapsingHeader("Selection", ImGuiTreeNodeFlags_None)) {
 
-			ImGui::Text("Slection Point");
+			ImGui::Text("Selection Flags");
+			ImGui::Text("Single Point: %d", Render.Sel.flags.test(sel::select_single_point));
+			ImGui::Text("Double Point: %d", Render.Sel.flags.test(sel::select_double_point));
+			ImGui::Text("Multi Point: %d", Render.Sel.flags.test(sel::select_multi_point));
+
+			ImGui::NewLine();
+
+			ImGui::Text("Selection Point");
 			ImGui::Text("x: %f", Sel.point.x);
 			ImGui::Text("y: %f", Sel.point.y);
 			ImGui::Text("z: %f", Sel.point.z);
@@ -147,6 +154,7 @@ namespace gui {
 			ImGui::Text("Sketch Tools:");
 			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
 			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
+			ImGui::Text("FeatureCounter: %d", Sketch.getFeatureCounter());
 		
 			ImGui::Text("Camera Distance");
 			ImGui::Text("Distance: %f", *Sketch.mCamDistance);
@@ -155,6 +163,10 @@ namespace gui {
 
 			for (auto& p : Sketch.Points) {
 				ImGui::Text("Sketch Point: %d", p.second.getId());
+				
+				if (p.second.Type == feat_point)
+					ImGui::Text("Type: Point");
+
 				ImGui::Text("x: %f", p.second.pos.x);
 				ImGui::Text("y: %f", p.second.pos.y);
 				ImGui::Text("z: %f", p.second.pos.z);

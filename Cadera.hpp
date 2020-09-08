@@ -4,6 +4,11 @@
 
 namespace CADERA_APP_NAMESPACE {
 
+	enum CaderaFlags {
+		cadera_delete,
+		cadera_num_flags
+	};
+
 	class Cadera {
 
 	private:
@@ -28,6 +33,8 @@ namespace CADERA_APP_NAMESPACE {
 		
 		CADRender Render;
 		sketch::Sketch Sketch;
+
+		std::bitset<cadera_num_flags> flags;
 
 		Cadera();
 

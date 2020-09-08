@@ -20,8 +20,11 @@ namespace sel {
 
 
 	enum SelectionFlags {
-		toggleSelect,          // Used in callbacks to toggle selection
-		isCTRL,
+		select_toggle,          // Used in callbacks to toggle selection
+		select_isCTRL,                // Is CTRL pressed down
+		select_single_point,
+		select_double_point,
+		select_multi_point,
 		numFlags               // Number of flags for bitset
 	};
 
@@ -43,7 +46,14 @@ namespace sel {
 
 		int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
+		void setFlags();
+
+		void clear();
+
 		std::vector<glm::vec3> getVertices();
+
+		std::vector<int> getSelectedPointIds();
+
 	};
 }
 }

@@ -139,8 +139,10 @@ namespace sel {
 	int Selector::add(glm::vec3 pointToAdd, std::map<int, Point>& points, float skScale) {
 
 		// Clear selected points if CTRL isn't pressed
-		if (!flags.test(isCTRL))
+		if (!flags.test(select_isCTRL)) {
 			selectedPoints.clear();
+			setFlags();
+		}
 
 		int selectedPointId = selectPoint(pointToAdd, points, skScale);
 
@@ -149,20 +151,74 @@ namespace sel {
 
 			// If not in selectedPoints, add it, else remove it
 			if (selectedPoints.find(selectedPointId) == selectedPoints.end()) {
+				
 				selectedPoints[selectedPointId] = points[selectedPointId];
+				setFlags();
+				
 				return selectedPointId;
+
 			}
 			else {
 
 				selectedPoints.erase(selectedPointId);
+				setFlags();
+
 				return selectedPointId;
+
 			}
 		}
 
 		// If not CTRL and selectedPointId < 0
-		if (!flags.test(isCTRL))
+		if (!flags.test(select_isCTRL)) {
+
 			selectedPoints.clear();
+			setFlags();
+
+		}
+
 		return selectedPointId;
+
+	}
+
+	void Selector::setFlags() {
+
+		if (selectedPoints.size() == 1) {
+			
+			flags.set(select_single_point);
+			
+			flags.reset(select_double_point);
+			flags.reset(select_multi_point);
+
+		}
+		else if (selectedPoints.size() == 2) {
+			
+			flags.set(select_double_point);
+			
+			flags.reset(select_single_point);
+			flags.reset(select_multi_point);
+
+		}
+		else if (selectedPoints.size() >= 3) {
+			
+			flags.set(select_multi_point);
+
+			flags.reset(select_single_point);
+			flags.reset(select_double_point);
+
+		}
+		else {
+			
+			flags.reset(select_single_point);
+			flags.reset(select_double_point);
+			flags.reset(select_multi_point);
+
+		}
+		
+
+	}
+
+	void Selector::clear() {
+		selectedPoints.clear();
 	}
 
 	std::vector<glm::vec3> Selector::getVertices() {
@@ -174,6 +230,17 @@ namespace sel {
 		}
 
 		return vertices;
+	}
+
+	std::vector<int> Selector::getSelectedPointIds() {
+
+		std::vector<int> ids;
+
+		for (auto& P : selectedPoints) {
+			ids.push_back(P.second.getId());
+		}
+
+		return ids;
 	}
 	
 }

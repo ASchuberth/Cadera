@@ -575,10 +575,6 @@ namespace CADERA_APP_NAMESPACE {
 		
 		std::vector<Vertex> Vertices;
 
-		if (pointVertices.empty()) 
-			return;
-		
-
 		if (!selPointVertices.empty()) {
 			for (const auto& v : selPointVertices) {
 
@@ -594,9 +590,12 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 	
-
-		updateBuffer(BUF_SKETCH_POINTS, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
-	
+		if (!Vertices.empty()) {
+			updateBuffer(BUF_SKETCH_POINTS, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
+		}
+		else {
+			deleteBuffer(BUF_SKETCH_POINTS);
+		}
 
 	}
 

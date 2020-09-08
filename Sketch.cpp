@@ -44,7 +44,7 @@ namespace sketch {
 			addPoint(point);
 		}
 
-		featureCounter++;
+		
 	}
 
 
@@ -76,13 +76,16 @@ namespace sketch {
 
 				pointToAdd.pos = point;
 				pointToAdd.setId(featureCounter);
+				pointToAdd.Type = feat_point;
 
 				Points[featureCounter] = pointToAdd;
 
-				if (&Points[pointSketchId] == nullptr)
+				if (&Points[featureCounter] == nullptr)
 					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
 
-				return &Points[featureCounter];
+				featureCounter++;
+
+				return &Points[featureCounter - 1];
 
 			}
 		}
@@ -91,14 +94,25 @@ namespace sketch {
 
 			pointToAdd.pos = point;
 			pointToAdd.setId(featureCounter);
+			pointToAdd.Type = feat_point;
 
 			Points[featureCounter] = pointToAdd;
 
-			if (&Points[pointSketchId] == nullptr)
+			if (&Points[featureCounter] == nullptr)
 				throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
 
-			return &Points[featureCounter];
+			featureCounter++;
 
+			return &Points[featureCounter - 1];
+
+		}
+	}
+
+	void Sketch::deletion(std::vector<int> ids) {
+
+		for (const auto& id : ids) {
+			
+			Points.erase(id);
 		}
 	}
 

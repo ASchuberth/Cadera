@@ -40,8 +40,11 @@ namespace sketch {
 
 		Point* addPoint(glm::vec3 point);
 
+		void deletion(std::vector<int> ids);
+		
 		std::vector<glm::vec3> getVertices();
 		
+
 
 	};
 

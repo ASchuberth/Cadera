@@ -21,9 +21,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			
 		}
 		else if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
+			
 			app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
-				app->Render.Cam.flags.test(cad::cam::ortho));
+								   glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
+								   app->Render.Cam.flags.test(cad::cam::ortho));
 
 			int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
 
@@ -84,12 +85,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		app->Sketch.deactivateTools();
 	}
 
+	if (key == GLFW_KEY_DELETE && action == GLFW_PRESS) {
+		app->flags.set(CADERA_APP_NAMESPACE::cadera_delete);
+	}
+
 	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS) {
-		app->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::isCTRL);
+		app->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::select_isCTRL);
 	}
 
 	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE) {
-		app->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::isCTRL);
+		app->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::select_isCTRL);
 	}
 
 }
