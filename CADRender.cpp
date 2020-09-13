@@ -83,6 +83,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
+
 	void CADRender::imguiRun() {
 
 		ImGui_ImplVulkan_NewFrame();
@@ -91,12 +92,6 @@ namespace CADERA_APP_NAMESPACE {
 
 		
 		ImGui::ShowDemoWindow();
-		/*ImGui::SetNextWindowPos({ 100, 100 });
-		ImGui::SetNextWindowSize({ 300, 400 });
-
-		ImGui::Begin("Main Window");
-
-		ImGui::End();*/
 
 
 		ImGui::Render();
@@ -131,8 +126,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -194,7 +189,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchPoint = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr);
+		Pipelines.SketchPoint = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr));
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -226,8 +221,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -289,7 +284,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchLine = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr);
+		Pipelines.SketchLine = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr));
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -339,8 +334,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
-		auto fragShaderCode = readFile("D:\\Austin\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -402,7 +397,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchGrid = mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr);
+		Pipelines.SketchGrid = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr));
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -593,7 +588,7 @@ namespace CADERA_APP_NAMESPACE {
 		if (!Vertices.empty()) {
 			updateBuffer(BUF_SKETCH_POINTS, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
 		}
-		else {
+		else if (!mBuffers[BUF_SKETCH_POINTS].isEmpty){
 			deleteBuffer(BUF_SKETCH_POINTS);
 		}
 
