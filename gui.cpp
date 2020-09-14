@@ -27,6 +27,7 @@ namespace gui {
 			flags.set(gui_sketch_menu);
 
 			Sketch.setCameraDistance(&Render.Cam.camDistance);
+			Sel.setActiveSketch(&Sketch);
 
 			flags.reset(gui_start_menu);
 		}
@@ -61,9 +62,46 @@ namespace gui {
 #endif
 
 		if (ImGui::Button("Point")) {
+
 			Sketch.flags.set(sketch::skt_point_tool);
 			Sketch.flags.set(sketch::skt_tool_active);
+
 		}
+
+		if (ImGui::CollapsingHeader("Relations", ImGuiTreeNodeFlags_None)) {
+
+			if (Sel.flags.test(sel::select_double_point) || Sel.flags.test(sel::select_multi_point)) {
+
+				if (ImGui::Button("Vertical")) {
+				
+					Sketch.addRelation(Sel.getSelectedPointIds(), cad::rel_vertical);
+
+				}
+
+				if (ImGui::Button("Horizontal")) {
+					
+					Sketch.addRelation(Sel.getSelectedPointIds(), cad::rel_horizontal);
+
+				}
+
+				if (ImGui::Button("Coincident")) {
+
+					Sketch.addRelation(Sel.getSelectedPointIds(), cad::rel_coincident);
+
+				}
+
+				if (ImGui::Button("Clear")) {
+
+					Sketch.clearRelations();
+
+
+
+				}
+
+			}
+
+		}
+
 
 		ImGui::End();
 
@@ -72,14 +110,14 @@ namespace gui {
 	void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
 		                 std::bitset<gui_num_flags> &flags) {
 
-		//ImGui::SetNextWindowPos({ 0, 40 });
+
 		ImGui::Begin("Debugging");
 
 
 		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_None))
 		{
 
-			static bool orthoCheck = false;
+			static bool orthoCheck = true;
 			ImGui::Checkbox("Orthogonal", &orthoCheck);
 
 
@@ -159,6 +197,22 @@ namespace gui {
 			ImGui::Text("Camera Distance");
 			ImGui::Text("Distance: %f", *Sketch.mCamDistance);
 
+			ImGui::NewLine();
+			
+			for (auto& rel : Sketch.mRelations) {
+
+
+				if (rel.second.mType == cad::rel_vertical)
+					ImGui::Text("Relation: Vertical");
+				if (rel.second.mType == cad::rel_horizontal)
+					ImGui::Text("Relation: Horizontal");
+				if (rel.second.mType == cad::rel_coincident)
+					ImGui::Text("Relation: Coincident");
+
+				ImGui::Text("Id: %d", rel.second.mId);
+				
+			}
+			
 			ImGui::NewLine();
 
 			for (auto& p : Sketch.Points) {

@@ -1,5 +1,6 @@
 #pragma once
 #include "Point.hpp"
+#include "Sketch.hpp"
 #include <glm/gtx/norm.hpp>
 
 namespace CADERA_APP_NAMESPACE {
@@ -30,6 +31,8 @@ namespace sel {
 
 	class Selector {
 
+		sketch::Sketch *pActiveSketch = nullptr;
+
 	public:
 
 		std::bitset<numFlags> flags;
@@ -40,11 +43,15 @@ namespace sel {
 
 		Selector();
 
+		void setActiveSketch(sketch::Sketch* pSketch);
+
 		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, bool isOrtho);
 
 		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
 		int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+
+		bool existingPoint(glm::vec3 point);
 
 		void setFlags();
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Point.hpp"
 #include "Model.hpp"
-#include "Selection.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {
@@ -19,9 +18,11 @@ namespace sketch {
 		
 
 	public:
+		
 		float* mCamDistance;
 
 		std::map<int, Point> Points;
+		std::map<int, Relation> mRelations;
 
 		Sketch();
 		Sketch(int i);
@@ -37,6 +38,14 @@ namespace sketch {
 		void deactivateTools();
 
 		void add(glm::vec3 point);
+
+		void addRelation(const std::vector<int> &ids, RelationType Type);
+
+		void deleteRelation(int id);
+
+		void clearRelations();
+
+		size_t numRelations();
 
 		Point* addPoint(glm::vec3 point);
 

@@ -3,6 +3,7 @@
 
 namespace CADERA_APP_NAMESPACE {
 namespace sel {
+	
 	float calcRatioToPlane(glm::vec3 currentRay, glm::vec3 cameraToPlaneDist, glm::vec3 planeOrigin,
 		glm::vec3 planeNormal) {
 
@@ -95,9 +96,16 @@ namespace sel {
 		return currentRay;
 	}
 
+
 	Selector::Selector() {
 
 		point = { 0.0f, 0.0f, 0.0f };
+
+	}
+
+	void Selector::setActiveSketch(sketch::Sketch* pSketch) {
+		
+		pActiveSketch = pSketch;
 
 	}
 
@@ -178,6 +186,39 @@ namespace sel {
 
 		return selectedPointId;
 
+	}
+
+	bool Selector::existingPoint(glm::vec3 point) {
+
+		if (pActiveSketch == nullptr)
+			throw std::runtime_error("Selection.existingPoint(): pActiveSketch is not set!");
+
+		int16_t pointSketchId = -1;
+
+		// If there are points in sketch
+		if (pActiveSketch->Points.size() > 0) {
+
+			if (pActiveSketch->mCamDistance == nullptr)
+				throw std::runtime_error("Selection.existingPoint(): pActiveSketch->mCamDistance is nullptr!");
+
+			pointSketchId = sel::Selector::selectPoint(point, pActiveSketch->Points, *pActiveSketch->mCamDistance);
+
+			// Point already exists
+			if (pointSketchId >= 0) {
+
+				if (&pActiveSketch->Points[pointSketchId] == nullptr)
+					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+				return true;
+
+			}
+			else {
+				return false;
+			}
+		}
+
+		// No points in sketch
+		return false;
 	}
 
 	void Selector::setFlags() {

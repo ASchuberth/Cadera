@@ -41,6 +41,8 @@ namespace CADERA_APP_NAMESPACE {
 
 	void Cadera::run() {
 		
+
+		Render.Cam.flags.set(cam::ortho);
 		Render.setup();
 		Render.preparePipelines(); 
 

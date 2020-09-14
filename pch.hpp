@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 #include <bitset>
+#include <list>
+
 
 
 #define CADERA_APP_NAMESPACE cad

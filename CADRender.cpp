@@ -83,7 +83,6 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
-
 	void CADRender::imguiRun() {
 
 		ImGui_ImplVulkan_NewFrame();

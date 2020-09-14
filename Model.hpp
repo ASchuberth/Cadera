@@ -21,9 +21,13 @@ namespace CADERA_APP_NAMESPACE {
 
 		void setId(int id);
 
+		int getId();
+
 		void setType(ModelType type);
 
 		ModelType getType();
+
+		
 
 		virtual std::vector<glm::vec3> getVertices();
 	};

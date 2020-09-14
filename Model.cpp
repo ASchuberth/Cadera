@@ -18,6 +18,10 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
+	int Model::getId() {
+		return mId;
+	}
+
 	void Model::setType(ModelType type) {
 
 		mType = type;

@@ -4,7 +4,6 @@
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {
 
-
 	Sketch::Sketch() {
 		
 		featureCounter = 0;
@@ -44,9 +43,41 @@ namespace sketch {
 			addPoint(point);
 		}
 
-		
 	}
 
+	void Sketch::addRelation(const std::vector<int>& ids, RelationType Type) {
+
+		Relation newRelation;
+
+		newRelation.mId = featureCounter;
+
+		for (const auto& id : ids) {
+			newRelation.mFeatureIds.push_back(id);
+		}
+
+		newRelation.mType = Type;
+
+		mRelations[featureCounter] = newRelation;
+
+		featureCounter++;
+	}
+
+	void Sketch::deleteRelation(int id) {
+
+		mRelations.erase(id);
+
+	}
+
+	void Sketch::clearRelations() {
+
+		mRelations.clear();
+
+	}
+
+	size_t Sketch::numRelations() {
+
+		return mRelations.size();
+	}
 
 	Point* Sketch::addPoint(glm::vec3 point) {
 
@@ -55,7 +86,7 @@ namespace sketch {
 		int16_t pointSketchId = -1;
 
 		// Already points in sketch
-		if (Points.size() > 0) {
+		/*if (Points.size() > 0) {
 
 			if (mCamDistance == nullptr)
 				throw std::runtime_error("Sketch.addPoint(): Sketch.mCamDistance is nullptr!");
@@ -106,6 +137,21 @@ namespace sketch {
 			return &Points[featureCounter - 1];
 
 		}
+		*/
+
+		pointToAdd.pos = point;
+		pointToAdd.setId(featureCounter);
+		pointToAdd.Type = feat_point;
+
+		Points[featureCounter] = pointToAdd;
+
+		if (&Points[featureCounter] == nullptr)
+			throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+		featureCounter++;
+
+		return &Points[featureCounter - 1];
+
 	}
 
 	void Sketch::deletion(std::vector<int> ids) {
@@ -126,12 +172,6 @@ namespace sketch {
 
 		return vertices;
 	}
-
-	
-
-
-
-
 
 }
 }

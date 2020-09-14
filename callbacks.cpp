@@ -15,7 +15,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				                   glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
 				                   app->Render.Cam.flags.test(cad::cam::ortho));
 
-			app->Sketch.add(app->Render.Sel.point);
+			if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
+				app->Sketch.add(app->Render.Sel.point);
 
 			app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
 			

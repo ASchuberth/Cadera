@@ -18,7 +18,5 @@ namespace CADERA_APP_NAMESPACE {
 	int Feature::getId() {
 		return mId;
 	}
-
-
 	
 }

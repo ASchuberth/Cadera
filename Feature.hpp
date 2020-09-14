@@ -1,4 +1,5 @@
 #pragma once
+#include "Relation.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 	
@@ -8,6 +9,7 @@ namespace CADERA_APP_NAMESPACE {
 		feat_round
 	};
 	
+
 	class Feature {
 
 		 int mId;
@@ -20,9 +22,14 @@ namespace CADERA_APP_NAMESPACE {
 
 		FeatureType Type;
 
+		
+		
+
 		void setId(int i);
 
 		int getId();
+
+		
 
 	};
 }
