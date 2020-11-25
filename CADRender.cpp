@@ -125,8 +125,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("shaders\\vert.spv");
+		auto fragShaderCode = readFile("shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -188,7 +188,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchPoint = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr));
+		Pipelines.SketchPoint = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -220,8 +220,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("shaders\\vert.spv");
+		auto fragShaderCode = readFile("shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -283,7 +283,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchLine = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr));
+		Pipelines.SketchLine = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -333,8 +333,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("shaders\\gridvert.spv");
+		auto fragShaderCode = readFile("shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -396,7 +396,7 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchGrid = static_cast<vk::Pipeline>(mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr));
+		Pipelines.SketchGrid = mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr).value;
 
 
 		mDevice->destroyShaderModule(vertShaderModule, nullptr);
@@ -435,7 +435,8 @@ namespace CADERA_APP_NAMESPACE {
 
 			std::array<vk::ClearValue, 2> clearValues{};
 			clearValues[0].setColor(color);
-			clearValues[1].depthStencil = { 1.0f, 0 };
+			clearValues[1].depthStencil.depth = 1.0f;
+			clearValues[1].depthStencil.stencil = 0;
 
 			vk::RenderPassBeginInfo renderPassInfo(mRenderPass, mFramebuffers[i], renderArea,
 				static_cast<uint32_t>(clearValues.size()), clearValues.data());
