@@ -1,6 +1,8 @@
 #include "pch.hpp"
 #include "Sketch.hpp"
 
+
+
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {
 
@@ -14,7 +16,7 @@ namespace sketch {
 		
 		setId(i);
 		setType(cad_sketch);
-		featureCounter = 0;
+		featureCounter = 1;
 
 		mCamDistance = nullptr;
 	}
@@ -45,6 +47,8 @@ namespace sketch {
 
 	}
 
+
+
 	void Sketch::addRelation(const std::vector<int>& ids, RelationType Type) {
 
 		Relation newRelation;
@@ -53,6 +57,8 @@ namespace sketch {
 
 		for (const auto& id : ids) {
 			newRelation.mFeatureIds.push_back(id);
+
+			Points[id].relationIds.push_back(newRelation.mId);
 		}
 
 		newRelation.mType = Type;

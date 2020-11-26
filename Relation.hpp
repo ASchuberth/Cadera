@@ -12,7 +12,7 @@ namespace CADERA_APP_NAMESPACE {
 	struct Relation {
 
 		int mId;
-		std::list<int> mFeatureIds;
+		std::vector<int> mFeatureIds;
 		RelationType mType;
 
 

@@ -419,6 +419,87 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
+	void CADRender::createDescriptorSetLayout() {
+
+
+		vk::DescriptorSetLayoutBinding uboLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1,
+			vk::ShaderStageFlagBits::eVertex, nullptr);
+
+		vk::DescriptorSetLayoutBinding cisLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1,
+			vk::ShaderStageFlagBits::eFragment, nullptr);
+
+		std::array<vk::DescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, cisLayoutBinding };
+
+
+		vk::DescriptorSetLayoutCreateInfo layoutInfo({}, static_cast<uint32_t>(bindings.size()), bindings.data());
+
+		if (mDevice->createDescriptorSetLayout(&layoutInfo, nullptr, &mDescriptorSetLayout) != vk::Result::eSuccess)
+			throw std::runtime_error("failed to create descriptor set layout!");
+
+	}
+
+	void CADRender::createDescriptorPool() {
+
+		std::array<vk::DescriptorPoolSize, 2> poolSizes = {};
+		poolSizes[0].type = vk::DescriptorType::eUniformBuffer;
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(mMainCanvas.mImages.size());
+		poolSizes[1].type = vk::DescriptorType::eCombinedImageSampler;
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(mMainCanvas.mImages.size());
+
+		vk::DescriptorPoolCreateInfo poolInfo({}, static_cast<uint32_t>(mMainCanvas.mImages.size()),
+			static_cast<uint32_t>(poolSizes.size()), poolSizes.data());
+
+		mDescriptorPool = mDevice->createDescriptorPool(poolInfo, nullptr);
+
+	}
+
+	void CADRender::createDescriptorSets() {
+
+		
+		std::vector<vk::DescriptorSetLayout> layouts(mMainCanvas.mImages.size(), mDescriptorSetLayout);
+
+		vk::DescriptorSetAllocateInfo allocInfo(mDescriptorPool, static_cast<uint32_t>(mMainCanvas.mImages.size()), layouts.data());
+
+		mDescriptorSets.resize(mMainCanvas.mImages.size());
+
+
+		mDescriptorSets = mDevice->allocateDescriptorSets(allocInfo);
+
+
+		// Uniform Buffer
+
+		for (size_t i = 0; i < mMainCanvas.mImages.size(); i++) {
+
+
+			vk::DescriptorBufferInfo bufferInfo(mUniformBuffers[i], 0, sizeof(u));
+
+			vk::DescriptorImageInfo imageInfo(mTextureSampler, mTextureImageView, vk::ImageLayout::eShaderReadOnlyOptimal);
+
+			std::array<vk::WriteDescriptorSet, 2> descriptorWrites = {};
+
+
+			descriptorWrites[0].dstSet = mDescriptorSets[i];
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = vk::DescriptorType::eUniformBuffer;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+			descriptorWrites[1].dstSet = mDescriptorSets[i];
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &imageInfo;
+
+			mDevice->updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+		}
+
+
+
+	}
+
 	void CADRender::createCommandBuffers() {
 
 		mDevice->resetCommandPool(mCommandPool, vk::CommandPoolResetFlags());
@@ -532,11 +613,6 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
-	void CADRender::runCameraScroll(float yoffset) {
-
-		Cam.zoom(yoffset);
-	}
-
 	void CADRender::runCamera() {
 		
 		
@@ -565,9 +641,13 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::renderSketchPoints(Model &S) {
 
+
+
 		std::vector<glm::vec3> pointVertices = S.getVertices();
 		std::vector<glm::vec3> selPointVertices = Sel.getVertices();
 		
+		
+
 		std::vector<Vertex> Vertices;
 
 		if (!selPointVertices.empty()) {
