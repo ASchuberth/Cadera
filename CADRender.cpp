@@ -531,11 +531,6 @@ namespace CADERA_APP_NAMESPACE {
 
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
-			// X
-			/*mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
-			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
-			mCommandBuffers[i].draw(4, 1, 0, 0);*/
-
 
 			// Selection Points
 			if (!mBuffers[BUF_SELECTION_POINTS].isEmpty) {

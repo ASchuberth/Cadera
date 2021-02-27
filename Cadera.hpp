@@ -13,14 +13,6 @@ namespace CADERA_APP_NAMESPACE {
 
 	private:
 		
-
-		std::vector<cad::Vertex> ptVertices = {
-			{{ 0.0f,   0.0f,  0.0f},  {0.0f, 1.0f, 0.0f}},
-			{{ 0.00f,  3.0f,  0.00f}, {0.0f, 1.0f, 0.0f}},
-			{{ 0.00f,  0.0f,  0.00f}, {1.0f, 0.0f, 0.0f}},
-			{{ 0.00f,  0.0f,  3.00f}, {1.0f, 0.0f, 0.0f}}
-		};
-
 		void initCallbacks();
 
 		void switchCallbacks();
