@@ -3,6 +3,9 @@
 #include "callbacks.hpp"
 
 
+#include <stb_image.h>
+
+
 namespace CADERA_APP_NAMESPACE {
 	
 	void CADRender::initImgui() {
@@ -431,7 +434,7 @@ namespace CADERA_APP_NAMESPACE {
 
 			vk::Rect2D renderArea({ 0,0 }, { mMainCanvas.mExtent.width, mMainCanvas.mExtent.height });
 
-			std::array<float, 4> color = { 0.0f, 0.0f, 0.0f,1.0f };
+			std::array<float, 4> color = { 0.2f, 0.2f, 0.2f,1.0f };
 
 			std::array<vk::ClearValue, 2> clearValues{};
 			clearValues[0].setColor(color);
@@ -447,9 +450,9 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, mPipelineLayout, 0, 1, &mDescriptorSets[i], 0, nullptr);
 
 			// X
-			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
+			/*mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[0].mBuffer, offsets);
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchLine);
-			mCommandBuffers[i].draw(4, 1, 0, 0);
+			mCommandBuffers[i].draw(4, 1, 0, 0);*/
 
 
 			// Selection Points
@@ -514,6 +517,53 @@ namespace CADERA_APP_NAMESPACE {
 		memcpy(data, &u, sizeof(u));
 		mDevice->unmapMemory(mUniformBufferMemories[currentImage]);
 
+	}
+
+	void CADRender::createTextureImage() {
+
+		
+		int texWidth, texHeight, texChannels;
+		stbi_uc* pixels = stbi_load("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\textures\\texture.jpg", &texWidth, &texHeight,
+			&texChannels, STBI_rgb_alpha);
+		vk::DeviceSize imageSize = (uint64_t)texWidth * (uint64_t)texHeight * 4;
+
+		if (!pixels) {
+			throw std::runtime_error("failed to load texture image!");
+		}
+
+		vk::Buffer stagingBuffer;
+		vk::DeviceMemory stagingBufferMemory;
+		createBuffer(imageSize, vk::BufferUsageFlagBits::eTransferSrc,
+			vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+			stagingBuffer, stagingBufferMemory);
+
+
+		void* data;
+		data = mDevice->mapMemory(stagingBufferMemory, 0, imageSize);
+		memcpy(data, pixels, (size_t)imageSize);
+		mDevice->unmapMemory(stagingBufferMemory);
+
+
+		stbi_image_free(pixels);
+
+		mMainCanvas.createImage(mPhysicalDevice, *mDevice, texWidth, texHeight, vk::Format::eR8G8B8A8Srgb, vk::ImageTiling::eOptimal,
+			vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+			vk::MemoryPropertyFlagBits::eDeviceLocal, mTextureImage, mTextureMemory);
+
+
+		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb,
+			vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+
+		copyBufferToImage(stagingBuffer, mTextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+
+		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageLayout::eTransferDstOptimal,
+			vk::ImageLayout::eShaderReadOnlyOptimal);
+
+		mDevice->destroyBuffer(stagingBuffer);
+		mDevice->freeMemory(stagingBufferMemory);
+
+
+		
 	}
 
 	void CADRender::destroy() {

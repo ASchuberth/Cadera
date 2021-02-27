@@ -5,6 +5,9 @@
 #include "imgui.h"
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_vulkan.h"
+#include <freetype/freetype.h>
+#include FT_FREETYPE_H
+
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -57,6 +60,8 @@ namespace CADERA_APP_NAMESPACE {
 		void createCommandBuffers();
 
 		void updateUniformBuffer(uint32_t currentImage);
+
+		void createTextureImage();
 
 		void destroy();
 

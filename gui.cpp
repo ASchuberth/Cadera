@@ -209,7 +209,15 @@ namespace gui {
 				if (rel.second.mType == cad::rel_coincident)
 					ImGui::Text("Relation: Coincident");
 
+
 				ImGui::Text("Id: %d", rel.second.mId);
+
+				ImGui::Text("Features:");
+				for (const auto& id : rel.second.mFeatureIds) {
+					ImGui::Text("%d", id);
+				}
+
+
 				
 			}
 			

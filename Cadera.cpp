@@ -57,6 +57,7 @@ namespace CADERA_APP_NAMESPACE {
 		p1 = { {0.0f, -100.0f, 0.0f}, {.5f, .5f, .5f} };
 		p2 = { {0.0f,  100.0f, 0.0f}, {.5f, .5f, .5f} };
 
+
 		std::vector<Vertex> line = { p1, p2 };
 		 
 		Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
