@@ -48,6 +48,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		Render.initImgui();
 
+		Render.SktSolver.setActiveSketch(&Sketch);
+
 		Render.createDeviceBuffer(0, ptVertices, vk::BufferUsageFlagBits::eVertexBuffer);
 
 		// Grid Test DELETE
@@ -65,7 +67,6 @@ namespace CADERA_APP_NAMESPACE {
 		// End Grid Test DELETE
 
 		initCallbacks();
-
 	
 		mainLoop();
 	}
@@ -92,8 +93,9 @@ namespace CADERA_APP_NAMESPACE {
 				flags.reset(cadera_delete);
 			}
 
-			if (Render.flags.test(render_update_sketch))
+			if (Render.flags.test(render_update_sketch)) {
 				Render.render(Sketch);
+			}
 
 			
 			

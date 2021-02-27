@@ -2,6 +2,7 @@
 
 #include "RenderUtil.hpp"
 #include "Camera.hpp"
+#include "SketchSolver.hpp"
 #include "imgui.h"
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_vulkan.h"
@@ -43,6 +44,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		sel::Selector Sel;
 
+		sketch::SketchSolver SktSolver;
 
 		void initImgui();
 
@@ -57,6 +59,12 @@ namespace CADERA_APP_NAMESPACE {
 
 		void destroyPipelines();
 
+		void createDescriptorSetLayout();
+
+		void createDescriptorPool();
+
+		void createDescriptorSets();
+
 		void createCommandBuffers();
 
 		void updateUniformBuffer(uint32_t currentImage);
@@ -64,8 +72,6 @@ namespace CADERA_APP_NAMESPACE {
 		void createTextureImage();
 
 		void destroy();
-
-		void runCameraScroll(float yoffset);
 
 		void runCamera();
 

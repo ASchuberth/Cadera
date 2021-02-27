@@ -8,6 +8,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		
 		glm::vec3 pos;
+		std::list<int16_t> relationIds;
 
 		Point();
 		Point(int id, glm::vec3 pos);

@@ -5,3 +5,5 @@
 *.vcx*
 /imgui
 /packages
+/Cadera
+shaders/compile.bat

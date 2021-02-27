@@ -65,7 +65,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera*> (glfwGetWindowUserPointer(window));
 	
 	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-		app->Render.runCameraScroll(yoffset);
+		app->Render.Cam.zoom(yoffset);
+		
 
 }
 
