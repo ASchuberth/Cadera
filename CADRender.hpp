@@ -6,8 +6,7 @@
 #include "imgui.h"
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_vulkan.h"
-#include <freetype/freetype.h>
-#include FT_FREETYPE_H
+
 
 
 namespace CADERA_APP_NAMESPACE {
@@ -24,6 +23,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		vk::DescriptorPool mGuiDescriptorPool;
 		VkAllocationCallbacks* mGuiAllocator;
+
+		
 
 		struct {
 
@@ -45,6 +46,9 @@ namespace CADERA_APP_NAMESPACE {
 		sel::Selector Sel;
 
 		sketch::SketchSolver SktSolver;
+
+		pcs::txt::TextRender TxtRend;
+
 
 		void initImgui();
 
@@ -69,13 +73,13 @@ namespace CADERA_APP_NAMESPACE {
 
 		void updateUniformBuffer(uint32_t currentImage);
 
-		void createTextureImage();
-
 		void destroy();
 
 		void runCamera();
 
 		void render(Model &M);
+
+		void renderSketchNotes(Model& S);
 
 		void renderSketchPoints(Model &S);
 

@@ -31,11 +31,19 @@ namespace sketch {
 	}
 
 	void Sketch::activatePointTool() {
+		deactivateTools();
 		flags.set(skt_point_tool);
 		flags.set(skt_tool_active);
 	}
 
+	void Sketch::activateNoteTool() {
+		deactivateTools();
+		flags.set(skt_note_tool);
+		flags.set(skt_tool_active);
+	}
+
 	void Sketch::deactivateTools() {
+		
 		flags.reset();
 	}
 
@@ -44,6 +52,11 @@ namespace sketch {
 		if (flags.test(skt_point_tool)) {
 			addPoint(point);
 		}
+
+		if (flags.test(skt_note_tool)) {
+			addNotePoint(point);
+		}
+
 
 	}
 
@@ -91,59 +104,6 @@ namespace sketch {
 
 		int16_t pointSketchId = -1;
 
-		// Already points in sketch
-		/*if (Points.size() > 0) {
-
-			if (mCamDistance == nullptr)
-				throw std::runtime_error("Sketch.addPoint(): Sketch.mCamDistance is nullptr!");
-
-			pointSketchId = sel::Selector::selectPoint(point, Points, *mCamDistance);
-
-			// Point already exists
-			if (pointSketchId >= 0) {
-
-				if (&Points[pointSketchId] == nullptr)
-					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
-
-				return &Points[pointSketchId];
-
-			}
-			// Point doesn't exist
-			else {
-
-				pointToAdd.pos = point;
-				pointToAdd.setId(featureCounter);
-				pointToAdd.Type = feat_point;
-
-				Points[featureCounter] = pointToAdd;
-
-				if (&Points[featureCounter] == nullptr)
-					throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
-
-				featureCounter++;
-
-				return &Points[featureCounter - 1];
-
-			}
-		}
-		// No points in sketch
-		else {
-
-			pointToAdd.pos = point;
-			pointToAdd.setId(featureCounter);
-			pointToAdd.Type = feat_point;
-
-			Points[featureCounter] = pointToAdd;
-
-			if (&Points[featureCounter] == nullptr)
-				throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
-
-			featureCounter++;
-
-			return &Points[featureCounter - 1];
-
-		}
-		*/
 
 		pointToAdd.pos = point;
 		pointToAdd.setId(featureCounter);
@@ -160,6 +120,60 @@ namespace sketch {
 
 	}
 
+	Point* Sketch::addConstructionPoint(glm::vec3 point) {
+
+		Point pointToAdd;
+
+		int16_t pointSketchId = -1;
+
+
+		pointToAdd.pos = point;
+		pointToAdd.setId(featureCounter);
+		pointToAdd.Type = feat_construction;
+
+		Points[featureCounter] = pointToAdd;
+
+		if (&Points[featureCounter] == nullptr)
+			throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+		featureCounter++;
+
+		return &Points[featureCounter - 1];
+	}
+
+	Point* Sketch::addNotePoint(glm::vec3 point) {
+
+		Point pointToAdd;
+
+		int16_t pointSketchId = -1;
+
+
+		pointToAdd.pos = point;
+		pointToAdd.setId(featureCounter);
+		pointToAdd.Type = feat_note;
+
+		Points[featureCounter] = pointToAdd;
+
+		if (&Points[featureCounter] == nullptr)
+			throw std::runtime_error("Sketch.addPoint(): Funtion returned a nullptr!");
+
+		featureCounter++;
+
+		pcs::txt::Text T;
+
+		T.cursorPos = point;
+		T.cursorDirX = { 0.0f, 0.0f, 1.0f };
+		T.cursorDirY = { 0.0f, 1.0f, 0.0f };
+		T.backgroundColor = { 0.1f, 0.1f, 0.1f };
+		T.textColor = { 1.0f, 1.0f, 1.0f };
+		T.text = text;
+
+		Notes[featureCounter] = T;
+		featureCounter++;
+
+		return &Points[featureCounter - 2];
+	}
+
 	void Sketch::deletion(std::vector<int> ids) {
 
 		for (const auto& id : ids) {
@@ -168,12 +182,23 @@ namespace sketch {
 		}
 	}
 
-	std::vector<glm::vec3> Sketch::getVertices() {
+	std::vector<glm::vec3> Sketch::getVertices(std::vector<glm::vec3>& colors) {
 
 		std::vector<glm::vec3> vertices;
+		colors.clear();
 
 		for (const auto& p : Points) {
 			vertices.push_back(p.second.pos);
+
+			if (p.second.Type == feat_point) {
+				colors.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+			}
+			else if (p.second.Type == feat_construction) {
+				colors.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
+			}
+			else if (p.second.Type == feat_note) {
+				colors.push_back(glm::vec3(1.0f, 0.8f, 0.0f));
+			}
 		}
 
 		return vertices;

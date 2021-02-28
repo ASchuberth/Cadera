@@ -42,6 +42,8 @@ namespace CADERA_APP_NAMESPACE {
 	void Cadera::run() {
 		
 
+		Render.setBGColor(glm::vec4(0.1f, 0.1f, 0.1f, 0.1f));
+
 		Render.Cam.flags.set(cam::ortho);
 		Render.setup();
 		Render.preparePipelines(); 
@@ -50,7 +52,10 @@ namespace CADERA_APP_NAMESPACE {
 
 		Render.SktSolver.setActiveSketch(&Sketch);
 
-		Render.createDeviceBuffer(0, ptVertices, vk::BufferUsageFlagBits::eVertexBuffer);
+		// Text
+		Render.TxtRend.setFontSize(0.3f);
+		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
+		Render.createTextPipeline();
 
 		// Grid Test DELETE
 		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
@@ -58,6 +63,8 @@ namespace CADERA_APP_NAMESPACE {
 		Vertex p1, p2;
 		p1 = { {0.0f, -100.0f, 0.0f}, {.5f, .5f, .5f} };
 		p2 = { {0.0f,  100.0f, 0.0f}, {.5f, .5f, .5f} };
+
+
 
 
 		std::vector<Vertex> line = { p1, p2 };

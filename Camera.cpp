@@ -8,7 +8,7 @@ namespace cam {
 
 	Camera::Camera()
 	{
-		pos = { 20.0f, 0.0f, 0.0f };
+		pos = { -20.0f, 0.0f, 0.0f };
 		focus = { 0.0f, 0.0f, 0.0f };
 		cameraVec = { 1.0f, 0.0f, 0.0f };
 		xpos = 0.0;
@@ -77,10 +77,10 @@ namespace cam {
 
 			diff = mouseRay - prevMouseRay;
 
-			pos.y -= diff.x;
-			pos.z -= diff.y;
-			focus.y -= diff.x;
-			focus.z -= diff.y;
+			pos.y -= diff.y;
+			pos.z -= diff.x;
+			focus.y -= diff.y;
+			focus.z -= diff.x;
 
 		}
 		else {

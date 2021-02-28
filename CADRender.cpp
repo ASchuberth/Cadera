@@ -45,6 +45,7 @@ namespace CADERA_APP_NAMESPACE {
 		io.WantCaptureMouse = true;
 
 
+
 		// Setup GLFW binding
 		ImGui_ImplGlfw_InitForVulkan(mMainCanvas.window, true);
 
@@ -128,8 +129,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\vert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -223,8 +224,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\vert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -336,8 +337,8 @@ namespace CADERA_APP_NAMESPACE {
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("shaders\\gridvert.spv");
-		auto fragShaderCode = readFile("shaders\\frag.spv");
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -515,7 +516,7 @@ namespace CADERA_APP_NAMESPACE {
 
 			vk::Rect2D renderArea({ 0,0 }, { mMainCanvas.mExtent.width, mMainCanvas.mExtent.height });
 
-			std::array<float, 4> color = { 0.2f, 0.2f, 0.2f,1.0f };
+			std::array<float, 4> color = { bgColor.x, bgColor.y, bgColor.z, bgColor.w };
 
 			std::array<vk::ClearValue, 2> clearValues{};
 			clearValues[0].setColor(color);
@@ -552,6 +553,14 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
 			mCommandBuffers[i].draw(2, 402, 0, 0);
 
+			// Text
+			if (!mBuffers[BUF_TEXT_VERTICES].isEmpty) {
+				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, mTextPipeline);
+				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_TEXT_VERTICES].mBuffer, offsets);
+				mCommandBuffers[i].bindIndexBuffer(mBuffers[BUF_TEXT_INDICES].mBuffer, 0, vk::IndexType::eUint32);
+				mCommandBuffers[i].drawIndexed(mBuffers[BUF_TEXT_INDICES].mPointSize, 1, 0, 0, 0);
+			}
+
 
 
 
@@ -570,7 +579,7 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 0.0f, 1.0f));
+		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
 		
 		
 		if (Cam.flags.test(cam::ortho)) {
@@ -594,53 +603,6 @@ namespace CADERA_APP_NAMESPACE {
 		memcpy(data, &u, sizeof(u));
 		mDevice->unmapMemory(mUniformBufferMemories[currentImage]);
 
-	}
-
-	void CADRender::createTextureImage() {
-
-		
-		int texWidth, texHeight, texChannels;
-		stbi_uc* pixels = stbi_load("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\textures\\texture.jpg", &texWidth, &texHeight,
-			&texChannels, STBI_rgb_alpha);
-		vk::DeviceSize imageSize = (uint64_t)texWidth * (uint64_t)texHeight * 4;
-
-		if (!pixels) {
-			throw std::runtime_error("failed to load texture image!");
-		}
-
-		vk::Buffer stagingBuffer;
-		vk::DeviceMemory stagingBufferMemory;
-		createBuffer(imageSize, vk::BufferUsageFlagBits::eTransferSrc,
-			vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-			stagingBuffer, stagingBufferMemory);
-
-
-		void* data;
-		data = mDevice->mapMemory(stagingBufferMemory, 0, imageSize);
-		memcpy(data, pixels, (size_t)imageSize);
-		mDevice->unmapMemory(stagingBufferMemory);
-
-
-		stbi_image_free(pixels);
-
-		mMainCanvas.createImage(mPhysicalDevice, *mDevice, texWidth, texHeight, vk::Format::eR8G8B8A8Srgb, vk::ImageTiling::eOptimal,
-			vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-			vk::MemoryPropertyFlagBits::eDeviceLocal, mTextureImage, mTextureMemory);
-
-
-		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb,
-			vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
-
-		copyBufferToImage(stagingBuffer, mTextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-
-		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageLayout::eTransferDstOptimal,
-			vk::ImageLayout::eShaderReadOnlyOptimal);
-
-		mDevice->destroyBuffer(stagingBuffer);
-		mDevice->freeMemory(stagingBufferMemory);
-
-
-		
 	}
 
 	void CADRender::destroy() {
@@ -678,17 +640,37 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::render(Model &M) {
 
 		
-		if (M.getType() == cad_sketch)
+		if (M.getType() == cad_sketch) {
 			renderSketchPoints(M);
+			renderSketchNotes(M);
+		}
 
 		flags.reset(render_update_sketch);
+	}
+
+	void CADRender::renderSketchNotes(Model& S) {
+		
+		TxtRend.clearTexts();
+
+		for (const auto& N : S.Notes) {
+			TxtRend.addText(N.second);
+		}
+
+		std::vector<pcs::txt::Vertex> txtVertices = TxtRend.generateQuads();
+		std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
+
+		if (!txtVertices.empty()) {
+			createDeviceBuffer(BUF_TEXT_VERTICES, txtVertices, vk::BufferUsageFlagBits::eVertexBuffer);
+			createDeviceBuffer(BUF_TEXT_INDICES, txtIndices, vk::BufferUsageFlagBits::eIndexBuffer);
+		}
+
 	}
 
 	void CADRender::renderSketchPoints(Model &S) {
 
 
-
-		std::vector<glm::vec3> pointVertices = S.getVertices();
+		std::vector<glm::vec3> pointColors;
+		std::vector<glm::vec3> pointVertices = S.getVertices(pointColors);
 		std::vector<glm::vec3> selPointVertices = Sel.getVertices();
 		
 		
@@ -703,10 +685,12 @@ namespace CADERA_APP_NAMESPACE {
 			}
 		}
 
-		for (const auto& v : pointVertices) {
+		if (!pointVertices.empty() && !pointColors.empty()) {
+			for (size_t i = 0; i < pointVertices.size(); i++) {
 
-			Vertices.push_back({ v, {1.0f, 1.0f, 1.0f} });
+				Vertices.push_back({ pointVertices[i], pointColors[i] });
 
+			}
 		}
 
 	

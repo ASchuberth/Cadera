@@ -52,7 +52,7 @@ namespace gui {
 
 		if (demoCheck) ImGui::ShowDemoWindow();
 
-		static bool debugCheck = false;
+		static bool debugCheck = true;
 		ImGui::Checkbox("Debug Window", &debugCheck);
 
 
@@ -63,12 +63,25 @@ namespace gui {
 
 		if (ImGui::Button("Point")) {
 
-			Sketch.flags.set(sketch::skt_point_tool);
-			Sketch.flags.set(sketch::skt_tool_active);
+			Sketch.activatePointTool();
 
 		}
 
-		if (ImGui::CollapsingHeader("Relations", ImGuiTreeNodeFlags_None)) {
+		if (ImGui::Button("Note")) {
+
+			Sketch.activateNoteTool();
+			
+		}
+
+		if (Sketch.flags.test(sketch::skt_note_tool)) {
+			
+
+			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
+			ImGui::InputTextMultiline("##source", Sketch.text , IM_ARRAYSIZE(Sketch.text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
+
+		}
+
+		if (ImGui::CollapsingHeader("Relations", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 			if (Sel.flags.test(sel::select_double_point) || Sel.flags.test(sel::select_multi_point)) {
 
@@ -187,11 +200,12 @@ namespace gui {
 
 		}
 
-		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_None)) {
+		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_DefaultOpen)) {
 			
 			ImGui::Text("Sketch Tools:");
 			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
 			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
+			ImGui::Text("Note Tool Active: %d", Sketch.flags.test(sketch::skt_note_tool));
 			ImGui::Text("FeatureCounter: %d", Sketch.getFeatureCounter());
 		
 			ImGui::Text("Camera Distance");

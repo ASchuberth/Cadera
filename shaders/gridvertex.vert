@@ -78,10 +78,10 @@ void main()
 	gl_Position = ubo.proj * ubo.view * ubo.model * pos;
 	
 	if (gl_InstanceIndex == 200) {
-		fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		fragColor = vec4(0.0, 1.0, 0.0, 1.0);
 	}
 	else if (gl_InstanceIndex == 201) {
-		fragColor = vec4(0.0, 1.0, 0.0, 0.5);
+		fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 	}
 	else if (gl_InstanceIndex % 4 < 2) {
 		fragColor = vec4(1.0, 1.0, 1.0, 0.5);

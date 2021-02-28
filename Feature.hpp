@@ -6,7 +6,9 @@ namespace CADERA_APP_NAMESPACE {
 	enum FeatureType {
 		feat_point,
 		feat_edge,
-		feat_round
+		feat_round,
+		feat_construction,
+		feat_note
 	};
 	
 

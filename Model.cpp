@@ -37,4 +37,9 @@ namespace CADERA_APP_NAMESPACE {
 		return std::vector<glm::vec3>();
 	}
 
+	std::vector<glm::vec3> Model::getVertices(std::vector<glm::vec3>& colors)
+	{
+		return std::vector<glm::vec3>();
+	}
+
 }

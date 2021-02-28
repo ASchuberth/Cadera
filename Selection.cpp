@@ -113,8 +113,8 @@ namespace sel {
 
 		if (isOrtho) {
 			point.x = 0.0f;
-			point.y = mouseRay.x + pos.y;
-			point.z = mouseRay.y + pos.z;
+			point.y = mouseRay.y + pos.y;
+			point.z = mouseRay.x + pos.z;
 		}
 		else {
 			point = calcPOnPlane(mouseRay, origin, normal, pos);
