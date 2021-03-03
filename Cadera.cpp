@@ -61,10 +61,8 @@ namespace CADERA_APP_NAMESPACE {
 		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
 
 		Vertex p1, p2;
-		p1 = { {0.0f, -100.0f, 0.0f}, {.5f, .5f, .5f} };
-		p2 = { {0.0f,  100.0f, 0.0f}, {.5f, .5f, .5f} };
-
-
+		p1 = { {0.0f, -100.0f, 0.0f}, {.0f, .0f, .0f} };
+		p2 = { {0.0f,  100.0f, 0.0f}, {.0f, .0f, .0f} };
 
 
 		std::vector<Vertex> line = { p1, p2 };
