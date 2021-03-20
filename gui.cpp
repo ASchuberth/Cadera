@@ -29,6 +29,8 @@ namespace gui {
 			Sketch.setCameraDistance(&Render.Cam.camDistance);
 			Sel.setActiveSketch(&Sketch);
 
+			Render.flags.set(render_update_sketch);
+
 			flags.reset(gui_start_menu);
 		}
 
@@ -76,7 +78,7 @@ namespace gui {
 		if (Sketch.flags.test(sketch::skt_note_tool)) {
 			
 
-			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
+			static ImGuiInputTextFlags flags = {};
 			ImGui::InputTextMultiline("##source", Sketch.text , IM_ARRAYSIZE(Sketch.text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
 
 		}
@@ -145,6 +147,11 @@ namespace gui {
 
 			}
 			
+
+			ImGui::Text("Left: %f", Render.Cam.left);
+
+			ImGui::NewLine();
+
 			ImGui::Text("Position");
 			ImGui::Text("x: %f", Render.Cam.pos.x);
 			ImGui::Text("y: %f", Render.Cam.pos.y);

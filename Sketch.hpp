@@ -46,6 +46,8 @@ namespace sketch {
 
 		void add(glm::vec3 point);
 
+		void addOrigin();
+
 		void addRelation(const std::vector<int> &ids, RelationType Type);
 
 		void deleteRelation(int id);

@@ -8,7 +8,9 @@ namespace sketch {
 
 	Sketch::Sketch() {
 		
-		featureCounter = 0;
+		featureCounter = 1;
+		addOrigin();
+
 		mCamDistance = nullptr;
 	}
 
@@ -60,7 +62,17 @@ namespace sketch {
 
 	}
 
+	void Sketch::addOrigin() {
 
+		Point Origin;
+
+		Origin.pos = { 0.0f, 0.0f, 0.0f };
+		Origin.setId(0);
+		Origin.Type = feat_origin;
+
+		Points[0] = Origin;
+
+	}
 
 	void Sketch::addRelation(const std::vector<int>& ids, RelationType Type) {
 
@@ -102,9 +114,6 @@ namespace sketch {
 
 		Point pointToAdd;
 
-		int16_t pointSketchId = -1;
-
-
 		pointToAdd.pos = point;
 		pointToAdd.setId(featureCounter);
 		pointToAdd.Type = feat_point;
@@ -124,9 +133,6 @@ namespace sketch {
 
 		Point pointToAdd;
 
-		int16_t pointSketchId = -1;
-
-
 		pointToAdd.pos = point;
 		pointToAdd.setId(featureCounter);
 		pointToAdd.Type = feat_construction;
@@ -145,12 +151,10 @@ namespace sketch {
 
 		Point pointToAdd;
 
-		int16_t pointSketchId = -1;
-
-
 		pointToAdd.pos = point;
 		pointToAdd.setId(featureCounter);
 		pointToAdd.Type = feat_note;
+		pointToAdd.noteId = featureCounter + 1;
 
 		Points[featureCounter] = pointToAdd;
 
@@ -169,6 +173,8 @@ namespace sketch {
 		T.text = text;
 
 		Notes[featureCounter] = T;
+
+
 		featureCounter++;
 
 		return &Points[featureCounter - 2];
@@ -178,6 +184,13 @@ namespace sketch {
 
 		for (const auto& id : ids) {
 			
+			if (id == 0) 
+				continue;
+			
+			if (Points[id].Type == feat_note  && Points[id].noteId != -1) {
+				Notes.erase(Points[id].noteId);
+			}
+
 			Points.erase(id);
 		}
 	}
@@ -198,6 +211,9 @@ namespace sketch {
 			}
 			else if (p.second.Type == feat_note) {
 				colors.push_back(glm::vec3(1.0f, 0.8f, 0.0f));
+			}
+			else if (p.second.Type == feat_origin) {
+				colors.push_back(glm::vec3(1.0f, 0.0f, 1.0f));
 			}
 		}
 

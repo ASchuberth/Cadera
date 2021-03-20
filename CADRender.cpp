@@ -660,8 +660,12 @@ namespace CADERA_APP_NAMESPACE {
 		std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
 
 		if (!txtVertices.empty()) {
-			createDeviceBuffer(BUF_TEXT_VERTICES, txtVertices, vk::BufferUsageFlagBits::eVertexBuffer);
-			createDeviceBuffer(BUF_TEXT_INDICES, txtIndices, vk::BufferUsageFlagBits::eIndexBuffer);
+			updateBuffer(BUF_TEXT_VERTICES, txtVertices, vk::BufferUsageFlagBits::eVertexBuffer);
+			updateBuffer(BUF_TEXT_INDICES, txtIndices, vk::BufferUsageFlagBits::eIndexBuffer);
+		}
+		else if (!mBuffers[BUF_TEXT_VERTICES].isEmpty) {
+			deleteBuffer(BUF_TEXT_VERTICES);
+			deleteBuffer(BUF_TEXT_INDICES);
 		}
 
 	}

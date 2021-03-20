@@ -29,7 +29,7 @@ namespace cam {
 
 		if (flags.test(ortho)) {
 			
-			if (yoffset > 0) {
+			if (yoffset > 0 && left < -1.02) {
 				left += 1.0f;
 			}
 			else if (yoffset < 0) {
@@ -37,10 +37,13 @@ namespace cam {
 			}
 		}
 		else {
+
+			glm::vec3 normalPos = {0.0f, pos.y, pos.z};
+
 			if (yoffset > 0) {
 				pos -= 1.0f * glm::normalize(cameraVec);
 			}
-			else if (yoffset < 0) {
+			else if (yoffset < 0 && glm::length2(pos - focus) > 1.02f) {
 				pos += 1.0f * glm::normalize(cameraVec);
 			}
 		}

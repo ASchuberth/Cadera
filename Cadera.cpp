@@ -21,13 +21,13 @@ namespace CADERA_APP_NAMESPACE {
 	void Cadera::switchCallbacks() {
 		if (ImGui::IsAnyWindowHovered()) {
 			glfwSetScrollCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_ScrollCallback);
+			glfwSetKeyCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_KeyCallback);
 		}
 		else {
 			glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
+			glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
 		}
 	}
-
-	
 
 	Cadera::Cadera() {
 		modelIdCounter = 0;
@@ -53,7 +53,7 @@ namespace CADERA_APP_NAMESPACE {
 		Render.SktSolver.setActiveSketch(&Sketch);
 
 		// Text
-		Render.TxtRend.setFontSize(0.3f);
+		Render.TxtRend.setFontSize(10.0f);
 		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
 		Render.createTextPipeline();
 
