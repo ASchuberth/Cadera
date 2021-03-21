@@ -89,19 +89,28 @@ namespace gui {
 
 				if (ImGui::Button("Vertical")) {
 				
-					Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_vertical);
-
+					bool success = Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_vertical);
+					
+					if (success) 
+						Render.flags.set(render_update_sketch);
+					
 				}
 
 				if (ImGui::Button("Horizontal")) {
 					
-					Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_horizontal);
+					bool success = Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_horizontal);
+
+					if (success)
+						Render.flags.set(render_update_sketch);
 
 				}
 
 				if (ImGui::Button("Coincident")) {
 
-					Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_coincident);
+					bool success = Render.SktSolver.addNewSketchRelation(Sel.getSelectedPointIds(), cad::rel_coincident);
+
+					if (success)
+						Render.flags.set(render_update_sketch);
 
 				}
 
@@ -109,7 +118,7 @@ namespace gui {
 
 					Sketch.clearRelations();
 
-
+					Render.flags.set(render_update_sketch);
 
 				}
 
@@ -239,13 +248,6 @@ namespace gui {
 				for (const auto& id : rel.second.mFeatureIds) {
 					ImGui::Text("%d", id);
 				}
-
-
-				
-				ImGui::Text("Point Ids:");
-				for (auto& id : rel.second.mFeatureIds) {
-					ImGui::Text("%d", id);
-				}
 				
 			}
 			
@@ -261,6 +263,13 @@ namespace gui {
 				ImGui::Text("y: %f", p.second.pos.y);
 				ImGui::Text("z: %f", p.second.pos.z);
 				ImGui::NewLine();
+
+				ImGui::Text("Relation Ids:");
+				for (const auto& id : p.second.relationIds) {
+					ImGui::Text("%d", id);
+				}
+				ImGui::NewLine();
+
 			}
 		}
 

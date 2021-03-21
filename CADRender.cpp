@@ -656,6 +656,14 @@ namespace CADERA_APP_NAMESPACE {
 			TxtRend.addText(N.second);
 		}
 
+		// Relation Symbols
+		std::vector<pcs::txt::Text> RelationTexts;
+		RelationTexts = S.getRelationTexts();
+
+		for (const auto& T : RelationTexts) {
+			TxtRend.addText(T);
+		}
+
 		std::vector<pcs::txt::Vertex> txtVertices = TxtRend.generateQuads();
 		std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
 

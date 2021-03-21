@@ -12,10 +12,24 @@ namespace CADERA_APP_NAMESPACE {
 	struct Relation {
 
 		int mId;
-		std::vector<int> mFeatureIds;
+		std::list<int> mFeatureIds;
 		RelationType mType;
 
+		inline void removeId(int id) {
+			
+			std::list<int>::iterator iter = mFeatureIds.begin();
 
+			while (iter != mFeatureIds.end()) {
+				
+				if (*iter == id) {
+					iter = mFeatureIds.erase(iter);
+				}
+				else {
+					++iter;
+				}
+			}
+
+		}
 	};
 
 }

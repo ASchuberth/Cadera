@@ -53,7 +53,7 @@ namespace CADERA_APP_NAMESPACE {
 		Render.SktSolver.setActiveSketch(&Sketch);
 
 		// Text
-		Render.TxtRend.setFontSize(10.0f);
+		Render.TxtRend.setFontSize(1.0f);
 		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
 		Render.createTextPipeline();
 

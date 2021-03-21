@@ -8,11 +8,26 @@ namespace CADERA_APP_NAMESPACE {
 
 		
 		glm::vec3 pos;
-		std::list<int16_t> relationIds;
+		std::list<int> relationIds;
 		int noteId;
 
 		Point();
 		Point(int id, glm::vec3 pos);
+
+		inline void removeRelationId(int id) {
+
+			std::list<int>::iterator iter = relationIds.begin();
+
+			while (iter != relationIds.end()) {
+
+				if (*iter == id) {
+					iter = relationIds.erase(iter);
+				}
+				else {
+					++iter;
+				}
+			}
+		}
 
 	};
 }

@@ -4,30 +4,7 @@
 namespace CADERA_APP_NAMESPACE {
 
 
-	// Returns a vector with any elements in v2 that aren't in v1
-	template<typename T>
-	inline std::vector<T> getDifferenceVector(std::vector<T> v1, std::vector<T> v2) {
 
-		std::vector<T> differenceVector;
-
-		if (v1.empty())
-			return v2;
-
-		for (const auto& elem : v2) {
-
-			bool isFound = std::find(v1.begin(), v1.end(), elem) != v1.end();
-
-			if (!isFound) {
-
-				differenceVector.push_back(elem);
-
-			}
-
-		}
-
-		return differenceVector;
-
-	}
 
 	template<typename T>
 	inline std::vector<T> vectorSameElements(std::vector<T> v1, std::vector<T> v2) {
@@ -60,7 +37,7 @@ namespace sketch {
 
 		bool checkCommenRelationPts(const Relation& R);
 
-		std::vector<int> getRelatedPointIds(const int& Pid);
+		std::list<int> getRelatedPointIds(const int& Pid);
 
 		bool addNewSketchRelation(const std::vector<int>& ids, RelationType Type);
 

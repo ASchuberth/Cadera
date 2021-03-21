@@ -11,7 +11,7 @@ void CADERA_APP_NAMESPACE::sketch::SketchSolver::setActiveSketch(Sketch* S) {
 
 bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkNewRelation(const Relation& R) {
 
-	std::vector<int> newRelationIds = R.mFeatureIds;
+	std::list<int> newRelationIds = R.mFeatureIds;
 
 	// If relation doesn't involve any features, don't add relation
 	if (newRelationIds.size() == 0)
@@ -27,7 +27,7 @@ bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkNewRelation(const Relation
 		}
 
 		// Does the point already have relations to the other points in the new relation
-		std::vector<int> relatedPointIds = getRelatedPointIds(id);
+		std::list<int> relatedPointIds = getRelatedPointIds(id);
 
 		
 
@@ -50,21 +50,21 @@ bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkNewRelation(const Relation
 
 bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkCommenRelationPts(const Relation& R) {
 
-	std::vector<int> newRelationIds = R.mFeatureIds;
+	std::list<int> newRelationIds = R.mFeatureIds;
 
 	size_t totalsize = 0;
 
-	std::vector<int> allUniqueRelatedPtIds;
+	std::list<int> allUniqueRelatedPtIds;
 
 	for (const auto& id : newRelationIds) {
 
-		std::vector<int> relatedPointIds = getRelatedPointIds(id);
+		std::list<int> relatedPointIds = getRelatedPointIds(id);
 
 		totalsize += relatedPointIds.size();
 
 		bool hasRelations = false;
 
-		std::vector<int> UniqueIds = getDifferenceVector(allUniqueRelatedPtIds, relatedPointIds);
+		std::list<int> UniqueIds = getDifferenceVector(allUniqueRelatedPtIds, relatedPointIds);
 
 		for (const auto& relPtid : UniqueIds) {
 		
@@ -83,19 +83,19 @@ bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkCommenRelationPts(const Re
 
 
 // Returns a vector of the ids of points that have relations to the inputed point id
-std::vector<int> CADERA_APP_NAMESPACE::sketch::SketchSolver::getRelatedPointIds(const int& PId) {
+std::list<int> CADERA_APP_NAMESPACE::sketch::SketchSolver::getRelatedPointIds(const int& PId) {
 
 	if (pActiveSketch == nullptr)
 		throw std::runtime_error("SketchSolver: Active Sketch is nullptr!!!");
 
 	Point P = pActiveSketch->Points[PId];
 
-	std::vector<int> relatedPointIds;
+	std::list<int> relatedPointIds;
 
 	for (const auto& relId : P.relationIds) {
 
-		std::vector<int> v = { PId };
-		std::vector<int> featureIds = getDifferenceVector(v, pActiveSketch->mRelations[relId].mFeatureIds);;
+		std::list<int> v = { PId };
+		std::list<int> featureIds = getDifferenceVector(v, pActiveSketch->mRelations[relId].mFeatureIds);;
 
 		featureIds = getDifferenceVector(relatedPointIds, featureIds);
 

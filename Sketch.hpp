@@ -1,23 +1,38 @@
 #pragma once
-#include "Point.hpp"
-#include "Model.hpp"
-#include "TextRender.hpp"
+#include "Sketcher.hpp"
+
 
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {
 	
-	enum SketchToolFlags {
-		skt_tool_active,       // Used to toggle adding of point to sketch in the callbacks
-		skt_point_tool,        // Activate the point tool
-		skt_note_tool,         // Activate the note tool
-		skt_num_flags          // Number of flags for sketch flags bitset
-	};
+	// Returns a list with any elements in v2 that aren't in v1
+	template<typename T>
+	inline std::list<T> getDifferenceVector(std::list<T> v1, std::list<T> v2) {
+
+		std::list<T> differenceVector;
+
+		if (v1.empty())
+			return v2;
+
+		for (const auto& elem : v2) {
+
+			bool isFound = std::find(v1.begin(), v1.end(), elem) != v1.end();
+
+			if (!isFound) {
+
+				differenceVector.push_back(elem);
+
+			}
+
+		}
+
+		return differenceVector;
+
+	}
 
 	class Sketch : public Model {
 
 		int featureCounter;
-
-		
 
 	public:
 		
@@ -65,6 +80,8 @@ namespace sketch {
 		void deletion(std::vector<int> ids);
 		
 		std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);
+
+		std::vector<pcs::txt::Text> getRelationTexts();
 		
 
 

@@ -191,6 +191,17 @@ namespace sketch {
 				Notes.erase(Points[id].noteId);
 			}
 
+			for (const auto& rId : Points[id].relationIds) {
+				mRelations[rId].removeId(id);
+
+				if (mRelations[rId].mFeatureIds.size() == 1) {
+
+					Points[*mRelations[rId].mFeatureIds.begin()].removeRelationId(rId);
+					mRelations.erase(rId);
+				}
+
+			}
+
 			Points.erase(id);
 		}
 	}
@@ -218,6 +229,45 @@ namespace sketch {
 		}
 
 		return vertices;
+	}
+
+	std::vector<pcs::txt::Text> Sketch::getRelationTexts() {
+
+		std::vector<pcs::txt::Text> Texts;
+		std::map<int, int> pointRelCounter;
+
+		for (const auto& R : mRelations) {
+
+			for (const auto& id : R.second.mFeatureIds) {
+				pcs::txt::Text T;
+				
+				T.textSize = 0.3f;
+				T.backgroundColor = { 0.0f, 0.0f, 1.0f };
+				T.textColor = { 1.0f, 1.0f, 1.0f };
+				T.cursorDirX = { 0.0f, 0.0f, 1.0f };
+				T.cursorDirY = { 0.0f, 1.0f, 0.0f };
+				T.cursorPos = Points[id].pos;
+				T.offset = { 0.1f, 0.1f };
+				T.offset.x += 0.3f * (float)pointRelCounter[id];
+
+				if (R.second.mType == rel_vertical) {
+					T.text = "|";
+				}
+				else if (R.second.mType == rel_horizontal) {
+					T.text = "_";
+				}
+				else if (R.second.mType == rel_coincident) {
+					T.text = "C";
+				}
+
+				Texts.push_back(T);
+
+				pointRelCounter[id]++;
+			}
+		}
+
+		return Texts;
+		
 	}
 
 }
