@@ -53,7 +53,7 @@ namespace CADERA_APP_NAMESPACE {
 		Render.SktSolver.setActiveSketch(&Sketch);
 
 		// Text
-		Render.TxtRend.setFontSize(1.0f);
+		Render.TxtRend.setFontSize(10.0f);
 		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
 		Render.createTextPipeline();
 
@@ -61,8 +61,8 @@ namespace CADERA_APP_NAMESPACE {
 		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
 
 		Vertex p1, p2;
-		p1 = { {0.0f, -100.0f, 0.0f}, {.0f, .0f, .0f} };
-		p2 = { {0.0f,  100.0f, 0.0f}, {.0f, .0f, .0f} };
+		p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
+		p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
 
 
 		std::vector<Vertex> line = { p1, p2 };

@@ -551,7 +551,7 @@ namespace CADERA_APP_NAMESPACE {
 			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
 			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
 			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
-			mCommandBuffers[i].draw(2, 402, 0, 0);
+			mCommandBuffers[i].draw(2, 4002, 0, 0);
 
 			// Text
 			if (!mBuffers[BUF_TEXT_VERTICES].isEmpty) {

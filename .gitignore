@@ -7,3 +7,8 @@
 /packages
 /Cadera
 shaders/compile.bat
+/.obsidian
+*.spv
+*.gfxr
+*.ini
+imgui.ini

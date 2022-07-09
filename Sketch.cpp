@@ -26,7 +26,7 @@ namespace sketch {
 	int Sketch::getFeatureCounter() {
 
 		return featureCounter;
-	}
+	} 
 
 	void Sketch::setCameraDistance(float* camDistance) {
 		mCamDistance = camDistance;
