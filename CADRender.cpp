@@ -7,7 +7,237 @@
 
 
 namespace CADERA_APP_NAMESPACE {
+
+	pcs::QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
+	{
+		pcs::QueueFamilyIndices indices;
+
+		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
+
+		int i = 0;
+		for (const auto& queueFamily : queueFamilies) {
+			if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
+				indices.graphicsFamily = i;
+			}
+
+			VkBool32 presentSupport = false;
+			presentSupport = device.getSurfaceSupportKHR(i, surface);
+
+			if (queueFamily.queueCount > 0 && presentSupport) {
+				indices.presentFamily = i;
+			}
+
+			if (indices.isComplete()) {
+				break;
+			}
+
+			i++;
+		}
+
+		return indices;
+	}
+
 	
+	void CADRender::setup() {
+
+		// GLFW
+		mMainCanvas.createWindow("CADERA");
+
+		// mInstance
+		createInstance();
+		createSurface();
+
+		// Physical mDevice
+		pickPhysicalDevice();
+
+		// Logical mDevice
+		createLogicalDevice();
+		//setupRenderDoc();
+
+		//// mSwapchain
+		//mMainCanvas.createSwapChain(mDevice, mPhysicalDevice, mIndices);
+		//mMainCanvas.createImageViews(mDevice);
+
+		//// Graphics Pipelines
+		//createRenderPass();
+		//createDescriptorSetLayout();
+		//createPipelineLayout();
+		//createTextPipeline();
+
+		//createCommandPool();
+		//mMainCanvas.createDepthResources(mPhysicalDevice, mDevice);
+		//createTextureImage();
+		//createTextureImageView();
+		//createTextureSampler();
+		//createFramebuffers();
+		//createUniformBuffer();
+		//createDescriptorPool();
+		//createDescriptorSets();
+		//allocCommandBuffers();
+		//createSyncObjects();
+
+
+	}
+
+	void CADRender::setBGColor(glm::vec4 color) {
+		bgColor = color;
+	}
+
+	bool CADRender::checkValidationLayerSupport() {
+		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
+
+
+		for (const char* layerName : validationLayers) {
+			bool layerFound = false;
+
+			for (const auto& layerProperties : availableLayers) {
+				if (strcmp(layerName, layerProperties.layerName) == 0) {
+					layerFound = true;
+					break;
+				}
+			}
+
+			if (!layerFound) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	std::vector<const char*> CADRender::getRequiredExtensions() {
+		
+		uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+		if (enableValidationLayers) {
+			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		}
+
+		return extensions;
+	}
+
+	void CADRender::createInstance() {
+		
+		vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+
+		VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+
+
+		vk::InstanceCreateInfo createInfo;
+
+
+
+		createInfo.enabledLayerCount = 0;
+
+		auto glfwExtensionCount = 0u;
+		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+		std::vector<const char*> glfwExtensionsVector(glfwExtensions, glfwExtensions + glfwExtensionCount);
+		glfwExtensionsVector.push_back("VK_EXT_debug_utils");
+
+		auto layers = std::vector<const char*>{ "VK_LAYER_KHRONOS_validation" };
+
+
+		createInfo.enabledLayerCount = static_cast<uint32_t>(layers.size());
+		createInfo.ppEnabledLayerNames = layers.data();
+
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(glfwExtensionsVector.size());
+		createInfo.ppEnabledExtensionNames = glfwExtensionsVector.data();
+		createInfo.pApplicationInfo = &mAppInfo;
+
+
+
+
+		mInstance = vk::createInstanceUnique(createInfo, nullptr);
+		VULKAN_HPP_DEFAULT_DISPATCHER.init(*mInstance);
+
+	}
+	
+	
+	void CADRender::createSurface() {
+		
+		vk::SurfaceKHR tempSurface;
+
+		if (glfwCreateWindowSurface(*mInstance, mMainCanvas.window, nullptr, reinterpret_cast<VkSurfaceKHR*>(&tempSurface)) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create window surface!");
+		}
+
+		mMainCanvas.mSurface = vk::UniqueSurfaceKHR(tempSurface, *mInstance);
+
+	}
+	
+	void CADRender::pickPhysicalDevice() {
+
+		std::vector<vk::PhysicalDevice> devices = mInstance->enumeratePhysicalDevices();
+
+		if (devices.empty()) {
+			throw std::runtime_error("failed to find GPUs with Vulkan support!");
+		}
+
+		for (const auto& device : devices) {
+			if (isDeviceSuitable(device)) {
+				mPhysicalDevice = device;
+				break;
+			}
+		}
+
+		if (&mPhysicalDevice == VK_NULL_HANDLE) {
+			std::cout << "Failed!" << std::endl;
+			throw std::runtime_error("failed to find a suitable GPU!");
+		}
+
+	}
+	
+	bool CADRender::isDeviceSuitable(vk::PhysicalDevice device) {
+
+		mIndices = findQueueFamilies(device, *mMainCanvas.mSurface);
+
+		bool extensionsSupported = checkDeviceExtensionSupport(device);
+
+		bool swapChainAdequate = false;
+		if (extensionsSupported) {
+			pcs::SwapChainSupportDetails swapChainSupport = mMainCanvas.querySwapChainSupport(device);
+			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+		}
+
+		return mIndices.isComplete() && extensionsSupported && swapChainAdequate;
+	}
+	
+	
+	bool CADRender::checkDeviceExtensionSupport(vk::PhysicalDevice device)
+	{
+		std::vector<vk::ExtensionProperties> availableExtensions = device.enumerateDeviceExtensionProperties(nullptr);
+
+		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+		for (const auto& extension : availableExtensions) {
+
+			requiredExtensions.erase(extension.extensionName);
+		}
+
+
+		return requiredExtensions.empty();
+	}
+	void CADRender::createLogicalDevice()
+	{
+	}
+	void CADRender::setupRenderDoc()
+	{
+	}
+	vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
+	{
+		return vk::Format();
+	}
+	vk::Format CADRender::findDepthFormat(vk::PhysicalDevice& PhysicalDevice)
+	{
+		return vk::Format();
+	}
+	void CADRender::createRenderPass()
+	{
+	}
 	void CADRender::initImgui() {
 
 		// Create Descriptor Pool
@@ -33,7 +263,7 @@ namespace CADERA_APP_NAMESPACE {
 			vk::DescriptorPoolCreateInfo poolInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1000 * IM_ARRAYSIZE(pool_sizes), 
 				                                  (uint32_t)IM_ARRAYSIZE(pool_sizes), pool_sizes);
 
-			mGuiDescriptorPool = mDevice->createDescriptorPool(poolInfo);
+			mGuiDescriptorPool = mDevice.createDescriptorPool(poolInfo);
 		}
 
 
@@ -54,7 +284,7 @@ namespace CADERA_APP_NAMESPACE {
 		ImGui_ImplVulkan_InitInfo init_info = {};
 		init_info.Instance = *mInstance;
 		init_info.PhysicalDevice = mPhysicalDevice;
-		init_info.Device = *mDevice;
+		init_info.Device = mDevice;
 		init_info.QueueFamily = mIndices.graphicsFamily;
 		init_info.Queue = mGraphicsQueue;
 		init_info.PipelineCache = VK_NULL_HANDLE;
@@ -192,11 +422,11 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchPoint = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
+		Pipelines.SketchPoint = mDevice.createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
 
 
-		mDevice->destroyShaderModule(vertShaderModule, nullptr);
-		mDevice->destroyShaderModule(fragShaderModule, nullptr);
+		mDevice.destroyShaderModule(vertShaderModule, nullptr);
+		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 
 	}
 
@@ -287,11 +517,11 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchLine = mDevice->createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
+		Pipelines.SketchLine = mDevice.createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr).value;
 
 
-		mDevice->destroyShaderModule(vertShaderModule, nullptr);
-		mDevice->destroyShaderModule(fragShaderModule, nullptr);
+		mDevice.destroyShaderModule(vertShaderModule, nullptr);
+		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 	}
 
 	void CADRender::createSketchGridPipeline() {
@@ -400,11 +630,11 @@ namespace CADERA_APP_NAMESPACE {
 		PipelineCreateInfo.layout = mPipelineLayout;
 
 
-		Pipelines.SketchGrid = mDevice->createGraphicsPipeline({}, PipelineCreateInfo, nullptr).value;
+		Pipelines.SketchGrid = mDevice.createGraphicsPipeline({}, PipelineCreateInfo, nullptr).value;
 
 
-		mDevice->destroyShaderModule(vertShaderModule, nullptr);
-		mDevice->destroyShaderModule(fragShaderModule, nullptr);
+		mDevice.destroyShaderModule(vertShaderModule, nullptr);
+		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 	}
 
 	void CADRender::preparePipelines() {
@@ -417,9 +647,9 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::destroyPipelines() {
 
 	
-		mDevice->destroyPipeline(Pipelines.SketchPoint);
-		mDevice->destroyPipeline(Pipelines.SketchLine);
-		mDevice->destroyPipeline(Pipelines.SketchGrid);
+		mDevice.destroyPipeline(Pipelines.SketchPoint);
+		mDevice.destroyPipeline(Pipelines.SketchLine);
+		mDevice.destroyPipeline(Pipelines.SketchGrid);
 
 	}
 
@@ -427,19 +657,113 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		vk::DescriptorSetLayoutBinding uboLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1,
-			vk::ShaderStageFlagBits::eVertex, nullptr);
+			                                            vk::ShaderStageFlagBits::eVertex, nullptr);
 
-		vk::DescriptorSetLayoutBinding cisLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1,
-			vk::ShaderStageFlagBits::eFragment, nullptr);
+		vk::DescriptorSetLayoutBinding cisLayoutBinding( 1, 
+			                                             vk::DescriptorType::eCombinedImageSampler,
+			                                             1,
+			                                             vk::ShaderStageFlagBits::eFragment, 
+			                                             nullptr);
 
 		std::array<vk::DescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, cisLayoutBinding };
 
 
 		vk::DescriptorSetLayoutCreateInfo layoutInfo({}, static_cast<uint32_t>(bindings.size()), bindings.data());
 
-		if (mDevice->createDescriptorSetLayout(&layoutInfo, nullptr, &mDescriptorSetLayout) != vk::Result::eSuccess)
+		if (mDevice.createDescriptorSetLayout(&layoutInfo, nullptr, &this->mDescriptorSetLayout) != vk::Result::eSuccess)
 			throw std::runtime_error("failed to create descriptor set layout!");
 
+		std::cout << "Descriptor Set Layout CadRender:\t" << mDescriptorSetLayout;
+		std::cout << std::endl;
+		
+	}
+
+	void CADRender::createPipelineLayout()
+	{
+	}
+
+	std::vector<char> CADRender::readFile(const std::string filename)
+	{
+		return std::vector<char>();
+	}
+
+	void CADRender::createTextPipeline()
+	{
+	}
+
+	void CADRender::cleanupSwapchain()
+	{
+	}
+
+	void CADRender::recreateSwapchain()
+	{
+	}
+
+	vk::ShaderModule CADRender::createShaderModule(const std::vector<char>& code)
+	{
+		return vk::ShaderModule();
+	}
+
+	void CADRender::createCommandPool()
+	{
+	}
+
+	vk::CommandBuffer CADRender::beginSingleTimeCommands(const vk::CommandBufferLevel& level, const vk::CommandBufferInheritanceInfo& inheritance)
+	{
+		return vk::CommandBuffer();
+	}
+
+	void CADRender::endSingleTimeCommands(vk::CommandBuffer& commandBuffer)
+	{
+	}
+
+	void CADRender::createFramebuffers()
+	{
+	}
+
+	void CADRender::createUniformBuffer()
+	{
+	}
+
+	void CADRender::allocCommandBuffers()
+	{
+	}
+
+	void CADRender::transitionImageLayout(vk::Image& image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout)
+	{
+	}
+
+	void CADRender::copyBufferToImage(vk::Buffer& buffer, vk::Image& image, uint32_t width, uint32_t height)
+	{
+	}
+
+	void CADRender::createTextureImage()
+	{
+	}
+
+	void CADRender::createTextureImageView()
+	{
+	}
+
+	void CADRender::createTextureSampler()
+	{
+	}
+
+	void CADRender::createSyncObjects()
+	{
+	}
+
+	uint32_t CADRender::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)
+	{
+		return uint32_t();
+	}
+
+	void CADRender::copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size)
+	{
+	}
+
+	void CADRender::createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, const vk::MemoryPropertyFlags& properties, vk::Buffer& buffer, vk::DeviceMemory& bufferMemory)
+	{
 	}
 
 	void CADRender::createDescriptorPool() {
@@ -453,7 +777,7 @@ namespace CADERA_APP_NAMESPACE {
 		vk::DescriptorPoolCreateInfo poolInfo({}, static_cast<uint32_t>(mMainCanvas.mImages.size()),
 			static_cast<uint32_t>(poolSizes.size()), poolSizes.data());
 
-		mDescriptorPool = mDevice->createDescriptorPool(poolInfo, nullptr);
+		mDescriptorPool = mDevice.createDescriptorPool(poolInfo, nullptr);
 
 	}
 
@@ -467,7 +791,7 @@ namespace CADERA_APP_NAMESPACE {
 		mDescriptorSets.resize(mMainCanvas.mImages.size());
 
 
-		mDescriptorSets = mDevice->allocateDescriptorSets(allocInfo);
+		mDescriptorSets = mDevice.allocateDescriptorSets(allocInfo);
 
 
 		// Uniform Buffer
@@ -496,7 +820,7 @@ namespace CADERA_APP_NAMESPACE {
 			descriptorWrites[1].descriptorCount = 1;
 			descriptorWrites[1].pImageInfo = &imageInfo;
 
-			mDevice->updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+			mDevice.updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 
 		}
 
@@ -506,7 +830,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::createCommandBuffers() {
 
-		mDevice->resetCommandPool(mCommandPool, vk::CommandPoolResetFlags());
+		mDevice.resetCommandPool(mCommandPool, vk::CommandPoolResetFlags());
 
 		for (size_t i = 0; i < mCommandBuffers.size(); i++) {
 
@@ -576,6 +900,10 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 
+	void CADRender::deleteBuffer(uint32_t id)
+	{
+	}
+
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -599,10 +927,18 @@ namespace CADERA_APP_NAMESPACE {
 		vk::MemoryMapFlags memMapFlags;
 
 		void* data;
-		data = mDevice->mapMemory(mUniformBufferMemories[currentImage], 0, sizeof(u), memMapFlags);
+		data = mDevice.mapMemory(mUniformBufferMemories[currentImage], 0, sizeof(u), memMapFlags);
 		memcpy(data, &u, sizeof(u));
-		mDevice->unmapMemory(mUniformBufferMemories[currentImage]);
+		mDevice.unmapMemory(mUniformBufferMemories[currentImage]);
 
+	}
+
+	void CADRender::drawFrame()
+	{
+	}
+
+	void CADRender::cleanup()
+	{
 	}
 
 	void CADRender::destroy() {
@@ -611,7 +947,7 @@ namespace CADERA_APP_NAMESPACE {
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 
-		mDevice->destroyDescriptorPool(mGuiDescriptorPool);
+		mDevice.destroyDescriptorPool(mGuiDescriptorPool);
 	
 
 		destroyPipelines();

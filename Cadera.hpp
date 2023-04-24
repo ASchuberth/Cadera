@@ -32,6 +32,8 @@ namespace CADERA_APP_NAMESPACE {
 
 		~Cadera();
 
+		void loadFonts();
+
 		void run();
 
 		void mainLoop();

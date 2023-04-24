@@ -39,6 +39,15 @@ namespace CADERA_APP_NAMESPACE {
 		Render.destroy();
 	}
 
+	void Cadera::loadFonts() {
+
+		// Text
+		Render.TxtRend.setFontSize(10.0f);
+		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
+		Render.createTextPipeline();
+
+	}
+
 	void Cadera::run() {
 		
 
@@ -46,30 +55,27 @@ namespace CADERA_APP_NAMESPACE {
 
 		Render.Cam.flags.set(cam::ortho);
 		Render.setup();
-		Render.preparePipelines(); 
+		//Render.preparePipelines(); 
 
 		Render.initImgui();
 
-		Render.SktSolver.setActiveSketch(&Sketch);
+		//Render.SktSolver.setActiveSketch(&Sketch);
 
-		// Text
-		Render.TxtRend.setFontSize(10.0f);
-		Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
-		Render.createTextPipeline();
+		loadFonts();
 
-		// Grid Test DELETE
-		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
+		//// Grid Test DELETE
+		//std::vector<GridRotationAxis> axii = createGridInstanceAxii();
 
-		Vertex p1, p2;
-		p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
-		p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
+		//Vertex p1, p2;
+		//p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
+		//p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
 
 
-		std::vector<Vertex> line = { p1, p2 };
-		 
-		Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
-		Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
-		// End Grid Test DELETE
+		//std::vector<Vertex> line = { p1, p2 };
+		// 
+		//Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
+		//Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
+		//// End Grid Test DELETE
 
 		initCallbacks();
 	
@@ -85,7 +91,7 @@ namespace CADERA_APP_NAMESPACE {
 			glfwPollEvents();
 
 			gui::imguiRun(Sketch, Render, Render.Sel);
-			
+			/*
 
 			if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
 				Sketch.deletion(Render.Sel.getSelectedPointIds());
@@ -106,7 +112,7 @@ namespace CADERA_APP_NAMESPACE {
 			
 			Render.createCommandBuffers();
 			Render.drawFrame();
-			Render.runCamera();
+			Render.runCamera();*/
 
 			glfwWaitEvents();
 			
