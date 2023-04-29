@@ -1,16 +1,29 @@
 #pragma once
 
-#include "RenderUtil.hpp"
-#include "Camera.hpp"
-#include "SketchSolver.hpp"
-#include "Canvas.hpp"
+//#include "RenderUtil.hpp"
+//#include "Camera.hpp"
+//#include "SketchSolver.hpp"
+//#include "Canvas.hpp"
 #include "imgui.h"
-#include "examples/imgui_impl_glfw.h"
-#include "examples/imgui_impl_vulkan.h"
-
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+#include "TextRender.hpp"
 
 
 namespace CADERA_APP_NAMESPACE {
+
+	struct QueueFamilyIndices {
+		int graphicsFamily = -1;
+		int presentFamily = -1;
+
+		bool isComplete() {
+			return graphicsFamily >= 0 && presentFamily >= 0;
+		}
+
+		bool isDifferent() {
+			return graphicsFamily != presentFamily;
+		}
+	};
 
 
 	struct Buffer {
@@ -83,7 +96,7 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		// Physical mDevice
-		pcs::QueueFamilyIndices mIndices;
+		QueueFamilyIndices mIndices;
 
 		// Logical mDevice
 		vk::Queue mGraphicsQueue;
@@ -142,7 +155,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		sketch::SketchSolver SktSolver;
 
-		pcs::txt::TextRender TxtRend;
+		txt::TextRender TxtRend;
 
 		// Canvas
 		pcs::Canvas mMainCanvas;

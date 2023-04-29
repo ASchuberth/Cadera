@@ -81,7 +81,7 @@ namespace sketch {
 		
 		std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);
 
-		std::vector<pcs::txt::Text> getRelationTexts();
+		std::vector<txt::Text> getRelationTexts();
 		
 
 

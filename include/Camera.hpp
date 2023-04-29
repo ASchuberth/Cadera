@@ -1,5 +1,4 @@
 #pragma once
-#include <glm/glm.hpp>
 #include "Selection.hpp"
 
 namespace CADERA_APP_NAMESPACE {

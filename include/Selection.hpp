@@ -1,7 +1,7 @@
 #pragma once
 #include "Point.hpp"
 #include "Sketch.hpp"
-#include <glm/gtx/norm.hpp>
+
 
 namespace CADERA_APP_NAMESPACE {
 namespace sel {

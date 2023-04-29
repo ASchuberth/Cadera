@@ -12,3 +12,6 @@ shaders/compile.bat
 *.gfxr
 *.ini
 imgui.ini
+build/
+.vscode/
+*.spv

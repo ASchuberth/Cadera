@@ -1,5 +1,5 @@
 #pragma once
-#include "gui.hpp"
+//#include "gui.hpp"
 #include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {
@@ -15,16 +15,16 @@ namespace CADERA_APP_NAMESPACE {
 		
 		void initCallbacks();
 
-		void switchCallbacks();
+		//void switchCallbacks();
 		
-		std::map<int, Model> Models;
+		//std::map<int, Model> Models;
 
 		int modelIdCounter;
 
 	public:
 		
-		CADRender Render;
-		sketch::Sketch Sketch;
+		//CADRender Render;
+		//sketch::Sketch Sketch;
 
 		std::bitset<cadera_num_flags> flags;
 
@@ -32,7 +32,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		~Cadera();
 
-		void loadFonts();
+		//void loadFonts();
 
 		void run();
 

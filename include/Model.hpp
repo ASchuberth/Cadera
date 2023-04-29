@@ -27,9 +27,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		ModelType getType();
 
-		std::map<int, pcs::txt::Text> Notes;
+		std::map<int, txt::Text> Notes;
 		
-		virtual std::vector<pcs::txt::Text> getRelationTexts();
+		virtual std::vector<txt::Text> getRelationTexts();
 
 		virtual std::vector<glm::vec3> getVertices();
 		virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);

@@ -8,9 +8,9 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-	pcs::QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
+	QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
 	{
-		pcs::QueueFamilyIndices indices;
+		QueueFamilyIndices indices;
 
 		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "Feature.hpp"
+
+
 namespace CADERA_APP_NAMESPACE {
 
 	class Point : public Feature {
