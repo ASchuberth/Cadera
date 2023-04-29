@@ -7,30 +7,10 @@ enable_testing()
 
 
 
-
-file(GLOB HEADERS "include/*.hpp")
-
-
-file(GLOB SOURCES "src/*.cpp")
-
 add_executable(Cadera src/Main.cpp
                         src/Cadera.cpp
                         src/callbacks.cpp)
-#${SOURCES} ${HEADERS}) 
-# CADRender.cpp
-#                         callbacks.cpp
-#                         Camera.cpp
-#                         Feature.cpp
-#                         gui.cpp
-#                         Model.cpp
-#                         Point.cpp
-#                         Relation.cpp
-#                         Selection.cpp
-#                         Sketch.cpp
-#                         Sketcher.cpp
-#                         SketchSolver.cpp
-#                         Main.cpp 
-                        # )
+
 
 target_precompile_headers(Cadera PRIVATE include/pch.hpp)
 target_include_directories(Cadera PRIVATE include/)
