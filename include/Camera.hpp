@@ -6,25 +6,37 @@ namespace CADERA_APP_NAMESPACE {
 namespace cam {
 	
 	enum CameraFlags {
-		ortho,                       // Toggle orthographics projection
-		mouseFirstPressed,           // Used for resetting functions such as pan() on first mouse click
-		pan,                         // Toggle the camera pan() function
-		numFlags                     // Bitset size
+		/// Toggle orthographics projection
+		ortho,                       
+		/// Used for resetting functions such as pan() on first mouse click
+		mouseFirstPressed,           
+		/// Toggle the camera pan() function
+		pan,                         
+		/// Bitset size
+		camera_number_flags                     
 	};
 
-
+	/**
+	 * @brief 
+	 * 
+	 * 
+	 */
 	class Camera {
 
 	public:
 
 		Camera();
 
-		std::bitset<numFlags> flags;
-
-		glm::vec3 pos;
-		glm::vec3 focus;
-		glm::vec3 cameraVec;
-		float camDistance;
+		std::bitset<camera_number_flags> flags;
+		
+		/// Position of the camera in 3D space
+		glm::vec3 pos; 
+		/// Focus point of the camera in 3D space
+		glm::vec3 focus; 
+		/// The vector going from pos to focus
+		glm::vec3 cameraVec;  
+		/// The length of the cameraVec vector
+		float camDistance;  
 
 		// Ortho view
 		float left;
@@ -39,6 +51,11 @@ namespace cam {
 
 		void update();
 
+		/**
+		 * @brief 
+		 * 
+		 * @param yoffset 
+		 */
 		void zoom(float yoffset);
 
 		void updateMouseRay(float x, float y, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,

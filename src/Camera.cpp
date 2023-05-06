@@ -63,6 +63,12 @@ namespace cam {
 
 	}
 
+	/**
+	 * @brief 
+	 * 
+	 * @param origin 
+	 * @param planeNormal 
+	 */
 	void Camera::pan(glm::vec3 origin, glm::vec3 planeNormal) {
 
 

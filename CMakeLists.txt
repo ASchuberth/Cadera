@@ -24,6 +24,9 @@ target_link_libraries(Cadera PRIVATE glfw)
 find_package(Stb REQUIRED)
 target_include_directories(Cadera PRIVATE ${Stb_INCLUDE_DIR})
 
+find_package(Microsoft.GSL CONFIG REQUIRED)
+    target_link_libraries(Cadera PRIVATE Microsoft.GSL::GSL)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

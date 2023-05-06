@@ -15,3 +15,5 @@ imgui.ini
 build/
 .vscode/
 *.spv
+doc/
+*.code-workspace

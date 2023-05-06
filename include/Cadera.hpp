@@ -4,11 +4,20 @@
 
 namespace CADERA_APP_NAMESPACE {
 
+	/// @brief Flags that can be toggled in a bitset to trigger events
 	enum CaderaFlags {
-		cadera_delete,
-		cadera_num_flags
+		/// Will trigger deletion of the currently selected object
+		cadera_delete, 
+		/// Number of flags to be used in the creation of the bitset 
+		cadera_num_flags  
 	};
 
+/**
+ * @brief Cadera
+ * @author Austin Schuberth
+ * @page Cadera
+ * 
+ */
 	class Cadera {
 
 	private:

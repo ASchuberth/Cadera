@@ -82,6 +82,11 @@ namespace CADERA_APP_NAMESPACE {
 		mainLoop();
 	}
 
+	/**
+	 * @brief Main loop of the Cadera App
+	 * 
+	 * 
+	 */
 	void Cadera::mainLoop() {
 
 		// while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
