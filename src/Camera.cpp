@@ -66,8 +66,10 @@ namespace cam {
 	/**
 	 * @brief 
 	 * 
-	 * @param origin 
-	 * @param planeNormal 
+	 * @param origin Origin point of the plane.
+	 * This is used for calulating the point on the plane for projection view
+	 * 
+	 * @param planeNormal The normal vector of the plane to pan on
 	 */
 	void Camera::pan(glm::vec3 origin, glm::vec3 planeNormal) {
 

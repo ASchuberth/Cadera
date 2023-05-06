@@ -8,8 +8,19 @@ enable_testing()
 
 
 add_executable(Cadera src/Main.cpp
-                        src/Cadera.cpp
-                        src/callbacks.cpp)
+                      src/Cadera.cpp
+                      src/callbacks.cpp
+                      src/CADRender.cpp
+                      src/Canvas.cpp
+                      src/Camera.cpp
+                      src/Feature.cpp
+                      src/gui.cpp
+                      src/Model.cpp
+                      src/Point.cpp
+                      src/Relation.cpp
+                      src/Selection.cpp
+                      src/Sketch.cpp
+                      src/Sketcher.cpp)
 
 
 target_precompile_headers(Cadera PRIVATE include/pch.hpp)

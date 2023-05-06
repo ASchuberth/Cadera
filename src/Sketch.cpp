@@ -163,7 +163,7 @@ namespace sketch {
 
 		featureCounter++;
 
-		pcs::txt::Text T;
+		txt::Text T;
 
 		T.cursorPos = point;
 		T.cursorDirX = { 0.0f, 0.0f, 1.0f };
@@ -231,15 +231,15 @@ namespace sketch {
 		return vertices;
 	}
 
-	std::vector<pcs::txt::Text> Sketch::getRelationTexts() {
+	std::vector<txt::Text> Sketch::getRelationTexts() {
 
-		std::vector<pcs::txt::Text> Texts;
+		std::vector<txt::Text> Texts;
 		std::map<int, int> pointRelCounter;
 
 		for (const auto& R : mRelations) {
 
 			for (const auto& id : R.second.mFeatureIds) {
-				pcs::txt::Text T;
+				txt::Text T;
 				
 				T.textSize = 0.3f;
 				T.backgroundColor = { 0.0f, 0.0f, 1.0f };

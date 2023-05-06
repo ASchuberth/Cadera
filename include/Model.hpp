@@ -1,4 +1,6 @@
 #pragma once
+#include "TextRender.hpp"
+
 namespace CADERA_APP_NAMESPACE {
 	
 	enum ModelType {

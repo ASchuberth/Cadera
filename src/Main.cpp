@@ -3,6 +3,7 @@
 #include <gsl/gsl>
 
 
+
 #define CADERA_APP_NAMESPACE cad
 
 /// @brief  main function
@@ -11,11 +12,10 @@ int main() {
 
 
 
-	//cad::Cadera App;
-	std::vector<int> x = {1};
-	glm::vec3 v = {0.0f, 1.0f, 10.0f};
+	cad::Cadera App;
+	
 	try {
-		//App.run();
+		App.run();
 
 	}
 	catch (const std::exception & err) {

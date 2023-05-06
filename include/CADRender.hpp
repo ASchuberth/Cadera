@@ -1,28 +1,22 @@
 #pragma once
 
 //#include "RenderUtil.hpp"
-//#include "Camera.hpp"
-//#include "SketchSolver.hpp"
-//#include "Canvas.hpp"
+#include "Camera.hpp"
+#include "SketchSolver.hpp"
+#include "Canvas.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include "TextRender.hpp"
-
+#include "RenderUtil.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
-	struct QueueFamilyIndices {
-		int graphicsFamily = -1;
-		int presentFamily = -1;
 
-		bool isComplete() {
-			return graphicsFamily >= 0 && presentFamily >= 0;
-		}
-
-		bool isDifferent() {
-			return graphicsFamily != presentFamily;
-		}
+	struct ubo {
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
 	};
 
 
@@ -147,7 +141,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		std::bitset<render_num_flags> flags;
 
-		pcs::ubo u;
+		ubo u;
 
 		cam::Camera Cam;
 
@@ -158,7 +152,7 @@ namespace CADERA_APP_NAMESPACE {
 		txt::TextRender TxtRend;
 
 		// Canvas
-		pcs::Canvas mMainCanvas;
+		Canvas mMainCanvas;
 
 		void setup();
 		

@@ -51,7 +51,7 @@ namespace CADERA_APP_NAMESPACE {
 		pickPhysicalDevice();
 
 		// Logical mDevice
-		createLogicalDevice();
+		//createLogicalDevice();
 		//setupRenderDoc();
 
 		//// mSwapchain
@@ -199,7 +199,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		bool swapChainAdequate = false;
 		if (extensionsSupported) {
-			pcs::SwapChainSupportDetails swapChainSupport = mMainCanvas.querySwapChainSupport(device);
+			SwapChainSupportDetails swapChainSupport = mMainCanvas.querySwapChainSupport(device);
 			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}
 
@@ -221,9 +221,60 @@ namespace CADERA_APP_NAMESPACE {
 
 		return requiredExtensions.empty();
 	}
-	void CADRender::createLogicalDevice()
-	{
+	
+	void CADRender::createLogicalDevice() {
+		
+		std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
+		std::set<int> uniqueQueueFamilies = { mIndices.graphicsFamily, mIndices.presentFamily };
+
+		float queuePriority = 1.0f;
+		for (int queueFamily : uniqueQueueFamilies) {
+
+			vk::DeviceQueueCreateInfo queueCreateInfo({}, queueFamily, 1, &queuePriority);
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
+
+
+		vk::PhysicalDeviceFeatures deviceFeatures;
+
+		deviceFeatures.fillModeNonSolid = true;
+		deviceFeatures.depthBounds = true;
+		deviceFeatures.wideLines = true;
+		deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+
+		vk::DeviceCreateInfo createInfo(  {},
+									    static_cast<uint32_t>(queueCreateInfos.size()),
+										queueCreateInfos.data(),
+										{},
+										{},
+										static_cast<uint32_t>(deviceExtensions.size()),
+										deviceExtensions.data(),
+										&deviceFeatures
+		);
+
+
+		if (enableValidationLayers) {
+			createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+			createInfo.ppEnabledLayerNames = validationLayers.data();
+		}
+		else {
+			createInfo.enabledLayerCount = 0;
+		}
+
+		
+		mDevice = mPhysicalDevice.createDevice(createInfo, nullptr);
+
+
+		mGraphicsQueue = mDevice.getQueue(mIndices.graphicsFamily, 0);
+		mPresentQueue = mDevice.getQueue(mIndices.presentFamily, 0);
+
+		VULKAN_HPP_DEFAULT_DISPATCHER.init(mDevice);
+		vkGetDeviceProcAddr = dl.getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
 	}
+
+
+
 	void CADRender::setupRenderDoc()
 	{
 	}

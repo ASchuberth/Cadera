@@ -1,6 +1,8 @@
 #pragma once
 //#include "gui.hpp"
 #include "callbacks.hpp"
+#include "CADRender.hpp"
+
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -32,7 +34,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 		
-		//CADRender Render;
+		CADRender Render;
 		//sketch::Sketch Sketch;
 
 		std::bitset<cadera_num_flags> flags;

@@ -26,7 +26,7 @@ namespace sel {
 		select_single_point,
 		select_double_point,
 		select_multi_point,
-		numFlags               // Number of flags for bitset
+		select_number_flags               // Number of flags for bitset
 	};
 
 	class Selector {
@@ -35,7 +35,7 @@ namespace sel {
 
 	public:
 
-		std::bitset<numFlags> flags;
+		std::bitset<select_number_flags> flags;
 
 		glm::vec3 point;
 
