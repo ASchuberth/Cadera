@@ -293,29 +293,28 @@ namespace CADERA_APP_NAMESPACE {
 
 		// Create Descriptor Pool
 
-		if (mGuiDescriptorPool == VK_NULL_HANDLE)
+		
+		vk::DescriptorPoolSize pool_sizes[] =
 		{
-			vk::DescriptorPoolSize pool_sizes[] =
-			{
-				{ vk::DescriptorType::eSampler, 1000 },
-				{ vk::DescriptorType::eCombinedImageSampler, 1000 },
-				{ vk::DescriptorType::eSampledImage, 1000 },
-				{ vk::DescriptorType::eStorageImage, 1000 },
-				{ vk::DescriptorType::eUniformTexelBuffer, 1000 },
-				{ vk::DescriptorType::eStorageTexelBuffer, 1000 },
-				{ vk::DescriptorType::eUniformBuffer, 1000 },
-				{ vk::DescriptorType::eStorageBuffer, 1000 },
-				{ vk::DescriptorType::eUniformBufferDynamic, 1000 },
-				{ vk::DescriptorType::eStorageBufferDynamic, 1000 },
-				{ vk::DescriptorType::eInputAttachment, 1000 }
-			};
+			{ vk::DescriptorType::eSampler, 1000 },
+			{ vk::DescriptorType::eCombinedImageSampler, 1000 },
+			{ vk::DescriptorType::eSampledImage, 1000 },
+			{ vk::DescriptorType::eStorageImage, 1000 },
+			{ vk::DescriptorType::eUniformTexelBuffer, 1000 },
+			{ vk::DescriptorType::eStorageTexelBuffer, 1000 },
+			{ vk::DescriptorType::eUniformBuffer, 1000 },
+			{ vk::DescriptorType::eStorageBuffer, 1000 },
+			{ vk::DescriptorType::eUniformBufferDynamic, 1000 },
+			{ vk::DescriptorType::eStorageBufferDynamic, 1000 },
+			{ vk::DescriptorType::eInputAttachment, 1000 }
+		};
 
 
-			vk::DescriptorPoolCreateInfo poolInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1000 * IM_ARRAYSIZE(pool_sizes), 
-				                                  (uint32_t)IM_ARRAYSIZE(pool_sizes), pool_sizes);
+		vk::DescriptorPoolCreateInfo poolInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1000 * IM_ARRAYSIZE(pool_sizes), 
+												(uint32_t)IM_ARRAYSIZE(pool_sizes), pool_sizes);
 
-			mGuiDescriptorPool = mDevice.createDescriptorPool(poolInfo);
-		}
+		mGuiDescriptorPool = mDevice.createDescriptorPool(poolInfo);
+		
 
 
 		// Setup Dear ImGui binding
@@ -344,7 +343,7 @@ namespace CADERA_APP_NAMESPACE {
 		init_info.CheckVkResultFn = VK_NULL_HANDLE;
 		init_info.ImageCount = static_cast<uint32_t>(mMainCanvas.mImageViews.size());
 		init_info.MinImageCount = static_cast<uint32_t>(mMainCanvas.mImageViews.size());
-		ImGui_ImplVulkan_Init(&init_info, mRenderPass, vkGetInstanceProcAddr, vkGetDeviceProcAddr);
+		ImGui_ImplVulkan_Init(&init_info, mRenderPass);
 
 		// Setup style
 		ImGui::StyleColorsDark();
@@ -1044,14 +1043,14 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 		// Relation Symbols
-		std::vector<pcs::txt::Text> RelationTexts;
+		std::vector<txt::Text> RelationTexts;
 		RelationTexts = S.getRelationTexts();
 
 		for (const auto& T : RelationTexts) {
 			TxtRend.addText(T);
 		}
 
-		std::vector<pcs::txt::Vertex> txtVertices = TxtRend.generateQuads();
+		std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads();
 		std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
 
 		if (!txtVertices.empty()) {

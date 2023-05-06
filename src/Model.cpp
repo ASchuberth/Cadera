@@ -32,9 +32,9 @@ namespace CADERA_APP_NAMESPACE {
 		return mType;
 	}
 
-	std::vector<pcs::txt::Text> Model::getRelationTexts()
+	std::vector<txt::Text> Model::getRelationTexts()
 	{
-		return std::vector<pcs::txt::Text>();
+		return std::vector<txt::Text>();
 	}
 
 	std::vector<glm::vec3> Model::getVertices() {

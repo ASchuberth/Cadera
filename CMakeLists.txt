@@ -20,7 +20,9 @@ add_executable(Cadera src/Main.cpp
                       src/Relation.cpp
                       src/Selection.cpp
                       src/Sketch.cpp
-                      src/Sketcher.cpp)
+                      src/Sketcher.cpp
+                      src/SketchSolver.cpp
+                      src/TextRender.cpp)
 
 
 target_precompile_headers(Cadera PRIVATE include/pch.hpp)

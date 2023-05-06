@@ -2,7 +2,7 @@
 #include "Cadera.hpp"
 #include <gsl/gsl>
 
-
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 #define CADERA_APP_NAMESPACE cad
 

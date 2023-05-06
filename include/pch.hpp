@@ -7,6 +7,7 @@
 #include <bitset>
 #include <list>
 #include <set>
+#include <fstream>
 
 
 
@@ -15,6 +16,8 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLFW_INCLUDE_VULKAN
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+
 
 #ifdef _DEBUG
 #define CADERA_DEBUG

@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "pch.hpp"
 #include "TextRender.hpp"
 
 void coutVec3(glm::vec3 v) {
@@ -7,7 +7,7 @@ void coutVec3(glm::vec3 v) {
 	std::cout << "z: " << v.z << " " << std::endl;
 }
 
-namespace PECOS_API_NAMESPACE {
+namespace CADERA_APP_NAMESPACE {
 namespace txt {
 	
 	TextRender::TextRender() {
