@@ -4,4 +4,20 @@
 *.sln
 *.vcx*
 /imgui
+<<<<<<< HEAD
+/packages
 /Cadera
+shaders/compile.bat
+/.obsidian
+*.spv
+*.gfxr
+*.ini
+imgui.ini
+build/
+.vscode/
+*.spv
+doc/
+*.code-workspace
+=======
+/Cadera
+>>>>>>> master

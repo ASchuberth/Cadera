@@ -53,6 +53,7 @@ layout(binding = 0) uniform UniformBufferObject {
 
 
 
+
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;
 layout(location = 2) in vec3 inTranslate;
@@ -76,6 +77,16 @@ void main()
 	vec4 pos = vec4(P, 1.0);
 	gl_Position = ubo.proj * ubo.view * ubo.model * pos;
 	
-
-	fragColor = vec4(inColor.xyz, 0.5);
+	if (gl_InstanceIndex == 2000) {
+		fragColor = vec4(0.0, 1.0, 0.0, 1.0);
+	}
+	else if (gl_InstanceIndex == 2001) {
+		fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	else if (gl_InstanceIndex % 4 < 2) {
+		fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	}
+	else {
+		fragColor = vec4(inColor.xyz, 0.5);
+	}
 }

@@ -1,4 +1,6 @@
 #pragma once
+#include "Point.hpp"
+#include "Sketch.hpp"
 
 
 namespace CADERA_APP_NAMESPACE {
@@ -19,21 +21,46 @@ namespace sel {
 
 
 	enum SelectionFlags {
-		toggleSelect,          // Used in callbacks to toggle selection
-		numFlags               // Number of flags for bitset
+		select_toggle,          // Used in callbacks to toggle selection
+		select_isCTRL,                // Is CTRL pressed down
+		select_single_point,
+		select_double_point,
+		select_multi_point,
+		select_number_flags               // Number of flags for bitset
 	};
 
 	class Selector {
 
+		sketch::Sketch *pActiveSketch = nullptr;
+
 	public:
 
-		std::bitset<numFlags> flags;
+		std::bitset<select_number_flags> flags;
 
 		glm::vec3 point;
 
+		std::map<int, Point> selectedPoints;
+
 		Selector();
 
+		void setActiveSketch(sketch::Sketch* pSketch);
+
 		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, bool isOrtho);
+
+		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+
+		int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+
+		bool existingPoint(glm::vec3 point);
+
+		void setFlags();
+
+		void clear();
+
+		std::vector<glm::vec3> getVertices();
+
+		std::vector<int> getSelectedPointIds();
+
 	};
 }
 }

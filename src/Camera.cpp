@@ -8,20 +8,28 @@ namespace cam {
 
 	Camera::Camera()
 	{
-		pos = { 20.0f, 0.0f, 0.0f };
+		pos = { -20.0f, 0.0f, 0.0f };
 		focus = { 0.0f, 0.0f, 0.0f };
 		cameraVec = { 1.0f, 0.0f, 0.0f };
 		xpos = 0.0;
 		ypos = 0.0;
 		mouseRay = { 0.0f, 0.0f, 0.0f };
 		left = -10.0f;
+		camDistance = 0.0f;
+
+	}
+
+	void Camera::update() {
+
+		camDistance = glm::length(pos - focus);
+
 	}
 
 	void Camera::zoom(float yoffset) {
 
 		if (flags.test(ortho)) {
 			
-			if (yoffset > 0) {
+			if (yoffset > 0 && left < -1.02) {
 				left += 1.0f;
 			}
 			else if (yoffset < 0) {
@@ -29,10 +37,13 @@ namespace cam {
 			}
 		}
 		else {
+
+			glm::vec3 normalPos = {0.0f, pos.y, pos.z};
+
 			if (yoffset > 0) {
 				pos -= 1.0f * glm::normalize(cameraVec);
 			}
-			else if (yoffset < 0) {
+			else if (yoffset < 0 && glm::length2(pos - focus) > 1.02f) {
 				pos += 1.0f * glm::normalize(cameraVec);
 			}
 		}
@@ -52,6 +63,14 @@ namespace cam {
 
 	}
 
+	/**
+	 * @brief 
+	 * 
+	 * @param origin Origin point of the plane.
+	 * This is used for calulating the point on the plane for projection view
+	 * 
+	 * @param planeNormal The normal vector of the plane to pan on
+	 */
 	void Camera::pan(glm::vec3 origin, glm::vec3 planeNormal) {
 
 
@@ -69,10 +88,10 @@ namespace cam {
 
 			diff = mouseRay - prevMouseRay;
 
-			pos.y -= diff.x;
-			pos.z -= diff.y;
-			focus.y -= diff.x;
-			focus.z -= diff.y;
+			pos.y -= diff.y;
+			pos.z -= diff.x;
+			focus.y -= diff.y;
+			focus.z -= diff.x;
 
 		}
 		else {
