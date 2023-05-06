@@ -4,6 +4,7 @@
 *.sln
 *.vcx*
 /imgui
+<<<<<<< HEAD
 /packages
 /Cadera
 shaders/compile.bat
@@ -17,3 +18,6 @@ build/
 *.spv
 doc/
 *.code-workspace
+=======
+/Cadera
+>>>>>>> master
