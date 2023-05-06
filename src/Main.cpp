@@ -4,7 +4,6 @@
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
-#define CADERA_APP_NAMESPACE cad
 
 /// @brief  main function
 /// @return 0
