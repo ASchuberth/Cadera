@@ -44,7 +44,7 @@ namespace CADERA_APP_NAMESPACE {
 		createWindow();
 
 		// mInstance
-		//createInstance();
+		createInstance();
 		//createSurface();
 
 		// Physical mDevice
@@ -97,43 +97,7 @@ namespace CADERA_APP_NAMESPACE {
 		glfwSetInputMode(mMainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
-   /*  bool CADRender::checkValidationLayerSupport()
-    {
-        std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
 
-
-		for (const char* layerName : validationLayers) {
-			bool layerFound = false;
-
-			for (const auto& layerProperties : availableLayers) {
-				if (strcmp(layerName, layerProperties.layerName) == 0) {
-					layerFound = true;
-					break;
-				}
-			}
-
-			if (!layerFound) {
-				return false;
-			}
-		}
-
-		return true;
-    } */
-
-/*     std::vector<const char*> CADRender::getRequiredExtensions() {
-		
-		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-		if (enableValidationLayers) {
-			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		}
-
-		return extensions;
-	}
 
 	void CADRender::createInstance() {
 		
@@ -146,43 +110,38 @@ namespace CADERA_APP_NAMESPACE {
 
 
 
-		createInfo.enabledLayerCount = 0;
+		 createInfo.enabledLayerCount = 0;
 
 		auto glfwExtensionCount = 0u;
 		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-		std::vector<const char*> glfwExtensionsVector(glfwExtensions, glfwExtensions + glfwExtensionCount);
-		glfwExtensionsVector.push_back("VK_EXT_debug_utils");
+		
+		const char* layers = "VK_LAYER_KHRONOS_validation";
 
-		auto layers = std::vector<const char*>{ "VK_LAYER_KHRONOS_validation" };
+		createInfo.enabledLayerCount = 1; //static_cast<uint32_t>(layers.size());
+		createInfo.ppEnabledLayerNames = &layers;
 
-
-		createInfo.enabledLayerCount = static_cast<uint32_t>(layers.size());
-		createInfo.ppEnabledLayerNames = layers.data();
-
-		createInfo.enabledExtensionCount = static_cast<uint32_t>(glfwExtensionsVector.size());
-		createInfo.ppEnabledExtensionNames = glfwExtensionsVector.data();
+		createInfo.enabledExtensionCount = glfwExtensionCount;//static_cast<uint32_t>(glfwExtensionsVector.size());
+		createInfo.ppEnabledExtensionNames = glfwExtensions; //glfwExtensionsVector.data();
 		createInfo.pApplicationInfo = &mAppInfo;
 
 
+		vk::Result result = vk::createInstance(&createInfo, nullptr, &mInstance);
 
+		
+		VULKAN_HPP_DEFAULT_DISPATCHER.init(mInstance); 
 
-		mInstance = vk::createInstanceUnique(createInfo, nullptr);
-		VULKAN_HPP_DEFAULT_DISPATCHER.init(*mInstance);
-
-	} */
+	} 
 	
 	
-	/* void CADRender::createSurface() {
+	void CADRender::createSurface() {
 		
 		vk::SurfaceKHR tempSurface;
 
-		if (glfwCreateWindowSurface(*mInstance, mMainCanvas.window, nullptr, reinterpret_cast<VkSurfaceKHR*>(&tempSurface)) != VK_SUCCESS) {
+		if (glfwCreateWindowSurface(mInstance, mMainWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&mSurface)) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create window surface!");
 		}
 
-		mMainCanvas.mSurface = vk::UniqueSurfaceKHR(tempSurface, *mInstance);
-
-	} */
+	}
 	
 /* 	void CADRender::pickPhysicalDevice() {
 
@@ -1005,6 +964,12 @@ namespace CADERA_APP_NAMESPACE {
 	} */
 
 	void CADRender::cleanup() {
+		
+
+		vkDestroySurfaceKHR(mInstance, mSurface, nullptr);
+		vkDestroyInstance(mInstance, nullptr);
+		
+		
 		glfwTerminate();
 	}
 

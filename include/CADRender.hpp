@@ -72,15 +72,15 @@ namespace CADERA_APP_NAMESPACE {
 
 	public:
 
-		glm::vec4 bgColor;
+		
 
 		// GLFW
 		GLFWwindow* mMainWindow;
-/* 
+
 
 
 		// Main Vulkan Objects
-		vk::UniqueInstance mInstance;
+		vk::Instance mInstance;
 		vk::PhysicalDevice mPhysicalDevice;
 		vk::Device mDevice;
 		vk::RenderPass mRenderPass;
@@ -149,7 +149,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		std::bitset<render_num_flags> flags;
 
-		ubo u; */
+		ubo u;
 
 		//cam::Camera Cam;
 
@@ -177,16 +177,13 @@ namespace CADERA_APP_NAMESPACE {
 		void createWindow();
 
 		// Instance
-		//bool checkValidationLayerSupport();
 
-		//std::vector<const char*> getRequiredExtensions();
+		void createInstance();
 
-		//void createInstance();
-
-		/* void createSurface();
+		void createSurface();
 
 		// Physical Device
-
+/* 
 		void pickPhysicalDevice();
 
 		bool isDeviceSuitable(vk::PhysicalDevice device);
