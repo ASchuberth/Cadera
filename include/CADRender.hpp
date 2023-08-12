@@ -1,14 +1,11 @@
 #pragma once
 
 //#include "RenderUtil.hpp"
-#include "Camera.hpp"
-#include "SketchSolver.hpp"
-#include "Canvas.hpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
-#include "TextRender.hpp"
-#include "RenderUtil.hpp"
+//#include "Camera.hpp"
+//#include "SketchSolver.hpp"
+//#include "Canvas.hpp"
+//#include "TextRender.hpp"
+//#include "RenderUtil.hpp"
 
 
 
@@ -42,17 +39,17 @@ namespace CADERA_APP_NAMESPACE {
 
 	class CADRender  {
 		
-		
-		std::vector<const char*> validationLayers = {
+	private:
+		/* std::vector<const char*> validationLayers = {
 			"VK_LAYER_LUNARG_standard_validation"
-		};
+		}; */
 
-		std::vector<const char*> deviceExtensions = {
+		/* std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
+		}; */
 
 		vk::DescriptorPool mGuiDescriptorPool;
-		VkAllocationCallbacks* mGuiAllocator;
+		VkAllocationCallbacks* mGuiAllocator; 
 
 		PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
 		PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
@@ -69,9 +66,17 @@ namespace CADERA_APP_NAMESPACE {
 			vk::Pipeline SketchLine;
 			vk::Pipeline SketchGrid;
 
-		} Pipelines;
+		} Pipelines; 
+
+	
 
 	public:
+
+		glm::vec4 bgColor;
+
+		// GLFW
+		GLFWwindow* mMainWindow;
+/* 
 
 
 		// Main Vulkan Objects
@@ -93,7 +98,7 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		// Physical mDevice
-		QueueFamilyIndices mIndices;
+		//QueueFamilyIndices mIndices;
 
 		// Logical mDevice
 		vk::Queue mGraphicsQueue;
@@ -144,18 +149,18 @@ namespace CADERA_APP_NAMESPACE {
 
 		std::bitset<render_num_flags> flags;
 
-		ubo u;
+		ubo u; */
 
-		cam::Camera Cam;
+		//cam::Camera Cam;
 
-		sel::Selector Sel;
+		//sel::Selector Sel;
 
-		sketch::SketchSolver SktSolver;
+		//sketch::SketchSolver SktSolver;
 
-		txt::TextRender TxtRend;
+		//txt::TextRender TxtRend;
 
 		// Canvas
-		Canvas mMainCanvas;
+		//Canvas mMainCanvas;
 
 		void setup();
 		
@@ -167,15 +172,18 @@ namespace CADERA_APP_NAMESPACE {
 
 		void setBGColor(glm::vec4 color);
 
+		// GLFW
+
+		void createWindow();
 
 		// Instance
-		bool checkValidationLayerSupport();
+		//bool checkValidationLayerSupport();
 
-		std::vector<const char*> getRequiredExtensions();
+		//std::vector<const char*> getRequiredExtensions();
 
-		void createInstance();
+		//void createInstance();
 
-		void createSurface();
+		/* void createSurface();
 
 		// Physical Device
 
@@ -296,7 +304,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		void deleteBuffer(uint32_t id);
 
-		void drawFrame();
+		void drawFrame(); */
 
 		// Cleanup
 		void cleanup();
@@ -305,11 +313,11 @@ namespace CADERA_APP_NAMESPACE {
 
 		//-------------------------------
 
-		void initImgui();
+		// void initImgui();
 
-		void imguiRun();
+		// void imguiRun();
 
-		void createSketchPointPipeline();
+		/* void createSketchPointPipeline();
 		void createSketchLinePipeline();
 
 		void createSketchGridPipeline();
@@ -325,16 +333,16 @@ namespace CADERA_APP_NAMESPACE {
 		void createCommandBuffers();
 
 		void updateUniformBuffer(uint32_t currentImage);
-
+ */
 		void destroy();
 
-		void runCamera();
+		//void runCamera();
 
-		void render(Model &M);
+		//void render(Model &M);
 
-		void renderSketchNotes(Model& S);
+		//void renderSketchNotes(Model& S);
 
-		void renderSketchPoints(Model &S);
+		//void renderSketchPoints(Model &S);
 
 	};
 }

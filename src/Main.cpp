@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "Cadera.hpp"
 #include <gsl/gsl>
+#include <CADRender.hpp>
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
@@ -10,7 +11,7 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 int main() {
 
 
-
+	
 	cad::Cadera App;
 	
 	try {
@@ -21,6 +22,7 @@ int main() {
 		std::cerr << err.what() << std::endl;
 	}
 
+	std::cout << "Hello\n";
 
 
 	return 0;

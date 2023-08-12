@@ -36,7 +36,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	Cadera::~Cadera() {
 
-		//Render.destroy();
+		Render.destroy();
 	}
 
 	// void Cadera::loadFonts() {
@@ -51,10 +51,11 @@ namespace CADERA_APP_NAMESPACE {
 	void Cadera::run() {
 		
 
+
 		Render.setBGColor(glm::vec4(0.1f, 0.1f, 0.1f, 0.1f));
 
 		// Render.Cam.flags.set(cam::ortho);
-		// Render.setup();
+		Render.setup();
 		// //Render.preparePipelines(); 
 
 		// Render.initImgui();
@@ -89,11 +90,12 @@ namespace CADERA_APP_NAMESPACE {
 	 */
 	void Cadera::mainLoop() {
 
-		// while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
+
+		while (!glfwWindowShouldClose(Render.mMainWindow)) {  
 			
 		// 	switchCallbacks();
 
-		// 	glfwPollEvents();
+			glfwPollEvents();
 
 		// 	gui::imguiRun(Sketch, Render, Render.Sel);
 		// 	/*
@@ -119,10 +121,11 @@ namespace CADERA_APP_NAMESPACE {
 		// 	Render.drawFrame();
 		// 	Render.runCamera();*/
 
-		// 	glfwWaitEvents();
+			glfwWaitEvents();
 			
 
-		//}
+
+		}
 	}
 
 }

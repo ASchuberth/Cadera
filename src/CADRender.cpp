@@ -1,6 +1,6 @@
 #include "pch.hpp"
 #include "CADRender.hpp"
-#include "callbacks.hpp"
+//#include "callbacks.hpp"
 
 
 #include <stb_image.h>
@@ -8,47 +8,47 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-	QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
-	{
-		QueueFamilyIndices indices;
+	// QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
+	// {
+	// 	QueueFamilyIndices indices;
 
-		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
+	// 	std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
 
-		int i = 0;
-		for (const auto& queueFamily : queueFamilies) {
-			if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
-				indices.graphicsFamily = i;
-			}
+	// 	int i = 0;
+	// 	for (const auto& queueFamily : queueFamilies) {
+	// 		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
+	// 			indices.graphicsFamily = i;
+	// 		}
 
-			VkBool32 presentSupport = false;
-			presentSupport = device.getSurfaceSupportKHR(i, surface);
+	// 		VkBool32 presentSupport = false;
+	// 		presentSupport = device.getSurfaceSupportKHR(i, surface);
 
-			if (queueFamily.queueCount > 0 && presentSupport) {
-				indices.presentFamily = i;
-			}
+	// 		if (queueFamily.queueCount > 0 && presentSupport) {
+	// 			indices.presentFamily = i;
+	// 		}
 
-			if (indices.isComplete()) {
-				break;
-			}
+	// 		if (indices.isComplete()) {
+	// 			break;
+	// 		}
 
-			i++;
-		}
+	// 		i++;
+	// 	}
 
-		return indices;
-	}
+	// 	return indices;
+	// }
 
 	
 	void CADRender::setup() {
 
 		// GLFW
-		mMainCanvas.createWindow("CADERA");
+		createWindow();
 
 		// mInstance
-		createInstance();
-		createSurface();
+		//createInstance();
+		//createSurface();
 
 		// Physical mDevice
-		pickPhysicalDevice();
+		//pickPhysicalDevice();
 
 		// Logical mDevice
 		//createLogicalDevice();
@@ -83,8 +83,23 @@ namespace CADERA_APP_NAMESPACE {
 		bgColor = color;
 	}
 
-	bool CADRender::checkValidationLayerSupport() {
-		std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
+    void CADRender::createWindow() {
+		glfwInit();
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+		
+		mMainWindow = glfwCreateWindow(300, 300, "Cadera", nullptr, nullptr);
+		
+		glfwMaximizeWindow(mMainWindow);
+		glfwSetWindowUserPointer(mMainWindow, this);
+
+		glfwSetInputMode(mMainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+   /*  bool CADRender::checkValidationLayerSupport()
+    {
+        std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
 
 
 		for (const char* layerName : validationLayers) {
@@ -103,9 +118,9 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 		return true;
-	}
+    } */
 
-	std::vector<const char*> CADRender::getRequiredExtensions() {
+/*     std::vector<const char*> CADRender::getRequiredExtensions() {
 		
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
@@ -154,10 +169,10 @@ namespace CADERA_APP_NAMESPACE {
 		mInstance = vk::createInstanceUnique(createInfo, nullptr);
 		VULKAN_HPP_DEFAULT_DISPATCHER.init(*mInstance);
 
-	}
+	} */
 	
 	
-	void CADRender::createSurface() {
+	/* void CADRender::createSurface() {
 		
 		vk::SurfaceKHR tempSurface;
 
@@ -167,9 +182,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		mMainCanvas.mSurface = vk::UniqueSurfaceKHR(tempSurface, *mInstance);
 
-	}
+	} */
 	
-	void CADRender::pickPhysicalDevice() {
+/* 	void CADRender::pickPhysicalDevice() {
 
 		std::vector<vk::PhysicalDevice> devices = mInstance->enumeratePhysicalDevices();
 
@@ -189,9 +204,9 @@ namespace CADERA_APP_NAMESPACE {
 			throw std::runtime_error("failed to find a suitable GPU!");
 		}
 
-	}
+	} */
 	
-	bool CADRender::isDeviceSuitable(vk::PhysicalDevice device) {
+/* 	bool CADRender::isDeviceSuitable(vk::PhysicalDevice device) {
 
 		mIndices = findQueueFamilies(device, *mMainCanvas.mSurface);
 
@@ -204,10 +219,10 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 		return mIndices.isComplete() && extensionsSupported && swapChainAdequate;
-	}
+	} */
 	
 	
-	bool CADRender::checkDeviceExtensionSupport(vk::PhysicalDevice device)
+	/* bool CADRender::checkDeviceExtensionSupport(vk::PhysicalDevice device)
 	{
 		std::vector<vk::ExtensionProperties> availableExtensions = device.enumerateDeviceExtensionProperties(nullptr);
 
@@ -220,9 +235,9 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		return requiredExtensions.empty();
-	}
+	} */
 	
-	void CADRender::createLogicalDevice() {
+	/* void CADRender::createLogicalDevice() {
 		
 		std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
 		std::set<int> uniqueQueueFamilies = { mIndices.graphicsFamily, mIndices.presentFamily };
@@ -272,9 +287,9 @@ namespace CADERA_APP_NAMESPACE {
 		VULKAN_HPP_DEFAULT_DISPATCHER.init(mDevice);
 		vkGetDeviceProcAddr = dl.getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
 	}
+ */
 
-
-
+/* 
 	void CADRender::setupRenderDoc()
 	{
 	}
@@ -288,8 +303,9 @@ namespace CADERA_APP_NAMESPACE {
 	}
 	void CADRender::createRenderPass()
 	{
-	}
-	void CADRender::initImgui() {
+	} */
+	
+/* void CADRender::initImgui() {
 
 		// Create Descriptor Pool
 
@@ -382,9 +398,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		
 
-	}
+	} */
 
-	void CADRender::createSketchPointPipeline() {
+/* 	void CADRender::createSketchPointPipeline() {
 
 		vk::VertexInputBindingDescription BindingDescription(0, sizeof(Vertex), vk::VertexInputRate::eVertex);
 
@@ -686,14 +702,15 @@ namespace CADERA_APP_NAMESPACE {
 		mDevice.destroyShaderModule(vertShaderModule, nullptr);
 		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 	}
-
-	void CADRender::preparePipelines() {
+ */
+	
+/* 	void CADRender::preparePipelines() {
 
 		createSketchPointPipeline();
 		createSketchLinePipeline();
 		createSketchGridPipeline();
-	}
-
+	} */
+/* 
 	void CADRender::destroyPipelines() {
 
 	
@@ -761,8 +778,8 @@ namespace CADERA_APP_NAMESPACE {
 	vk::CommandBuffer CADRender::beginSingleTimeCommands(const vk::CommandBufferLevel& level, const vk::CommandBufferInheritanceInfo& inheritance)
 	{
 		return vk::CommandBuffer();
-	}
-
+	} */
+/* 
 	void CADRender::endSingleTimeCommands(vk::CommandBuffer& commandBuffer)
 	{
 	}
@@ -815,8 +832,8 @@ namespace CADERA_APP_NAMESPACE {
 	void CADRender::createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, const vk::MemoryPropertyFlags& properties, vk::Buffer& buffer, vk::DeviceMemory& bufferMemory)
 	{
 	}
-
-	void CADRender::createDescriptorPool() {
+ */
+/* 	void CADRender::createDescriptorPool() {
 
 		std::array<vk::DescriptorPoolSize, 2> poolSizes = {};
 		poolSizes[0].type = vk::DescriptorType::eUniformBuffer;
@@ -829,9 +846,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		mDescriptorPool = mDevice.createDescriptorPool(poolInfo, nullptr);
 
-	}
+	} */
 
-	void CADRender::createDescriptorSets() {
+	/* void CADRender::createDescriptorSets() {
 
 		
 		std::vector<vk::DescriptorSetLayout> layouts(mMainCanvas.mImages.size(), mDescriptorSetLayout);
@@ -876,9 +893,9 @@ namespace CADERA_APP_NAMESPACE {
 
 
 
-	}
+	} */
 
-	void CADRender::createCommandBuffers() {
+	/* void CADRender::createCommandBuffers() {
 
 		mDevice.resetCommandPool(mCommandPool, vk::CommandPoolResetFlags());
 
@@ -938,7 +955,7 @@ namespace CADERA_APP_NAMESPACE {
 
 
 
-			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
+			// ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
 			mCommandBuffers[i].endRenderPass();
 
@@ -948,13 +965,13 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 
-	}
-
+	} */
+/* 
 	void CADRender::deleteBuffer(uint32_t id)
 	{
-	}
+	} */
 
-	void CADRender::updateUniformBuffer(uint32_t currentImage) {
+/* 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -981,32 +998,32 @@ namespace CADERA_APP_NAMESPACE {
 		memcpy(data, &u, sizeof(u));
 		mDevice.unmapMemory(mUniformBufferMemories[currentImage]);
 
-	}
+	} */
 
-	void CADRender::drawFrame()
+/* 	void CADRender::drawFrame()
 	{
-	}
+	} */
 
-	void CADRender::cleanup()
-	{
+	void CADRender::cleanup() {
+		glfwTerminate();
 	}
 
 	void CADRender::destroy() {
 
-		ImGui_ImplVulkan_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
+		// ImGui_ImplVulkan_Shutdown();
+		// ImGui_ImplGlfw_Shutdown();
+		// ImGui::DestroyContext();
 
-		mDevice.destroyDescriptorPool(mGuiDescriptorPool);
+		//mDevice.destroyDescriptorPool(mGuiDescriptorPool);
 	
 
-		destroyPipelines();
+		//destroyPipelines();
 
 		cleanup();
 
 	}
 
-	void CADRender::runCamera() {
+/* 	void CADRender::runCamera() {
 		
 		
 		double x, y;
@@ -1021,9 +1038,9 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 		Cam.update();
-	}
+	} */
 
-	void CADRender::render(Model &M) {
+/* 	void CADRender::render(Model &M) {
 
 		
 		if (M.getType() == cad_sketch) {
@@ -1100,6 +1117,6 @@ namespace CADERA_APP_NAMESPACE {
 		}
 
 	}
-
+ */
 	
 }
