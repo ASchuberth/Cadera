@@ -30,9 +30,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		//// Graphics Pipelines
 		createRenderPass();
-		//createDescriptorSetLayout();
-		//createPipelineLayout();
-		//createTextPipeline();
+		createDescriptorSetLayout();
+		createPipelineLayout();
+		createTextPipeline();
 
 		//createCommandPool();
 		//mMainCanvas.createDepthResources(mPhysicalDevice, mDevice);
@@ -503,6 +503,186 @@ void CADRender::createSwapChain()
 
 	}
 
+	void CADRender::createDescriptorSetLayout() {
+
+
+		vk::DescriptorSetLayoutBinding uboLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1,
+			                                            vk::ShaderStageFlagBits::eVertex, nullptr);
+
+		vk::DescriptorSetLayoutBinding cisLayoutBinding( 1, 
+			                                             vk::DescriptorType::eCombinedImageSampler,
+			                                             1,
+			                                             vk::ShaderStageFlagBits::eFragment, 
+			                                             nullptr);
+
+		std::array<vk::DescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, cisLayoutBinding };
+
+
+		vk::DescriptorSetLayoutCreateInfo layoutInfo({}, static_cast<uint32_t>(bindings.size()), bindings.data());
+
+		if (mDevice.createDescriptorSetLayout(&layoutInfo, nullptr, &this->mDescriptorSetLayout) != vk::Result::eSuccess)
+			throw std::runtime_error("failed to create descriptor set layout!");
+
+		std::cout << "Descriptor Set Layout CadRender:\t" << mDescriptorSetLayout;
+		std::cout << std::endl;
+		
+	}
+
+	void CADRender::createPipelineLayout() {
+
+		vk::PipelineLayoutCreateInfo pipelineLayoutInfo({}, 1, &mDescriptorSetLayout, 0, nullptr);
+
+		if (mDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &mPipelineLayout) != vk::Result::eSuccess)
+			throw std::runtime_error("failed to create pipeline layout");
+
+	}
+
+	std::vector<char> CADRender::readFile(const std::string filename) {
+
+		std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+		if (!file.is_open()) {
+			throw std::runtime_error("failed to open file!");
+		}
+
+		size_t fileSize = (size_t)file.tellg();
+		std::vector<char> buffer(fileSize);
+
+		file.seekg(0);
+		file.read(buffer.data(), fileSize);
+
+		file.close();
+
+		return buffer;
+
+	}
+
+	vk::ShaderModule CADRender::createShaderModule(const std::vector<char>& code)
+	{
+		vk::ShaderModuleCreateInfo createInfo = {};
+
+		createInfo.codeSize = code.size();
+		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+		vk::ShaderModule shaderModule;
+
+		if (mDevice.createShaderModule(&createInfo, nullptr, &shaderModule) != vk::Result::eSuccess) {
+			throw std::runtime_error("failed to create shader module!");
+		}
+
+		return shaderModule;
+	}
+
+	void CADRender::createTextPipeline()
+	{
+
+		
+		vk::VertexInputBindingDescription BindingDescription(0, sizeof(txt::Vertex), vk::VertexInputRate::eVertex);
+
+
+		std::vector<vk::VertexInputBindingDescription> BindingDescriptions = {
+			BindingDescription
+		};
+
+		std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(4);
+
+
+		AttributeDescriptions[0].binding = 0;
+		AttributeDescriptions[0].location = 0;
+		AttributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[0].offset = offsetof(txt::Vertex, pos);
+
+		AttributeDescriptions[1].binding = 0;
+		AttributeDescriptions[1].location = 1;
+		AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[1].offset = offsetof(txt::Vertex, textColor);
+
+		AttributeDescriptions[2].binding = 0;
+		AttributeDescriptions[2].location = 2;
+		AttributeDescriptions[2].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[2].offset = offsetof(txt::Vertex, backgroundColor);
+
+		AttributeDescriptions[3].binding = 0;
+		AttributeDescriptions[3].location = 3;
+		AttributeDescriptions[3].format = vk::Format::eR32G32Sfloat;
+		AttributeDescriptions[3].offset = offsetof(txt::Vertex, texCoord);
+
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
+			AttributeDescriptions.size(), AttributeDescriptions.data());
+
+		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\PecosClient\\PecosClient\\vert.spv");
+		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\PecosClient\\PecosClient\\frag.spv");
+
+		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
+		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+
+		vk::PipelineShaderStageCreateInfo VertShaderInfo({}, vk::ShaderStageFlagBits::eVertex, vertShaderModule, "main");
+		vk::PipelineShaderStageCreateInfo FragShaderInfo({}, vk::ShaderStageFlagBits::eFragment, fragShaderModule, "main");
+
+		vk::PipelineShaderStageCreateInfo ShaderStages[] = { VertShaderInfo, FragShaderInfo };
+
+		vk::PipelineInputAssemblyStateCreateInfo InputAssemblyInfo({}, vk::PrimitiveTopology::eTriangleList, VK_FALSE);
+
+		vk::PipelineRasterizationStateCreateInfo RasterizerInfo({}, VK_FALSE, VK_FALSE, vk::PolygonMode::eFill,
+			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
+			VK_FALSE);
+
+		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
+
+		vk::Rect2D Scissor({ 0, 0 }, mExtent);
+
+		vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1, &Scissor);
+
+		vk::PipelineMultisampleStateCreateInfo MultisampleInfo({}, vk::SampleCountFlagBits::e1, VK_FALSE,
+			1.0f, nullptr, VK_FALSE, VK_FALSE);
+
+		vk::PipelineColorBlendAttachmentState ColorBlendAttachment(VK_TRUE, vk::BlendFactor::eSrcAlpha,
+			vk::BlendFactor::eOneMinusSrcAlpha,
+			vk::BlendOp::eAdd, vk::BlendFactor::eOne,
+			vk::BlendFactor::eZero, vk::BlendOp::eAdd,
+			vk::ColorComponentFlagBits::eR |
+			vk::ColorComponentFlagBits::eG |
+			vk::ColorComponentFlagBits::eB |
+			vk::ColorComponentFlagBits::eA);
+
+
+		vk::PipelineColorBlendStateCreateInfo ColorBlendingInfo({}, VK_FALSE, vk::LogicOp::eCopy, 1, &ColorBlendAttachment,
+			{ 0.0f, 0.0f, 0.0f, 0.0f });
+
+
+		vk::PipelineDepthStencilStateCreateInfo depthStencilInfo({}, VK_TRUE, VK_TRUE, vk::CompareOp::eLess,
+			VK_TRUE, VK_FALSE, {}, {}, 0.0f, 1.0f);
+
+
+		vk::GraphicsPipelineCreateInfo PipelineCreateInfo;
+
+		PipelineCreateInfo.stageCount = 2;
+		PipelineCreateInfo.pStages = ShaderStages;
+		PipelineCreateInfo.pVertexInputState = &VertexInputInfo;
+		PipelineCreateInfo.pInputAssemblyState = &InputAssemblyInfo;
+		PipelineCreateInfo.pViewportState = &ViewportInfo;
+		PipelineCreateInfo.pRasterizationState = &RasterizerInfo;
+		PipelineCreateInfo.pMultisampleState = &MultisampleInfo;
+		PipelineCreateInfo.pDepthStencilState = &depthStencilInfo;
+		PipelineCreateInfo.pColorBlendState = &ColorBlendingInfo;
+
+		PipelineCreateInfo.renderPass = mRenderPass;
+		PipelineCreateInfo.subpass = 0;
+
+		PipelineCreateInfo.basePipelineIndex = -1;
+		PipelineCreateInfo.layout = mPipelineLayout;
+
+
+		mTextPipeline = static_cast<vk::Pipeline>(mDevice.createGraphicsPipeline(mPipelineCache,
+		PipelineCreateInfo, nullptr).value);
+
+	
+
+		mDevice.destroyShaderModule(vertShaderModule, nullptr);
+		mDevice.destroyShaderModule(fragShaderModule, nullptr);
+		
+	}
+
 	/* vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
 	{
 		return vk::Format();
@@ -928,43 +1108,15 @@ void CADRender::createSwapChain()
 
 	}
 
-	void CADRender::createDescriptorSetLayout() {
+	
 
-
-		vk::DescriptorSetLayoutBinding uboLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1,
-			                                            vk::ShaderStageFlagBits::eVertex, nullptr);
-
-		vk::DescriptorSetLayoutBinding cisLayoutBinding( 1, 
-			                                             vk::DescriptorType::eCombinedImageSampler,
-			                                             1,
-			                                             vk::ShaderStageFlagBits::eFragment, 
-			                                             nullptr);
-
-		std::array<vk::DescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, cisLayoutBinding };
-
-
-		vk::DescriptorSetLayoutCreateInfo layoutInfo({}, static_cast<uint32_t>(bindings.size()), bindings.data());
-
-		if (mDevice.createDescriptorSetLayout(&layoutInfo, nullptr, &this->mDescriptorSetLayout) != vk::Result::eSuccess)
-			throw std::runtime_error("failed to create descriptor set layout!");
-
-		std::cout << "Descriptor Set Layout CadRender:\t" << mDescriptorSetLayout;
-		std::cout << std::endl;
-		
-	}
-
-	void CADRender::createPipelineLayout()
-	{
-	}
-
+	
 	std::vector<char> CADRender::readFile(const std::string filename)
 	{
 		return std::vector<char>();
 	}
 
-	void CADRender::createTextPipeline()
-	{
-	}
+
 
 	void CADRender::cleanupSwapchain()
 	{
@@ -1214,7 +1366,10 @@ void CADRender::createSwapChain()
 
 	void CADRender::cleanup() {
 		
+		mDevice.destroyPipeline(mTextPipeline, nullptr);
 
+		mDevice.destroyPipelineLayout(mPipelineLayout, nullptr);
+		mDevice.destroyDescriptorSetLayout(mDescriptorSetLayout, nullptr);
 		mDevice.destroy(mRenderPass, nullptr);
 		
 
@@ -1233,6 +1388,7 @@ void CADRender::createSwapChain()
 		
 		
 		glfwTerminate();
+		
 	}
 
 	void CADRender::destroy() {

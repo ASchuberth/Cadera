@@ -8,7 +8,8 @@ enable_testing()
 
 
 add_executable(Cadera   src/Cadera.cpp
-                        src/CADRender.cpp                    
+                        src/CADRender.cpp  
+                        src/TextRender.cpp                  
                         src/Main.cpp
                        
                       

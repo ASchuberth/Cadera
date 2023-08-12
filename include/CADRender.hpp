@@ -4,7 +4,7 @@
 //#include "Camera.hpp"
 //#include "SketchSolver.hpp"
 //#include "Canvas.hpp"
-//#include "TextRender.hpp"
+#include "TextRender.hpp"
 //#include "RenderUtil.hpp"
 
 
@@ -248,6 +248,16 @@ namespace CADERA_APP_NAMESPACE {
         vk::Format findDepthFormat(vk::PhysicalDevice const &PhysicalDevice);
 
         void createRenderPass();
+
+        void createDescriptorSetLayout();
+
+        void createPipelineLayout();
+
+        std::vector<char> readFile(const std::string filename);
+
+        vk::ShaderModule createShaderModule(const std::vector<char> &code);
+
+        void createTextPipeline();
 
         /*
 
