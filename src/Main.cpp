@@ -12,7 +12,7 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 int main() {
 
 	const char* a = "VK_LAYER_LUNARG_standard_validation";
-	//std::vector<const char*> b = {a};
+	std::vector<const char*> b = {a};
 	
 	cad::Cadera App;
 	

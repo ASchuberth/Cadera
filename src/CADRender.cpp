@@ -48,10 +48,10 @@ namespace CADERA_APP_NAMESPACE {
 		createSurface();
 
 		// Physical mDevice
-		//pickPhysicalDevice();
+		pickPhysicalDevice();
 
 		// Logical mDevice
-		//createLogicalDevice();
+		createLogicalDevice();
 		//setupRenderDoc();
 
 		//// mSwapchain
@@ -143,9 +143,9 @@ namespace CADERA_APP_NAMESPACE {
 
 	}
 	
-/* 	void CADRender::pickPhysicalDevice() {
+	void CADRender::pickPhysicalDevice() {
 
-		std::vector<vk::PhysicalDevice> devices = mInstance->enumeratePhysicalDevices();
+		std::vector<vk::PhysicalDevice> devices = mInstance.enumeratePhysicalDevices();
 
 		if (devices.empty()) {
 			throw std::runtime_error("failed to find GPUs with Vulkan support!");
@@ -163,27 +163,72 @@ namespace CADERA_APP_NAMESPACE {
 			throw std::runtime_error("failed to find a suitable GPU!");
 		}
 
-	} */
+	}
 	
-/* 	bool CADRender::isDeviceSuitable(vk::PhysicalDevice device) {
+		SwapChainSupportDetails CADRender::querySwapChainSupport(const vk::PhysicalDevice& device)
+	{
+		
+		SwapChainSupportDetails details;
 
-		mIndices = findQueueFamilies(device, *mMainCanvas.mSurface);
+		details.capabilities = device.getSurfaceCapabilitiesKHR(mSurface);
+		details.formats = device.getSurfaceFormatsKHR(mSurface);
+		details.presentModes = device.getSurfacePresentModesKHR(mSurface);
+
+		return details;
+		
+	}
+
+	 QueueFamilyIndices CADRender::findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
+	{
+		QueueFamilyIndices indices;
+
+		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
+
+		int i = 0;
+		for (const auto& queueFamily : queueFamilies) {
+			if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
+				indices.graphicsFamily = i;
+			}
+
+			VkBool32 presentSupport = false;
+			presentSupport = device.getSurfaceSupportKHR(i, surface);
+
+			if (queueFamily.queueCount > 0 && presentSupport) {
+				indices.presentFamily = i;
+			}
+
+			if (indices.isComplete()) {
+				break;
+			}
+
+			i++;
+		}
+
+		return indices;
+	}
+
+
+	bool CADRender::isDeviceSuitable(vk::PhysicalDevice device) {
+
+	 	mIndices = findQueueFamilies(device, mSurface);
 
 		bool extensionsSupported = checkDeviceExtensionSupport(device);
 
 		bool swapChainAdequate = false;
 		if (extensionsSupported) {
-			SwapChainSupportDetails swapChainSupport = mMainCanvas.querySwapChainSupport(device);
+			SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
 			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}
 
-		return mIndices.isComplete() && extensionsSupported && swapChainAdequate;
-	} */
+		return mIndices.isComplete() && extensionsSupported && swapChainAdequate; 
+	}
 	
-	
-	/* bool CADRender::checkDeviceExtensionSupport(vk::PhysicalDevice device)
+
+	bool CADRender::checkDeviceExtensionSupport(vk::PhysicalDevice device)
 	{
-		std::vector<vk::ExtensionProperties> availableExtensions = device.enumerateDeviceExtensionProperties(nullptr);
+		 std::vector<vk::ExtensionProperties> availableExtensions = device.enumerateDeviceExtensionProperties(nullptr);
+
+		
 
 		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
@@ -194,9 +239,9 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		return requiredExtensions.empty();
-	} */
+	} 
 	
-	/* void CADRender::createLogicalDevice() {
+	void CADRender::createLogicalDevice() {
 		
 		std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
 		std::set<int> uniqueQueueFamilies = { mIndices.graphicsFamily, mIndices.presentFamily };
@@ -246,7 +291,7 @@ namespace CADERA_APP_NAMESPACE {
 		VULKAN_HPP_DEFAULT_DISPATCHER.init(mDevice);
 		vkGetDeviceProcAddr = dl.getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
 	}
- */
+
 
 /* 
 	void CADRender::setupRenderDoc()
@@ -965,7 +1010,7 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::cleanup() {
 		
-
+		vkDestroyDevice(mDevice, nullptr);
 		vkDestroySurfaceKHR(mInstance, mSurface, nullptr);
 		vkDestroyInstance(mInstance, nullptr);
 		

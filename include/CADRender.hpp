@@ -13,6 +13,27 @@
 namespace CADERA_APP_NAMESPACE {
 
 
+		struct SwapChainSupportDetails {
+			vk::SurfaceCapabilitiesKHR capabilities;
+			std::vector<vk::SurfaceFormatKHR> formats;
+			std::vector<vk::PresentModeKHR> presentModes;
+		};
+
+		struct QueueFamilyIndices {
+		int graphicsFamily = -1;
+		int presentFamily = -1;
+
+		bool isComplete() {
+			return graphicsFamily >= 0 && presentFamily >= 0;
+		}
+
+		bool isDifferent() {
+			return graphicsFamily != presentFamily;
+		}
+	};
+
+
+
 	struct ubo {
 		glm::mat4 model;
 		glm::mat4 view;
@@ -40,13 +61,13 @@ namespace CADERA_APP_NAMESPACE {
 	class CADRender  {
 		
 	private:
-		/* std::vector<const char*> validationLayers = {
+		std::vector<const char*> validationLayers = {
 			"VK_LAYER_LUNARG_standard_validation"
-		}; */
+		};
 
-		/* std::vector<const char*> deviceExtensions = {
+		std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		}; */
+		};
 
 		vk::DescriptorPool mGuiDescriptorPool;
 		VkAllocationCallbacks* mGuiAllocator; 
@@ -98,7 +119,7 @@ namespace CADERA_APP_NAMESPACE {
 
 
 		// Physical mDevice
-		//QueueFamilyIndices mIndices;
+		QueueFamilyIndices mIndices;
 
 		// Logical mDevice
 		vk::Queue mGraphicsQueue;
@@ -183,16 +204,20 @@ namespace CADERA_APP_NAMESPACE {
 		void createSurface();
 
 		// Physical Device
-/* 
+
 		void pickPhysicalDevice();
 
-		bool isDeviceSuitable(vk::PhysicalDevice device);
+        SwapChainSupportDetails querySwapChainSupport(const vk::PhysicalDevice &device);
 
-		bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
+        QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface);
+
+        bool isDeviceSuitable(vk::PhysicalDevice device);
+
+        bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
 
 		// Logical mDevice
 		void createLogicalDevice();
-		void setupRenderDoc();
+/*			void setupRenderDoc();
 
 		// Graphics Pipeline
 		vk::Format findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates,
