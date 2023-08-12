@@ -25,11 +25,11 @@ namespace CADERA_APP_NAMESPACE {
 		createLogicalDevice();
 
 		//// mSwapchain
-		//mMainCanvas.createSwapChain(mDevice, mPhysicalDevice, mIndices);
-		//mMainCanvas.createImageViews(mDevice);
+		createSwapChain();
+		createImageViews();
 
 		//// Graphics Pipelines
-		//createRenderPass();
+		createRenderPass();
 		//createDescriptorSetLayout();
 		//createPipelineLayout();
 		//createTextPipeline();
@@ -263,6 +263,246 @@ namespace CADERA_APP_NAMESPACE {
 	}
 
 
+
+	vk::SurfaceFormatKHR CADRender::chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats)
+	{
+
+		if (availableFormats.size() == 1 && availableFormats[0].format == vk::Format::eUndefined) {
+			return { vk::Format::eB8G8R8A8Unorm, vk::ColorSpaceKHR::eSrgbNonlinear };
+
+		}
+
+		for (const auto& availableFormat : availableFormats) {
+
+			if (availableFormat.format == vk::Format::eB8G8R8A8Unorm &&
+				availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
+
+				return availableFormat;
+			}
+		}
+
+		return availableFormats[0];
+	}
+
+	vk::PresentModeKHR CADRender::chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> availablePresentModes)
+	{
+		vk::PresentModeKHR bestMode = vk::PresentModeKHR::eFifo;
+
+
+		for (const auto& availablePresentMode : availablePresentModes) {
+			if (availablePresentMode == vk::PresentModeKHR::eMailbox) {
+				return availablePresentMode;
+			}
+			else if (availablePresentMode == vk::PresentModeKHR::eImmediate) {
+				bestMode = availablePresentMode;
+			}
+		}
+
+		return bestMode;
+	}
+
+	vk::Extent2D CADRender::chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)
+	{
+		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+			return capabilities.currentExtent;
+		}
+		else {
+			int width, height;
+			glfwGetFramebufferSize(mMainWindow, &width, &height);
+
+			VkExtent2D actualExtent = {
+				static_cast<uint32_t>(width),
+				static_cast<uint32_t>(height)
+			};
+
+
+			actualExtent.width = std::max(capabilities.minImageExtent.width,
+				std::min(capabilities.maxImageExtent.width, actualExtent.width));
+
+			actualExtent.height = std::max(capabilities.minImageExtent.height,
+				std::min(capabilities.maxImageExtent.height, actualExtent.height));
+
+			return actualExtent;
+		}
+	}
+
+void CADRender::createSwapChain()
+	{
+		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(mPhysicalDevice);
+
+		vk::SurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+		vk::PresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+		vk::Extent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+
+		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+		if (swapChainSupport.capabilities.maxImageCount > 0 
+			&& imageCount > swapChainSupport.capabilities.maxImageCount) {
+
+				imageCount = swapChainSupport.capabilities.maxImageCount;
+		}
+
+		vk::SwapchainCreateInfoKHR createInfo({}, mSurface, imageCount, surfaceFormat.format,
+			                                  surfaceFormat.colorSpace, extent, 1, 
+			                                  vk::ImageUsageFlagBits::eColorAttachment);
+
+
+		uint32_t queueFamilyIndices[] = { mIndices.graphicsFamily, mIndices.presentFamily };
+
+		if (mIndices.isDifferent()) {
+
+			createInfo.imageSharingMode = vk::SharingMode::eConcurrent;
+			createInfo.queueFamilyIndexCount = 2;
+			createInfo.pQueueFamilyIndices = queueFamilyIndices;
+		}
+		else {
+			createInfo.imageSharingMode = vk::SharingMode::eExclusive;
+		}
+
+		createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+		createInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
+		createInfo.presentMode = presentMode;
+		createInfo.clipped = VK_TRUE;
+
+	
+		mSwapchain = mDevice.createSwapchainKHR(createInfo, nullptr);
+			
+
+
+		mImages = mDevice.getSwapchainImagesKHR(mSwapchain);
+
+		mFormat = surfaceFormat.format;
+		mExtent = extent;
+
+	}
+
+	void CADRender::createImageViews()
+	{
+		mImageViews.resize(mImages.size());
+
+
+		for (decltype(mImages.size()) i = 0; i < mImages.size(); i++) {
+			mImageViews[i] = createImageView(mImages[i], mFormat, vk::ImageAspectFlagBits::eColor);
+		}
+	}
+
+	vk::ImageView CADRender::createImageView( vk::Image image, vk::Format format, 
+		                                  vk::ImageAspectFlags aspectFlags)
+	{
+		vk::ImageViewCreateInfo createInfo = {};
+		createInfo.image = image;
+		createInfo.viewType = vk::ImageViewType::e2D;//VK_IMAGE_VIEW_TYPE_2D;
+		createInfo.format = format;
+		createInfo.components.r = vk::ComponentSwizzle::eIdentity;//VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.g = vk::ComponentSwizzle::eIdentity;
+		createInfo.components.b = vk::ComponentSwizzle::eIdentity;
+		createInfo.components.a = vk::ComponentSwizzle::eIdentity;
+		createInfo.subresourceRange.aspectMask = aspectFlags;
+		createInfo.subresourceRange.baseMipLevel = 0;
+		createInfo.subresourceRange.levelCount = 1;
+		createInfo.subresourceRange.baseArrayLayer = 0;
+		createInfo.subresourceRange.layerCount = 1;
+
+		vk::ImageView imageView;
+
+
+		mDevice.createImageView(&createInfo, nullptr, &imageView);
+	
+
+		return imageView;
+	}
+
+	vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice const& PhysicalDevice, const std::vector<vk::Format>& candidates, 
+		                                   vk::ImageTiling tiling, vk::FormatFeatureFlags features) {
+		
+		for (vk::Format format : candidates) {
+			vk::FormatProperties props;
+			
+			props = PhysicalDevice.getFormatProperties(format);
+		
+
+			if (tiling == vk::ImageTiling::eLinear && (props.linearTilingFeatures & features) == features) {
+				return format;
+			}
+			else if (tiling == vk::ImageTiling::eOptimal && (props.optimalTilingFeatures & features) == features) {
+				return format;
+			}
+		}
+		throw std::runtime_error("Failed to find supported format!");
+	}
+
+	vk::Format CADRender::findDepthFormat(vk::PhysicalDevice const& PhysicalDevice) {
+
+			return findSupportedFormat(PhysicalDevice,
+				{ vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint },
+				vk::ImageTiling::eOptimal,
+				vk::FormatFeatureFlagBits::eDepthStencilAttachment);
+		}
+
+	void CADRender::createRenderPass() {
+
+		// Color Attachment
+		vk::AttachmentDescription colorAttachment = {};
+		colorAttachment.format = mFormat;
+		colorAttachment.samples = vk::SampleCountFlagBits::e1;
+		colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
+		colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
+		colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+		colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+		colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
+		colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+
+		vk::AttachmentReference colorAttachmentRef = {};
+		colorAttachmentRef.attachment = 0;
+		colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
+
+		// Depth Buffer Attachment
+		vk::AttachmentDescription depthAttachment = {};
+		depthAttachment.format = findDepthFormat(mPhysicalDevice);
+		depthAttachment.samples = vk::SampleCountFlagBits::e1;
+		depthAttachment.loadOp = vk::AttachmentLoadOp::eClear;
+		depthAttachment.storeOp = vk::AttachmentStoreOp::eDontCare;
+		depthAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+		depthAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+		depthAttachment.initialLayout = vk::ImageLayout::eUndefined;
+		depthAttachment.finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+		vk::AttachmentReference depthAttachmentRef = {};
+		depthAttachmentRef.attachment = 1;
+		depthAttachmentRef.layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+
+
+		vk::SubpassDescription subpass = {};
+		subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
+		subpass.colorAttachmentCount = 1;
+		subpass.pColorAttachments = &colorAttachmentRef;
+		subpass.pDepthStencilAttachment = &depthAttachmentRef;
+
+		vk::SubpassDependency dependency = {};
+		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass = 0;
+		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.srcAccessMask = vk::AccessFlagBits::eColorAttachmentRead;
+		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput; VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite;
+
+		std::array<vk::AttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+		vk::RenderPassCreateInfo renderPassInfo = {};
+
+		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		renderPassInfo.pAttachments = attachments.data();
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.dependencyCount = 1;
+		renderPassInfo.pDependencies = &dependency;
+
+
+		if (mDevice.createRenderPass(&renderPassInfo, nullptr, &mRenderPass) != vk::Result::eSuccess)
+			throw std::runtime_error("failed to create render pass!");
+
+	}
+
 	/* vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
 	{
 		return vk::Format();
@@ -271,9 +511,7 @@ namespace CADERA_APP_NAMESPACE {
 	{
 		return vk::Format();
 	}
-	void CADRender::createRenderPass()
-	{
-	} */
+	*/
 	
 /* void CADRender::initImgui() {
 
@@ -976,6 +1214,19 @@ namespace CADERA_APP_NAMESPACE {
 
 	void CADRender::cleanup() {
 		
+
+		mDevice.destroy(mRenderPass, nullptr);
+		
+
+		for (auto imageView : mImageViews) {
+			mDevice.destroyImageView(imageView, nullptr);
+			
+		}
+
+		
+
+		mDevice.destroySwapchainKHR(mSwapchain, nullptr);
+
 		vkDestroyDevice(mDevice, nullptr);
 		vkDestroySurfaceKHR(mInstance, mSurface, nullptr);
 		vkDestroyInstance(mInstance, nullptr);

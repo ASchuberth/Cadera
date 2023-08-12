@@ -11,8 +11,6 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 /// @return 0
 int main() {
 
-	const char* a = "VK_LAYER_LUNARG_standard_validation";
-	std::vector<const char*> b = {a};
 	
 	cad::Cadera App;
 	
@@ -23,8 +21,6 @@ int main() {
 	catch (const std::exception & err) {
 		std::cerr << err.what() << std::endl;
 	}
-
-	std::cout << "Hello\n";
 
 
 	return 0;
