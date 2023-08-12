@@ -45,7 +45,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		// mInstance
 		createInstance();
-		//createSurface();
+		createSurface();
 
 		// Physical mDevice
 		//pickPhysicalDevice();
