@@ -8,35 +8,6 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-	// QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface)
-	// {
-	// 	QueueFamilyIndices indices;
-
-	// 	std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
-
-	// 	int i = 0;
-	// 	for (const auto& queueFamily : queueFamilies) {
-	// 		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
-	// 			indices.graphicsFamily = i;
-	// 		}
-
-	// 		VkBool32 presentSupport = false;
-	// 		presentSupport = device.getSurfaceSupportKHR(i, surface);
-
-	// 		if (queueFamily.queueCount > 0 && presentSupport) {
-	// 			indices.presentFamily = i;
-	// 		}
-
-	// 		if (indices.isComplete()) {
-	// 			break;
-	// 		}
-
-	// 		i++;
-	// 	}
-
-	// 	return indices;
-	// }
-
 	
 	void CADRender::setup() {
 
@@ -52,7 +23,6 @@ namespace CADERA_APP_NAMESPACE {
 
 		// Logical mDevice
 		createLogicalDevice();
-		//setupRenderDoc();
 
 		//// mSwapchain
 		//mMainCanvas.createSwapChain(mDevice, mPhysicalDevice, mIndices);
@@ -293,11 +263,7 @@ namespace CADERA_APP_NAMESPACE {
 	}
 
 
-/* 
-	void CADRender::setupRenderDoc()
-	{
-	}
-	vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
+	/* vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
 	{
 		return vk::Format();
 	}

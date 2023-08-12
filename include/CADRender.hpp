@@ -217,11 +217,11 @@ namespace CADERA_APP_NAMESPACE {
 
 		// Logical mDevice
 		void createLogicalDevice();
-/*			void setupRenderDoc();
+/*		
 
 		// Graphics Pipeline
 		vk::Format findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates,
-			vk::ImageTiling tiling, vk::FormatFeatureFlagBits features);
+		vk::ImageTiling tiling, vk::FormatFeatureFlagBits features);
 
 		vk::Format findDepthFormat(vk::PhysicalDevice& PhysicalDevice);
 
