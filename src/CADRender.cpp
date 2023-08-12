@@ -2,8 +2,12 @@
 #include "CADRender.hpp"
 //#include "callbacks.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
 
 #include <stb_image.h>
+
+
+const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
 namespace CADERA_APP_NAMESPACE {
@@ -24,27 +28,27 @@ namespace CADERA_APP_NAMESPACE {
 		// Logical mDevice
 		createLogicalDevice();
 
-		//// mSwapchain
+		// Swapchain
 		createSwapChain();
 		createImageViews();
 
-		//// Graphics Pipelines
+		// Graphics Pipelines
 		createRenderPass();
 		createDescriptorSetLayout();
 		createPipelineLayout();
 		createTextPipeline();
 
-		//createCommandPool();
-		//mMainCanvas.createDepthResources(mPhysicalDevice, mDevice);
-		//createTextureImage();
-		//createTextureImageView();
-		//createTextureSampler();
-		//createFramebuffers();
-		//createUniformBuffer();
-		//createDescriptorPool();
-		//createDescriptorSets();
-		//allocCommandBuffers();
-		//createSyncObjects();
+		createCommandPool();
+		createDepthResources();
+		createTextureImage();
+		createTextureImageView();
+		createTextureSampler();
+		createFramebuffers();
+		createUniformBuffer();
+		createDescriptorPool();
+		createDescriptorSets();
+		allocCommandBuffers();
+		createSyncObjects();
 
 
 	}
@@ -347,7 +351,7 @@ void CADRender::createSwapChain()
 			                                  vk::ImageUsageFlagBits::eColorAttachment);
 
 
-		uint32_t queueFamilyIndices[] = { mIndices.graphicsFamily, mIndices.presentFamily };
+		uint32_t queueFamilyIndices[] = { static_cast<uint32_t>(mIndices.graphicsFamily),static_cast<uint32_t>(mIndices.presentFamily) };
 
 		if (mIndices.isDifferent()) {
 
@@ -607,11 +611,11 @@ void CADRender::createSwapChain()
 		AttributeDescriptions[3].format = vk::Format::eR32G32Sfloat;
 		AttributeDescriptions[3].offset = offsetof(txt::Vertex, texCoord);
 
-		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
-			AttributeDescriptions.size(), AttributeDescriptions.data());
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
+			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\PecosClient\\PecosClient\\vert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\PecosClient\\PecosClient\\frag.spv");
+		auto vertShaderCode = readFile("../../shaders/textvert.spv");
+		auto fragShaderCode = readFile("../../shaders/textfrag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -627,7 +631,7 @@ void CADRender::createSwapChain()
 			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			VK_FALSE);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width), static_cast<float>(mExtent.height), 0.0f, 1.0f);
 
 		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
@@ -681,6 +685,379 @@ void CADRender::createSwapChain()
 		mDevice.destroyShaderModule(vertShaderModule, nullptr);
 		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 		
+	}
+
+
+	void CADRender::createCommandPool() {
+
+		vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlagBits::eTransient, mIndices.graphicsFamily);
+
+		mDevice.createCommandPool(&commandPoolInfo, nullptr, &mCommandPool);
+
+	}
+
+	uint32_t CADRender::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties) {
+	
+		vk::PhysicalDeviceMemoryProperties memProperties;
+		memProperties = mPhysicalDevice.getMemoryProperties();
+
+		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+				return i;
+			}
+		}
+
+		throw std::runtime_error("failed to find suitable memory type!");
+
+	}
+
+	void CADRender::createImage(vk::PhysicalDevice const& PhysicalDevice, vk::Device const& Device, uint32_t width, uint32_t height,
+							vk::Format format,
+							vk::ImageTiling tiling,
+							vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, 
+		                    vk::Image& image, vk::DeviceMemory& imageMemory) {
+	
+		
+
+		vk::ImageCreateInfo imageInfo({}, vk::ImageType::e2D, format, { width, height,  1}, 1, 1, vk::SampleCountFlagBits::e1, 
+										tiling, usage, vk::SharingMode::eExclusive);
+
+		image = Device.createImage(imageInfo, nullptr);
+
+
+		vk::MemoryRequirements memRequirements;
+		memRequirements = Device.getImageMemoryRequirements(image);
+
+
+		vk::MemoryAllocateInfo allocInfo(memRequirements.size, findMemoryType(memRequirements.memoryTypeBits, properties));
+		imageMemory = Device.allocateMemory(allocInfo, nullptr);
+
+
+		Device.bindImageMemory(image, imageMemory, 0);
+
+	}
+
+	void CADRender::createDepthResources() {
+		vk::Format depthFormat = findDepthFormat(mPhysicalDevice);
+
+		createImage(mPhysicalDevice, mDevice, mExtent.width, mExtent.height, depthFormat, vk::ImageTiling::eOptimal, 
+					vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, depthImage, depthImageMemory);
+		
+		depthImageView = createImageView(depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth);
+	}
+
+	void CADRender::createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, 
+		                           const vk::MemoryPropertyFlags& properties, vk::Buffer& buffer, 
+		                           vk::DeviceMemory& bufferMemory) {
+
+
+		vk::BufferCreateInfo bufferInfo({}, size, usage, vk::SharingMode::eExclusive);
+		
+		buffer = mDevice.createBuffer(bufferInfo, nullptr);
+
+		vk::MemoryRequirements memRequirements;
+		mDevice.getBufferMemoryRequirements(buffer, &memRequirements);
+
+
+		vk::MemoryAllocateInfo allocInfo(memRequirements.size, findMemoryType(memRequirements.memoryTypeBits, properties));
+
+		bufferMemory = mDevice.allocateMemory(allocInfo);
+		mDevice.bindBufferMemory(buffer, bufferMemory, 0);
+
+
+	}
+
+	vk::CommandBuffer CADRender::beginSingleTimeCommands(const vk::CommandBufferLevel& level, 
+		                                                   const vk::CommandBufferInheritanceInfo& inheritance) {
+		
+		// 3rd parameter is for Comm. Buffer Count
+		vk::CommandBufferAllocateInfo allocInfo(mCommandPool, level, 1);
+
+		std::vector<vk::CommandBuffer> commandBuffers = mDevice.allocateCommandBuffers(allocInfo);
+
+		vk::CommandBufferBeginInfo beginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+		if (level == vk::CommandBufferLevel::eSecondary) {
+			beginInfo.flags = vk::CommandBufferUsageFlagBits::eRenderPassContinue;
+			beginInfo.pInheritanceInfo = &inheritance;
+		}
+
+		if (!commandBuffers.empty()) {
+			commandBuffers[0].begin(beginInfo);
+		}
+		else {
+			throw std::runtime_error("No Command Buffers in beginSingleTimeCommands()");
+		}
+
+		return commandBuffers[0];
+
+	}
+
+	void CADRender::endSingleTimeCommands(vk::CommandBuffer& commandBuffer) {
+
+		commandBuffer.end();
+
+		vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &commandBuffer, 0, nullptr);
+
+		mGraphicsQueue.submit(submitInfo, nullptr);
+		mGraphicsQueue.waitIdle();
+		mDevice.freeCommandBuffers(mCommandPool, commandBuffer);
+
+	}
+
+
+
+	void CADRender::transitionImageLayout(vk::Image &image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout) {
+
+		vk::CommandBuffer commandBuffer = beginSingleTimeCommands(vk::CommandBufferLevel::ePrimary, vk::CommandBufferInheritanceInfo());
+
+
+		vk::ImageSubresourceRange range(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
+		
+		vk::ImageMemoryBarrier barrier({}, {}, oldLayout, newLayout, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, image, range);
+
+		vk::PipelineStageFlags sourceStage;
+		vk::PipelineStageFlags destinationStage;
+
+		if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal) {
+			barrier.srcAccessMask = {};
+			barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+
+			sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
+			destinationStage = vk::PipelineStageFlagBits::eTransfer;
+		}
+		else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal) {
+			barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+			barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
+
+			sourceStage = vk::PipelineStageFlagBits::eTransfer;
+			destinationStage = vk::PipelineStageFlagBits::eFragmentShader;
+		}
+		else {
+			throw std::invalid_argument("unsupported layout transition!");
+		}
+
+		commandBuffer.pipelineBarrier(sourceStage, destinationStage, {}, 0, nullptr, 0, nullptr, 1, &barrier);
+
+		endSingleTimeCommands(commandBuffer);
+
+	}
+
+	void CADRender::copyBufferToImage(vk::Buffer &buffer, vk::Image &image, uint32_t width, uint32_t height) {
+
+		vk::CommandBuffer commandBuffer = beginSingleTimeCommands(vk::CommandBufferLevel::ePrimary, vk::CommandBufferInheritanceInfo());
+
+		
+		vk::ImageSubresourceLayers layers(vk::ImageAspectFlagBits::eColor, 0, 0, 1);
+
+		vk::BufferImageCopy region(0, 0, 0, layers, { 0, 0, 0 }, { width, height, 1 });
+
+		commandBuffer.copyBufferToImage(buffer, image, vk::ImageLayout::eTransferDstOptimal, 1, &region);
+
+		endSingleTimeCommands(commandBuffer);
+
+	}
+
+
+
+	void CADRender::createTextureImage()
+	{
+
+	
+
+		int texWidth, texHeight, texChannels;
+
+		stbi_uc* pixels = stbi_load("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\textures\\test.png", &texWidth, &texHeight,
+			&texChannels, STBI_rgb_alpha);
+		vk::DeviceSize imageSize = (uint64_t)texWidth * (uint64_t)texHeight * 4;
+
+		if (!pixels) {
+			throw std::runtime_error("failed to load texture image!");
+		}
+
+
+		vk::Buffer stagingBuffer;
+		vk::DeviceMemory stagingBufferMemory;
+		createBuffer(imageSize, vk::BufferUsageFlagBits::eTransferSrc,
+			vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+			stagingBuffer, stagingBufferMemory);
+
+
+		void* data;
+		data = mDevice.mapMemory(stagingBufferMemory, 0, imageSize);
+		memcpy(data, pixels, (size_t)imageSize);
+		mDevice.unmapMemory(stagingBufferMemory);
+
+
+		stbi_image_free(pixels);
+
+		createImage(mPhysicalDevice, mDevice, texWidth, texHeight, vk::Format::eR8G8B8A8Srgb, vk::ImageTiling::eOptimal, 
+			                             vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, 
+			                             vk::MemoryPropertyFlagBits::eDeviceLocal, mTextureImage, mTextureMemory);
+
+
+		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb, 
+			                  vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+
+		copyBufferToImage(stagingBuffer, mTextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+		
+		transitionImageLayout(mTextureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageLayout::eTransferDstOptimal,
+			                  vk::ImageLayout::eShaderReadOnlyOptimal);
+
+		mDevice.destroyBuffer(stagingBuffer);
+		mDevice.freeMemory(stagingBufferMemory);
+
+
+
+	}
+
+	void CADRender::createTextureImageView() {
+
+		mTextureImageView = createImageView(mTextureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
+	}
+
+	void CADRender::createTextureSampler() {
+
+
+		vk::SamplerCreateInfo samplerInfo({}, vk::Filter::eLinear, vk::Filter::eLinear, vk::SamplerMipmapMode::eLinear, 
+										  vk::SamplerAddressMode::eRepeat, vk::SamplerAddressMode::eRepeat, vk::SamplerAddressMode::eRepeat, 
+			                              0.0f, VK_TRUE, 16, VK_FALSE, vk::CompareOp::eNever, 0.0f, 0.0f, vk::BorderColor::eIntOpaqueBlack,
+			                              VK_FALSE);
+
+	
+		mTextureSampler = mDevice.createSampler(samplerInfo, nullptr);
+
+
+	}
+
+	void CADRender::createFramebuffers() {
+
+		mFramebuffers.resize(mImageViews.size());
+
+		for (decltype(mImageViews.size()) i = 0; i < mImageViews.size(); i++) {
+
+			std::array<vk::ImageView, 2> attachments = {
+				mImageViews[i],
+				depthImageView
+			};
+
+			vk::FramebufferCreateInfo FramebufferInfo( {}, mRenderPass, static_cast<uint32_t>(attachments.size()),
+				                                       attachments.data(), mExtent.width, 
+				                                       mExtent.height, 1);
+
+
+			mDevice.createFramebuffer(&FramebufferInfo, nullptr, &mFramebuffers[i]);
+				
+		}
+	}
+
+	void CADRender::createUniformBuffer() {
+
+		vk::DeviceSize bufferSize = sizeof(ubo);
+
+		mUniformBuffers.resize(mImages.size());
+		mUniformBufferMemories.resize(mImages.size());
+		
+
+		for (size_t i = 0; i < mImages.size(); i++) {
+			createBuffer( bufferSize, vk::BufferUsageFlagBits::eUniformBuffer,
+				vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, mUniformBuffers[i],
+				mUniformBufferMemories[i]);
+		}
+
+	}
+
+	void CADRender::createDescriptorPool() {
+
+		std::array<vk::DescriptorPoolSize, 2> poolSizes = {};
+		poolSizes[0].type = vk::DescriptorType::eUniformBuffer;
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(mImages.size());
+		poolSizes[1].type = vk::DescriptorType::eCombinedImageSampler;
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(mImages.size());
+
+		vk::DescriptorPoolCreateInfo poolInfo({}, static_cast<uint32_t>(mImages.size()),
+			static_cast<uint32_t>(poolSizes.size()), poolSizes.data());
+
+		mDescriptorPool = mDevice.createDescriptorPool(poolInfo, nullptr);
+
+	}
+
+	void CADRender::createDescriptorSets() {
+
+		
+		std::vector<vk::DescriptorSetLayout> layouts(mImages.size(), mDescriptorSetLayout);
+
+		vk::DescriptorSetAllocateInfo allocInfo(mDescriptorPool, static_cast<uint32_t>(mImages.size()), layouts.data());
+
+		mDescriptorSets.resize(mImages.size());
+
+
+		mDescriptorSets = mDevice.allocateDescriptorSets(allocInfo);
+
+
+		// Uniform Buffer
+
+		for (size_t i = 0; i < mImages.size(); i++) {
+
+
+			vk::DescriptorBufferInfo bufferInfo(mUniformBuffers[i], 0, sizeof(u));
+
+			vk::DescriptorImageInfo imageInfo(mTextureSampler, mTextureImageView, vk::ImageLayout::eShaderReadOnlyOptimal);
+
+			std::array<vk::WriteDescriptorSet, 2> descriptorWrites = {};
+
+
+			descriptorWrites[0].dstSet = mDescriptorSets[i];
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = vk::DescriptorType::eUniformBuffer;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+			descriptorWrites[1].dstSet = mDescriptorSets[i];
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &imageInfo;
+
+			mDevice.updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+		}
+
+
+
+	}
+
+	void CADRender::allocCommandBuffers() {
+
+		mCommandBuffers.resize(mFramebuffers.size());
+
+		vk::CommandBufferAllocateInfo allocInfo(mCommandPool, vk::CommandBufferLevel::ePrimary, (uint32_t)mCommandBuffers.size());
+
+		mCommandBuffers = mDevice.allocateCommandBuffers(allocInfo);
+
+
+	}
+
+	void CADRender::createSyncObjects() {
+
+		mImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		mRenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+		mInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
+		vk::SemaphoreCreateInfo semaphoreInfo;
+
+		vk::FenceCreateInfo fenceInfo(vk::FenceCreateFlagBits::eSignaled);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			mImageAvailableSemaphores[i] = mDevice.createSemaphore(semaphoreInfo);
+			mRenderFinishedSemaphores[i] = mDevice.createSemaphore(semaphoreInfo);
+			mInFlightFences[i] = mDevice.createFence(fenceInfo, nullptr);
+		}
+
+
+
 	}
 
 	/* vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
@@ -1131,9 +1508,7 @@ void CADRender::createSwapChain()
 		return vk::ShaderModule();
 	}
 
-	void CADRender::createCommandPool()
-	{
-	}
+	
 
 	vk::CommandBuffer CADRender::beginSingleTimeCommands(const vk::CommandBufferLevel& level, const vk::CommandBufferInheritanceInfo& inheritance)
 	{
@@ -1365,7 +1740,39 @@ void CADRender::createSwapChain()
 	} */
 
 	void CADRender::cleanup() {
+
+
+		for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			mDevice.destroySemaphore(mImageAvailableSemaphores[i]);
+			mDevice.destroySemaphore(mRenderFinishedSemaphores[i]);
+			mDevice.destroyFence(mInFlightFences[i]);
+		}
+
+
+
+
+		mDevice.destroyDescriptorPool(mDescriptorPool);
+
+		for (auto & framebuffer : mFramebuffers) {
+			mDevice.destroyFramebuffer(framebuffer, nullptr);
+		}
+
+		for (auto& Buffer : mUniformBuffers) {
+			mDevice.destroyBuffer(Buffer);
+		}
+
+		mDevice.destroySampler(mTextureSampler);
+		mDevice.destroyImageView(mTextureImageView);
+		mDevice.destroyImage(mTextureImage);
+		mDevice.freeMemory(mTextureMemory);
+
+		mDevice.destroyImage(depthImage);
+		mDevice.freeMemory(depthImageMemory);
+		mDevice.destroyImageView(depthImageView);
+
 		
+		mDevice.destroyCommandPool(mCommandPool);
+
 		mDevice.destroyPipeline(mTextPipeline, nullptr);
 
 		mDevice.destroyPipelineLayout(mPipelineLayout, nullptr);
@@ -1373,7 +1780,7 @@ void CADRender::createSwapChain()
 		mDevice.destroy(mRenderPass, nullptr);
 		
 
-		for (auto imageView : mImageViews) {
+		for (auto & imageView : mImageViews) {
 			mDevice.destroyImageView(imageView, nullptr);
 			
 		}
@@ -1388,7 +1795,7 @@ void CADRender::createSwapChain()
 		
 		
 		glfwTerminate();
-		
+
 	}
 
 	void CADRender::destroy() {

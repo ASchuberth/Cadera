@@ -134,6 +134,10 @@ namespace CADERA_APP_NAMESPACE {
 		vk::Format mFormat;
 		vk::Extent2D mExtent;
 
+		vk::Image depthImage;
+		vk::DeviceMemory depthImageMemory;
+		vk::ImageView depthImageView;
+
 		vk::SwapchainKHR mSwapchain;
 
 		// Pipeline
@@ -259,6 +263,76 @@ namespace CADERA_APP_NAMESPACE {
 
         void createTextPipeline();
 
+        void createCommandPool();
+
+        uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
+
+        void createImage(vk::PhysicalDevice const &PhysicalDevice, vk::Device const &Device, uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image &image, vk::DeviceMemory &imageMemory);
+
+        void createDepthResources();
+
+        void createBuffer(vk::DeviceSize &size, const vk::BufferUsageFlags &usage, const vk::MemoryPropertyFlags &properties, vk::Buffer &buffer, vk::DeviceMemory &bufferMemory);
+
+        vk::CommandBuffer beginSingleTimeCommands(const vk::CommandBufferLevel &level, const vk::CommandBufferInheritanceInfo &inheritance);
+
+        void endSingleTimeCommands(vk::CommandBuffer &commandBuffer);
+
+        void transitionImageLayout(vk::Image &image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
+
+        void copyBufferToImage(vk::Buffer &buffer, vk::Image &image, uint32_t width, uint32_t height);
+
+        void createTextureImage();
+
+        void createTextureImageView();
+
+        void createTextureSampler();
+
+        void createFramebuffers();
+
+        void createUniformBuffer();
+
+        void createDescriptorPool();
+
+        void createDescriptorSets();
+
+        void allocCommandBuffers();
+
+        void createSyncObjects();
+
+        template <class T>
+		inline void createDeviceBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
+
+			vk::Buffer stagingBuffer;
+			vk::DeviceMemory stagingBufferMemory;
+
+			mBuffers[id].mPointSize = static_cast<uint32_t>(points.size());
+			mBuffers[id].mDeviceSize = sizeof(points[0]) * points.size();
+
+			createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferSrc,
+				vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+				stagingBuffer, stagingBufferMemory);
+
+			vk::MemoryMapFlags memMapFlags;
+
+			void* data;
+			data = mDevice.mapMemory(stagingBufferMemory, 0, mBuffers[id].mDeviceSize, memMapFlags);
+			memcpy(data, points.data(), (size_t)mBuffers[id].mDeviceSize);
+			mDevice.unmapMemory(stagingBufferMemory);
+
+			createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferDst | flag,
+				vk::MemoryPropertyFlagBits::eDeviceLocal,
+				mBuffers[id].mBuffer, mBuffers[id].mMemory);
+
+
+			copyBuffer(stagingBuffer, mBuffers[id].mBuffer, mBuffers[id].mDeviceSize);
+
+			mDevice.destroyBuffer(stagingBuffer);
+			mDevice.freeMemory(stagingBufferMemory);
+
+			mBuffers[id].isEmpty = false;
+
+		};
+
         /*
 
                 // Graphics Pipeline
@@ -321,39 +395,7 @@ namespace CADERA_APP_NAMESPACE {
                 void createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, const vk::MemoryPropertyFlags& properties,
                     vk::Buffer& buffer, vk::DeviceMemory& bufferMemory);
 
-                template <class T>
-                inline void createDeviceBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
-
-                    vk::Buffer stagingBuffer;
-                    vk::DeviceMemory stagingBufferMemory;
-
-                    mBuffers[id].mPointSize = static_cast<uint32_t>(points.size());
-                    mBuffers[id].mDeviceSize = sizeof(points[0]) * points.size();
-
-                    createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferSrc,
-                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                        stagingBuffer, stagingBufferMemory);
-
-                    vk::MemoryMapFlags memMapFlags;
-
-                    void* data;
-                    data = mDevice.mapMemory(stagingBufferMemory, 0, mBuffers[id].mDeviceSize, memMapFlags);
-                    memcpy(data, points.data(), (size_t)mBuffers[id].mDeviceSize);
-                    mDevice.unmapMemory(stagingBufferMemory);
-
-                    createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferDst | flag,
-                        vk::MemoryPropertyFlagBits::eDeviceLocal,
-                        mBuffers[id].mBuffer, mBuffers[id].mMemory);
-
-
-                    copyBuffer(stagingBuffer, mBuffers[id].mBuffer, mBuffers[id].mDeviceSize);
-
-                    mDevice.destroyBuffer(stagingBuffer);
-                    mDevice.freeMemory(stagingBufferMemory);
-
-                    mBuffers[id].isEmpty = false;
-
-                };
+              
 
                 template <class T>
                 inline void updateBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
