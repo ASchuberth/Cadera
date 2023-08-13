@@ -36,6 +36,7 @@ namespace CADERA_APP_NAMESPACE {
 		createRenderPass();
 		createDescriptorSetLayout();
 		createPipelineLayout();
+		loadFonts();
 		preparePipelines();
 	
 
@@ -605,7 +606,15 @@ void CADRender::createSwapChain()
 		return shaderModule;
 	}
 
-	void CADRender::createTextPipeline()
+    void CADRender::loadFonts() {
+
+		TxtRend.setFontSize(10.0f);
+		TxtRend.loadFont("../../textures/test.csv");
+		
+
+    }
+
+    void CADRender::createTextPipeline()
 	{
 
 		
@@ -1088,34 +1097,17 @@ void CADRender::createSwapChain()
 
 	}
 
-	/* vk::Format CADRender::findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits features)
-	{
-		return vk::Format();
-	}
-	vk::Format CADRender::findDepthFormat(vk::PhysicalDevice& PhysicalDevice)
-	{
-		return vk::Format();
-	}
-	*/
 	
-/* void CADRender::initImgui() {
+ void CADRender::initImgui() {
 
 		// Create Descriptor Pool
 
 		
 		vk::DescriptorPoolSize pool_sizes[] =
 		{
-			{ vk::DescriptorType::eSampler, 1000 },
+		
 			{ vk::DescriptorType::eCombinedImageSampler, 1000 },
-			{ vk::DescriptorType::eSampledImage, 1000 },
-			{ vk::DescriptorType::eStorageImage, 1000 },
-			{ vk::DescriptorType::eUniformTexelBuffer, 1000 },
-			{ vk::DescriptorType::eStorageTexelBuffer, 1000 },
-			{ vk::DescriptorType::eUniformBuffer, 1000 },
-			{ vk::DescriptorType::eStorageBuffer, 1000 },
-			{ vk::DescriptorType::eUniformBufferDynamic, 1000 },
-			{ vk::DescriptorType::eStorageBufferDynamic, 1000 },
-			{ vk::DescriptorType::eInputAttachment, 1000 }
+	
 		};
 
 
@@ -1124,6 +1116,15 @@ void CADRender::createSwapChain()
 
 		mGuiDescriptorPool = mDevice.createDescriptorPool(poolInfo);
 		
+
+		// Create Window Surface
+		
+		VkResult err = glfwCreateWindowSurface(mInstance, mMainWindow, nullptr, &mImguiSurface);
+
+		int w, h;
+		glfwGetFramebufferSize(mMainWindow, &w, &h);
+		ImGui_ImplVulkanH_Window* wd = &mImguiWindowData;
+    	
 
 
 		// Setup Dear ImGui binding
@@ -1136,22 +1137,26 @@ void CADRender::createSwapChain()
 
 
 		// Setup GLFW binding
-		ImGui_ImplGlfw_InitForVulkan(mMainCanvas.window, true);
+		ImGui_ImplGlfw_InitForVulkan(mMainWindow, true);
 
 		
 		// Setup Vulkan binding
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = *mInstance;
+		init_info.Instance = mInstance;
 		init_info.PhysicalDevice = mPhysicalDevice;
 		init_info.Device = mDevice;
 		init_info.QueueFamily = mIndices.graphicsFamily;
 		init_info.Queue = mGraphicsQueue;
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = mGuiDescriptorPool;
-		init_info.Allocator = mGuiAllocator;
+		init_info.Subpass = 0;
+		init_info.MinImageCount = static_cast<uint32_t>(mImageViews.size());
+		init_info.ImageCount = static_cast<uint32_t>(mImageViews.size());
+		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		init_info.Allocator = VK_NULL_HANDLE;
 		init_info.CheckVkResultFn = VK_NULL_HANDLE;
-		init_info.ImageCount = static_cast<uint32_t>(mMainCanvas.mImageViews.size());
-		init_info.MinImageCount = static_cast<uint32_t>(mMainCanvas.mImageViews.size());
+		
+		
 		ImGui_ImplVulkan_Init(&init_info, mRenderPass);
 
 		// Setup style
@@ -1176,22 +1181,6 @@ void CADRender::createSwapChain()
 
 	}
 
-	void CADRender::imguiRun() {
-
-		ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		
-		ImGui::ShowDemoWindow();
-
-
-		ImGui::Render();
-		
-
-		
-
-	} */
 
 	void CADRender::createSketchPointPipeline() {
 
@@ -1215,7 +1204,7 @@ void CADRender::createSwapChain()
 		AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
 		AttributeDescriptions[1].offset = offsetof(Vertex, col);
 
-		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
 		auto vertShaderCode = readFile("../../shaders/vert.spv");
@@ -1235,7 +1224,7 @@ void CADRender::createSwapChain()
 			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			VK_FALSE);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width), static_cast<float>(mExtent.height), 0.0f, 1.0f);
 
 		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
@@ -1310,7 +1299,7 @@ void CADRender::createSwapChain()
 		AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
 		AttributeDescriptions[1].offset = offsetof(Vertex, col);
 
-		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
 		auto vertShaderCode = readFile("../../shaders/vert.spv");
@@ -1330,7 +1319,7 @@ void CADRender::createSwapChain()
 			                                                    vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			                                                    VK_FALSE, {}, {}, {}, 1.0f);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width), static_cast<float>(mExtent.height), 0.0f, 1.0f);
 
 		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
@@ -1423,7 +1412,7 @@ void CADRender::createSwapChain()
 		AttributeDescriptions[4].format = vk::Format::eR32Sfloat;
 		AttributeDescriptions[4].offset = offsetof(GridRotationAxis, angle);
 		  
-		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
+		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
 		auto vertShaderCode = readFile("../../shaders/gridvert.spv");
@@ -1443,7 +1432,7 @@ void CADRender::createSwapChain()
 			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			VK_FALSE, {}, {}, {}, 1.0f);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width), static_cast<float>(mExtent.height), 0.0f, 1.0f);
 
 		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
@@ -1527,25 +1516,6 @@ void CADRender::createSwapChain()
 		mDevice.freeMemory(mBuffers[id].mMemory);
 
 	}
-/* 
-	
-
-	
-
-
-
-	void CADRender::cleanupSwapchain()
-	{
-	}
-
-	void CADRender::recreateSwapchain()
-	{
-	}
-
-	
- */
-
-
 
 	void CADRender::createCommandBuffers() {
 
@@ -1607,7 +1577,7 @@ void CADRender::createSwapChain()
 
 
 
-			// ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
+			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
 			mCommandBuffers[i].endRenderPass();
 
@@ -1813,14 +1783,10 @@ void CADRender::createSwapChain()
 
 	void CADRender::destroy() {
 
-		// ImGui_ImplVulkan_Shutdown();
-		// ImGui_ImplGlfw_Shutdown();
-		// ImGui::DestroyContext();
+		ImGui_ImplVulkan_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 
-		//mDevice.destroyDescriptorPool(mGuiDescriptorPool);
-	
-
-		//destroyPipelines();
 
 		cleanup();
 
@@ -1843,7 +1809,7 @@ void CADRender::createSwapChain()
 		Cam.update();
 	}
 
-/* 	void CADRender::render(Model &M) {
+	void CADRender::render(Model &M) {
 
 		
 		if (M.getType() == cad_sketch) {
@@ -1920,6 +1886,6 @@ void CADRender::createSwapChain()
 		}
 
 	}
- */
+
 	
 }

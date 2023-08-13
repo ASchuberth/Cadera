@@ -97,7 +97,7 @@ namespace sel {
 	}
 
 
-	/* Selector::Selector() {
+	Selector::Selector() {
 
 		point = { 0.0f, 0.0f, 0.0f };
 
@@ -283,6 +283,6 @@ namespace sel {
 
 		return ids;
 	}
-	 */
+	
 }
 }

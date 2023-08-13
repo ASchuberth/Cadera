@@ -41,8 +41,7 @@ namespace sketch {
 		std::map<int, Point> Points;
 		std::map<int, Relation> mRelations;
 
-		char text[1024 * 16];
-
+		std::string noteText;
 
 		Sketch();
 		Sketch(int i);

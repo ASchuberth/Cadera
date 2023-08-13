@@ -11,6 +11,7 @@ namespace sketch {
 		featureCounter = 1;
 		addOrigin();
 
+		
 		mCamDistance = nullptr;
 	}
 
@@ -170,7 +171,7 @@ namespace sketch {
 		T.cursorDirY = { 0.0f, 1.0f, 0.0f };
 		T.backgroundColor = { 0.1f, 0.1f, 0.1f };
 		T.textColor = { 1.0f, 1.0f, 1.0f };
-		T.text = text;
+		T.text = noteText;
 
 		Notes[featureCounter] = T;
 

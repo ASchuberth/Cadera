@@ -26,6 +26,7 @@ namespace gui {
 			
 			flags.set(gui_sketch_menu);
 
+			Sketch.setType(cad_sketch);
 			Sketch.setCameraDistance(&Render.Cam.camDistance);
 			Sel.setActiveSketch(&Sketch);
 
@@ -43,7 +44,7 @@ namespace gui {
 
 		ImGui::SetNextWindowPos({ 0, 20 });
 		ImGui::SetNextWindowSize({ 300.0f,
-								   static_cast<float>(Render.mMainCanvas.mExtent.height - 20) });
+								   static_cast<float>(Render.mExtent.height - 20) });
 
 		ImGui::Begin("Sketching");
 
@@ -79,8 +80,8 @@ namespace gui {
 			
 
 			static ImGuiInputTextFlags flags = {};
-			ImGui::InputTextMultiline("##source", Sketch.text , IM_ARRAYSIZE(Sketch.text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
-
+			
+			ImGui::InputTextMultiline("Note Text", &Sketch.noteText );
 		}
 
 		if (ImGui::CollapsingHeader("Relations", ImGuiTreeNodeFlags_DefaultOpen)) {

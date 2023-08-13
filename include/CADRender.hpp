@@ -3,8 +3,7 @@
 #include "callbacks.hpp"
 #include "RenderUtil.hpp"
 #include "Camera.hpp"
-//#include "SketchSolver.hpp"
-//#include "Canvas.hpp"
+#include "SketchSolver.hpp"
 #include "TextRender.hpp"
 
 
@@ -190,14 +189,17 @@ namespace CADERA_APP_NAMESPACE {
 
 		cam::Camera Cam;
 
-		//sel::Selector Sel;
+		sel::Selector Sel;
 
-		//sketch::SketchSolver SktSolver;
+		sketch::SketchSolver SktSolver;
 
-		//txt::TextRender TxtRend;
+		txt::TextRender TxtRend;
 
-		// Canvas
-		//Canvas mMainCanvas;
+		// Imgui
+
+		ImGui_ImplVulkanH_Window mImguiWindowData;
+		VkSurfaceKHR mImguiSurface;
+
 
 		void setup();
 		
@@ -266,6 +268,8 @@ namespace CADERA_APP_NAMESPACE {
 
         vk::ShaderModule createShaderModule(const std::vector<char> &code);
 
+		void loadFonts();
+
         void createTextPipeline();
 
         void createCommandPool();
@@ -303,6 +307,8 @@ namespace CADERA_APP_NAMESPACE {
         void allocCommandBuffers();
 
         void createSyncObjects();
+
+        void initImgui();
 
         void createSketchPointPipeline();
 
@@ -356,84 +362,23 @@ namespace CADERA_APP_NAMESPACE {
 
 		};
 
-        /*
+        
 
-                // Graphics Pipeline
-                vk::Format findSupportedFormat(vk::PhysicalDevice& PhysicalDevice, const std::vector<vk::Format>& candidates,
-                vk::ImageTiling tiling, vk::FormatFeatureFlagBits features);
-
-                vk::Format findDepthFormat(vk::PhysicalDevice& PhysicalDevice);
-
-                void createRenderPass();
-
-                virtual void createDescriptorSetLayout();
-
-                virtual void createPipelineLayout();
-
-                std::vector<char> readFile(const std::string filename);
-
-                void createTextPipeline();
-
-
-                // Swapchain
-                void cleanupSwapchain();
-
-                void recreateSwapchain();
-
-                // Shaders
-                //static std::vector<char> readFile(const std::string filename);
-
-                vk::ShaderModule createShaderModule(const std::vector<char>& code);
-
-                // Buffers
-                void createCommandPool();
-
-                vk::CommandBuffer beginSingleTimeCommands(const vk::CommandBufferLevel& level,
-                    const vk::CommandBufferInheritanceInfo& inheritance);
-
-                void endSingleTimeCommands(vk::CommandBuffer& commandBuffer);
-
-                void createFramebuffers();
-
-                void createUniformBuffer();
-
-                void allocCommandBuffers();
-
-                void transitionImageLayout(vk::Image& image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
-
-                void copyBufferToImage(vk::Buffer& buffer, vk::Image& image, uint32_t width, uint32_t height);
-
-                virtual void createTextureImage();
-
-                void createTextureImageView();
-
-                void createTextureSampler();
-
-                void createSyncObjects();
-
-                uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
-
-                void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
-
-                void createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, const vk::MemoryPropertyFlags& properties,
-                    vk::Buffer& buffer, vk::DeviceMemory& bufferMemory);
-
+                
               
 
-                template <class T>
-                inline void updateBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
-                    if (mBuffers[id].isEmpty) {
-                        createDeviceBuffer(id, points, flag);
-                    }
-                    else {
-                        deleteBuffer(id);
-                        createDeviceBuffer(id, points, flag);
-                    }
-                }
+			template <class T>
+			inline void updateBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
+				if (mBuffers[id].isEmpty) {
+					createDeviceBuffer(id, points, flag);
+				}
+				else {
+					deleteBuffer(id);
+					createDeviceBuffer(id, points, flag);
+				}
+			}
 
-                void deleteBuffer(uint32_t id);
-
-                void drawFrame(); */
+              
 
         void destroyPipelines();
 
@@ -470,6 +415,12 @@ namespace CADERA_APP_NAMESPACE {
 		void destroy();
 
         void runCamera();
+
+        void render(Model &M);
+
+        void renderSketchNotes(Model &S);
+
+        void renderSketchPoints(Model &S);
 
         //void runCamera();
 

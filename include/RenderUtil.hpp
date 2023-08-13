@@ -49,10 +49,6 @@ namespace CADERA_APP_NAMESPACE {
 		return axii;
 	}
 
-	
-
-
-
 
 }
 

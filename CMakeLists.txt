@@ -13,7 +13,15 @@ add_executable(Cadera   src/Cadera.cpp
                         src/RenderUtil.cpp  
                         src/Selection.cpp
                         src/Camera.cpp   
-                        src/Callbacks.cpp           
+                        src/Callbacks.cpp
+                        src/gui.cpp
+                        src/Sketch.cpp
+                        src/Sketcher.cpp
+                        src/SketchSolver.cpp
+                        src/Point.cpp
+                        src/Model.cpp
+                        src/Feature.cpp
+                        src/Relation.cpp         
                         src/Main.cpp
                        
                       
