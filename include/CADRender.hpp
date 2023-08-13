@@ -1,11 +1,12 @@
 #pragma once
 
-//#include "RenderUtil.hpp"
-//#include "Camera.hpp"
+#include "callbacks.hpp"
+#include "RenderUtil.hpp"
+#include "Camera.hpp"
 //#include "SketchSolver.hpp"
 //#include "Canvas.hpp"
 #include "TextRender.hpp"
-//#include "RenderUtil.hpp"
+
 
 
 
@@ -129,6 +130,8 @@ namespace CADERA_APP_NAMESPACE {
 		int mWidth = 750;
 		int mHeight = 750;
 
+		bool frameBufferResized;
+
 		std::vector<vk::Image> mImages;
 		std::vector<vk::ImageView> mImageViews;
 		vk::Format mFormat;
@@ -185,7 +188,7 @@ namespace CADERA_APP_NAMESPACE {
 
 		ubo u;
 
-		//cam::Camera Cam;
+		cam::Camera Cam;
 
 		//sel::Selector Sel;
 
@@ -243,6 +246,8 @@ namespace CADERA_APP_NAMESPACE {
 
         void createSwapChain();
 
+        void recreateSwapchain();
+
         void createImageViews();
 
         vk::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
@@ -298,6 +303,24 @@ namespace CADERA_APP_NAMESPACE {
         void allocCommandBuffers();
 
         void createSyncObjects();
+
+        void createSketchPointPipeline();
+
+        void createSketchLinePipeline();
+
+        void createSketchGridPipeline();
+
+        void preparePipelines();
+
+        void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
+
+        void deleteBuffer(uint32_t id);
+
+        void createCommandBuffers();
+
+        void updateUniformBuffer(uint32_t currentImage);
+
+        void drawFrame();
 
         template <class T>
 		inline void createDeviceBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
@@ -412,8 +435,12 @@ namespace CADERA_APP_NAMESPACE {
 
                 void drawFrame(); */
 
+        void destroyPipelines();
+
+        void cleanupSwapchain();
+
         // Cleanup
-		void cleanup();
+        void cleanup();
 
 
 
@@ -442,7 +469,9 @@ namespace CADERA_APP_NAMESPACE {
  */
 		void destroy();
 
-		//void runCamera();
+        void runCamera();
+
+        //void runCamera();
 
 		//void render(Model &M);
 

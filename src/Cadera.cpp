@@ -5,27 +5,27 @@
 
 namespace CADERA_APP_NAMESPACE {
 	
-	// void Cadera::initCallbacks() {
+	void Cadera::initCallbacks() {
 		
-	// 	glfwSetWindowUserPointer(Render.mMainCanvas.window, this);
+		glfwSetWindowUserPointer(Render.mMainWindow, this);
 		
-	// 	glfwSetMouseButtonCallback(Render.mMainCanvas.window, mouse_button_callback);
-	// 	glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
-	// 	glfwSetFramebufferSizeCallback(Render.mMainCanvas.window, framebuffer_resize_callback);
-	// 	glfwSetCursorPosCallback(Render.mMainCanvas.window, cursor_position_callback);
-	// 	glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
+		glfwSetMouseButtonCallback(Render.mMainWindow, mouse_button_callback);
+		glfwSetScrollCallback(Render.mMainWindow, scroll_callback);
+		glfwSetFramebufferSizeCallback(Render.mMainWindow, framebuffer_resize_callback);
+		glfwSetCursorPosCallback(Render.mMainWindow, cursor_position_callback);
+		glfwSetKeyCallback(Render.mMainWindow, key_callback);
 
 		
-	// }
+	}
 
 	// void Cadera::switchCallbacks() {
 	// 	if (ImGui::IsAnyWindowHovered()) {
-	// 		glfwSetScrollCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_ScrollCallback);
-	// 		glfwSetKeyCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_KeyCallback);
+	// 		glfwSetScrollCallback(Render.mMainWindow, ImGui_ImplGlfw_ScrollCallback);
+	// 		glfwSetKeyCallback(Render.mMainWindow, ImGui_ImplGlfw_KeyCallback);
 	// 	}
 	// 	else {
-	// 		glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
-	// 		glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
+	// 		glfwSetScrollCallback(Render.mMainWindow, scroll_callback);
+	// 		glfwSetKeyCallback(Render.mMainWindow, key_callback);
 	// 	}
 	// }
 
@@ -56,7 +56,6 @@ namespace CADERA_APP_NAMESPACE {
 
 		// Render.Cam.flags.set(cam::ortho);
 		Render.setup();
-		// //Render.preparePipelines(); 
 
 		// Render.initImgui();
 
@@ -64,21 +63,21 @@ namespace CADERA_APP_NAMESPACE {
 
 		//loadFonts();
 
-		//// Grid Test DELETE
-		//std::vector<GridRotationAxis> axii = createGridInstanceAxii();
+		// Grid Test DELETE
+		std::vector<GridRotationAxis> axii = createGridInstanceAxii();
 
-		//Vertex p1, p2;
-		//p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
-		//p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
+		Vertex p1, p2;
+		p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
+		p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
 
 
-		//std::vector<Vertex> line = { p1, p2 };
-		// 
-		//Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
-		//Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
-		//// End Grid Test DELETE
+		std::vector<Vertex> line = { p1, p2 };
+		
+		Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
+		Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
+		// End Grid Test DELETE
 
-		// initCallbacks();
+		initCallbacks();
 	
 		mainLoop();
 	}
@@ -117,9 +116,9 @@ namespace CADERA_APP_NAMESPACE {
 
 			
 			
-		// 	Render.createCommandBuffers();
-		// 	Render.drawFrame();
-		// 	Render.runCamera();*/
+		Render.createCommandBuffers();
+		Render.drawFrame();
+		Render.runCamera();
 
 			glfwWaitEvents();
 			

@@ -1,6 +1,6 @@
 #pragma once
-#include "Point.hpp"
-#include "Sketch.hpp"
+//#include "Point.hpp"
+//#include "Sketch.hpp"
 
 
 namespace CADERA_APP_NAMESPACE {
@@ -29,7 +29,7 @@ namespace sel {
 		select_number_flags               // Number of flags for bitset
 	};
 
-	class Selector {
+	/* class Selector {
 
 		sketch::Sketch *pActiveSketch = nullptr;
 
@@ -61,6 +61,6 @@ namespace sel {
 
 		std::vector<int> getSelectedPointIds();
 
-	};
+	}; */
 }
 }

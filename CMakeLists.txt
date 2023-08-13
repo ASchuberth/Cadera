@@ -9,7 +9,11 @@ enable_testing()
 
 add_executable(Cadera   src/Cadera.cpp
                         src/CADRender.cpp  
-                        src/TextRender.cpp                  
+                        src/TextRender.cpp  
+                        src/RenderUtil.cpp  
+                        src/Selection.cpp
+                        src/Camera.cpp   
+                        src/Callbacks.cpp           
                         src/Main.cpp
                        
                       

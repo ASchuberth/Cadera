@@ -36,7 +36,8 @@ namespace CADERA_APP_NAMESPACE {
 		createRenderPass();
 		createDescriptorSetLayout();
 		createPipelineLayout();
-		createTextPipeline();
+		preparePipelines();
+	
 
 		createCommandPool();
 		createDepthResources();
@@ -377,6 +378,33 @@ void CADRender::createSwapChain()
 
 		mFormat = surfaceFormat.format;
 		mExtent = extent;
+
+	}
+
+	void CADRender::recreateSwapchain() {
+		
+		int width = 0, height = 0;
+		while (width == 0 || height == 0) {
+			glfwGetFramebufferSize(mMainWindow, &width, &height);
+			glfwWaitEvents();
+		}
+
+		mDevice.waitIdle();
+
+		cleanupSwapchain();
+
+		createSwapChain();
+		createImageViews();
+
+		createRenderPass();
+		createDescriptorSetLayout();
+		createPipelineLayout();
+		createDepthResources();
+		createFramebuffers();
+
+	
+
+		preparePipelines();
 
 	}
 
@@ -1165,7 +1193,7 @@ void CADRender::createSwapChain()
 
 	} */
 
-/* 	void CADRender::createSketchPointPipeline() {
+	void CADRender::createSketchPointPipeline() {
 
 		vk::VertexInputBindingDescription BindingDescription(0, sizeof(Vertex), vk::VertexInputRate::eVertex);
 
@@ -1190,8 +1218,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("../../shaders/vert.spv");
+		auto fragShaderCode = readFile("../../shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1207,9 +1235,9 @@ void CADRender::createSwapChain()
 			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			VK_FALSE);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mMainCanvas.mExtent.width, mMainCanvas.mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
 
-		vk::Rect2D Scissor({ 0, 0 }, mMainCanvas.mExtent);
+		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
 		vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1, &Scissor);
 
@@ -1285,8 +1313,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\vert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("../../shaders/vert.spv");
+		auto fragShaderCode = readFile("../../shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1302,9 +1330,9 @@ void CADRender::createSwapChain()
 			                                                    vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			                                                    VK_FALSE, {}, {}, {}, 1.0f);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mMainCanvas.mExtent.width, mMainCanvas.mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
 
-		vk::Rect2D Scissor({ 0, 0 }, mMainCanvas.mExtent);
+		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
 		vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1, &Scissor);
 
@@ -1398,8 +1426,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, BindingDescriptions.size(), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\gridvert.spv");
-		auto fragShaderCode = readFile("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\shaders\\frag.spv");
+		auto vertShaderCode = readFile("../../shaders/gridvert.spv");
+		auto fragShaderCode = readFile("../../shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1415,9 +1443,9 @@ void CADRender::createSwapChain()
 			vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise,
 			VK_FALSE, {}, {}, {}, 1.0f);
 
-		vk::Viewport ViewPort(0.0f, 0.0f, mMainCanvas.mExtent.width, mMainCanvas.mExtent.height, 0.0f, 1.0f);
+		vk::Viewport ViewPort(0.0f, 0.0f, mExtent.width, mExtent.height, 0.0f, 1.0f);
 
-		vk::Rect2D Scissor({ 0, 0 }, mMainCanvas.mExtent);
+		vk::Rect2D Scissor({ 0, 0 }, mExtent);
 
 		vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1, &Scissor);
 
@@ -1467,31 +1495,42 @@ void CADRender::createSwapChain()
 		mDevice.destroyShaderModule(vertShaderModule, nullptr);
 		mDevice.destroyShaderModule(fragShaderModule, nullptr);
 	}
- */
+ 
 	
-/* 	void CADRender::preparePipelines() {
+	void CADRender::preparePipelines() {
 
+		createTextPipeline();
 		createSketchPointPipeline();
 		createSketchLinePipeline();
 		createSketchGridPipeline();
-	} */
+	} 
+
+	void CADRender::copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size) {
+
+		vk::CommandBuffer commandBuffer = beginSingleTimeCommands(vk::CommandBufferLevel::ePrimary, 
+			                                                      vk::CommandBufferInheritanceInfo());
+
+		vk::BufferCopy copyRegion;
+		copyRegion.size = size;
+
+		commandBuffer.copyBuffer(srcBuffer, dstBuffer, copyRegion);
+
+		endSingleTimeCommands(commandBuffer);
+
+
+	}
+
+	void CADRender::deleteBuffer(uint32_t id) {
+
+		mBuffers[id].isEmpty = true;
+		mDevice.destroyBuffer(mBuffers[id].mBuffer);
+		mDevice.freeMemory(mBuffers[id].mMemory);
+
+	}
 /* 
-	void CADRender::destroyPipelines() {
-
-	
-		mDevice.destroyPipeline(Pipelines.SketchPoint);
-		mDevice.destroyPipeline(Pipelines.SketchLine);
-		mDevice.destroyPipeline(Pipelines.SketchGrid);
-
-	}
-
 	
 
 	
-	std::vector<char> CADRender::readFile(const std::string filename)
-	{
-		return std::vector<char>();
-	}
 
 
 
@@ -1503,134 +1542,12 @@ void CADRender::createSwapChain()
 	{
 	}
 
-	vk::ShaderModule CADRender::createShaderModule(const std::vector<char>& code)
-	{
-		return vk::ShaderModule();
-	}
-
 	
-
-	vk::CommandBuffer CADRender::beginSingleTimeCommands(const vk::CommandBufferLevel& level, const vk::CommandBufferInheritanceInfo& inheritance)
-	{
-		return vk::CommandBuffer();
-	} */
-/* 
-	void CADRender::endSingleTimeCommands(vk::CommandBuffer& commandBuffer)
-	{
-	}
-
-	void CADRender::createFramebuffers()
-	{
-	}
-
-	void CADRender::createUniformBuffer()
-	{
-	}
-
-	void CADRender::allocCommandBuffers()
-	{
-	}
-
-	void CADRender::transitionImageLayout(vk::Image& image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout)
-	{
-	}
-
-	void CADRender::copyBufferToImage(vk::Buffer& buffer, vk::Image& image, uint32_t width, uint32_t height)
-	{
-	}
-
-	void CADRender::createTextureImage()
-	{
-	}
-
-	void CADRender::createTextureImageView()
-	{
-	}
-
-	void CADRender::createTextureSampler()
-	{
-	}
-
-	void CADRender::createSyncObjects()
-	{
-	}
-
-	uint32_t CADRender::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)
-	{
-		return uint32_t();
-	}
-
-	void CADRender::copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size)
-	{
-	}
-
-	void CADRender::createBuffer(vk::DeviceSize& size, const vk::BufferUsageFlags& usage, const vk::MemoryPropertyFlags& properties, vk::Buffer& buffer, vk::DeviceMemory& bufferMemory)
-	{
-	}
  */
-/* 	void CADRender::createDescriptorPool() {
-
-		std::array<vk::DescriptorPoolSize, 2> poolSizes = {};
-		poolSizes[0].type = vk::DescriptorType::eUniformBuffer;
-		poolSizes[0].descriptorCount = static_cast<uint32_t>(mMainCanvas.mImages.size());
-		poolSizes[1].type = vk::DescriptorType::eCombinedImageSampler;
-		poolSizes[1].descriptorCount = static_cast<uint32_t>(mMainCanvas.mImages.size());
-
-		vk::DescriptorPoolCreateInfo poolInfo({}, static_cast<uint32_t>(mMainCanvas.mImages.size()),
-			static_cast<uint32_t>(poolSizes.size()), poolSizes.data());
-
-		mDescriptorPool = mDevice.createDescriptorPool(poolInfo, nullptr);
-
-	} */
-
-	/* void CADRender::createDescriptorSets() {
-
-		
-		std::vector<vk::DescriptorSetLayout> layouts(mMainCanvas.mImages.size(), mDescriptorSetLayout);
-
-		vk::DescriptorSetAllocateInfo allocInfo(mDescriptorPool, static_cast<uint32_t>(mMainCanvas.mImages.size()), layouts.data());
-
-		mDescriptorSets.resize(mMainCanvas.mImages.size());
-
-
-		mDescriptorSets = mDevice.allocateDescriptorSets(allocInfo);
-
-
-		// Uniform Buffer
-
-		for (size_t i = 0; i < mMainCanvas.mImages.size(); i++) {
-
-
-			vk::DescriptorBufferInfo bufferInfo(mUniformBuffers[i], 0, sizeof(u));
-
-			vk::DescriptorImageInfo imageInfo(mTextureSampler, mTextureImageView, vk::ImageLayout::eShaderReadOnlyOptimal);
-
-			std::array<vk::WriteDescriptorSet, 2> descriptorWrites = {};
-
-
-			descriptorWrites[0].dstSet = mDescriptorSets[i];
-			descriptorWrites[0].dstBinding = 0;
-			descriptorWrites[0].dstArrayElement = 0;
-			descriptorWrites[0].descriptorType = vk::DescriptorType::eUniformBuffer;
-			descriptorWrites[0].descriptorCount = 1;
-			descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-			descriptorWrites[1].dstSet = mDescriptorSets[i];
-			descriptorWrites[1].dstBinding = 1;
-			descriptorWrites[1].dstArrayElement = 0;
-			descriptorWrites[1].descriptorType = vk::DescriptorType::eCombinedImageSampler;
-			descriptorWrites[1].descriptorCount = 1;
-			descriptorWrites[1].pImageInfo = &imageInfo;
-
-			mDevice.updateDescriptorSets(static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-
-		}
 
 
 
-	} */
-
-	/* void CADRender::createCommandBuffers() {
+	void CADRender::createCommandBuffers() {
 
 		mDevice.resetCommandPool(mCommandPool, vk::CommandPoolResetFlags());
 
@@ -1640,7 +1557,7 @@ void CADRender::createSwapChain()
 
 			mCommandBuffers[i].begin(beginInfo);
 
-			vk::Rect2D renderArea({ 0,0 }, { mMainCanvas.mExtent.width, mMainCanvas.mExtent.height });
+			vk::Rect2D renderArea({ 0,0 }, { mExtent.width, mExtent.height });
 
 			std::array<float, 4> color = { bgColor.x, bgColor.y, bgColor.z, bgColor.w };
 
@@ -1700,13 +1617,9 @@ void CADRender::createSwapChain()
 		}
 
 
-	} */
-/* 
-	void CADRender::deleteBuffer(uint32_t id)
-	{
-	} */
+	} 
 
-/* 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
+	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
 		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1714,12 +1627,12 @@ void CADRender::createSwapChain()
 		
 		if (Cam.flags.test(cam::ortho)) {
 
-			float screenRatio = (float)mMainCanvas.mExtent.height / (float)mMainCanvas.mExtent.width;
+			float screenRatio = (float)mExtent.height / (float)mExtent.width;
 			
 			u.proj = glm::ortho(Cam.left, -Cam.left, screenRatio * Cam.left, -screenRatio * Cam.left, 0.0f, 500.0f);
 		}
 		else {
-			u.proj = glm::perspective(glm::radians(45.0f), mMainCanvas.mExtent.width / (float)mMainCanvas.mExtent.height, 
+			u.proj = glm::perspective(glm::radians(45.0f), mExtent.width / (float)mExtent.height, 
 				                      0.001f, 100.0f);
 		}
 
@@ -1733,11 +1646,104 @@ void CADRender::createSwapChain()
 		memcpy(data, &u, sizeof(u));
 		mDevice.unmapMemory(mUniformBufferMemories[currentImage]);
 
-	} */
 
-/* 	void CADRender::drawFrame()
-	{
-	} */
+	}
+
+	void CADRender::drawFrame() {
+
+		mDevice.waitForFences(mInFlightFences[mCurrentFrame], VK_TRUE, UINT64_MAX);
+
+		uint32_t imageIndex = 0;
+		
+		vk::Fence F;
+	
+
+		vk::Result result = mDevice.acquireNextImageKHR(mSwapchain, UINT64_MAX, mImageAvailableSemaphores[mCurrentFrame],
+			F, &imageIndex);
+
+		if (result == vk::Result::eErrorOutOfDateKHR) {
+			recreateSwapchain();
+			return;
+		}
+		else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
+			throw std::runtime_error("failed to acquire swap chain image!");
+		}
+
+
+		updateUniformBuffer(imageIndex);
+
+
+		vk::Semaphore waitSemaphore[] = { mImageAvailableSemaphores[mCurrentFrame] };
+		vk::Semaphore signalSemaphore[] = { mRenderFinishedSemaphores[mCurrentFrame] };
+
+
+		vk::PipelineStageFlags waitStages = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+
+		vk::SubmitInfo submitInfo(1, waitSemaphore, &waitStages, 1, &mCommandBuffers[imageIndex], 1, signalSemaphore);
+		
+		mDevice.resetFences(mInFlightFences[mCurrentFrame]);
+		
+		mGraphicsQueue.submit(submitInfo, mInFlightFences[mCurrentFrame]);
+
+		vk::PresentInfoKHR presentInfo(1, signalSemaphore, 1, &mSwapchain, &imageIndex);
+
+		
+		result = mPresentQueue.presentKHR(presentInfo);
+
+		
+		if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR 
+		|| frameBufferResized || result == vk::Result::eErrorIncompatibleDisplayKHR) {
+			frameBufferResized = false;
+			recreateSwapchain();
+		}
+		else if (result != vk::Result::eSuccess) {
+			//std::cout << "Present Queue Failed\n";
+			throw std::runtime_error("failed to present swap chain image!");
+		}
+
+
+		mPresentQueue.waitIdle();
+
+		mCurrentFrame = (mCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+	}
+
+
+	void CADRender::destroyPipelines() {
+
+	
+		mDevice.destroyPipeline(Pipelines.SketchPoint);
+		mDevice.destroyPipeline(Pipelines.SketchLine);
+		mDevice.destroyPipeline(Pipelines.SketchGrid);
+		mDevice.destroyPipeline(mTextPipeline);
+
+	}
+
+	void CADRender::cleanupSwapchain() {
+	
+
+		for (auto& mFramebuffer : mFramebuffers)
+			mDevice.destroyFramebuffer(mFramebuffer, nullptr);
+
+		mDevice.destroyPipelineLayout(mPipelineLayout, nullptr);
+
+		mDevice.destroyDescriptorSetLayout(mDescriptorSetLayout, nullptr);
+
+		mDevice.destroyRenderPass(mRenderPass, nullptr);
+
+		destroyPipelines();
+
+		mDevice.destroyImage(depthImage);
+		mDevice.freeMemory(depthImageMemory);
+		mDevice.destroyImageView(depthImageView);
+
+		for (auto& view : mImageViews)
+			mDevice.destroyImageView(view, nullptr);
+
+
+		mDevice.destroySwapchainKHR(mSwapchain, nullptr);
+
+	}
 
 	void CADRender::cleanup() {
 
@@ -1748,8 +1754,15 @@ void CADRender::createSwapChain()
 			mDevice.destroyFence(mInFlightFences[i]);
 		}
 
+		destroyPipelines();
 
-
+		for (auto& Buffer : mBuffers) {
+			
+			if (!Buffer.second.isEmpty) {
+				mDevice.destroyBuffer(Buffer.second.mBuffer);
+				mDevice.freeMemory(Buffer.second.mMemory);
+			}
+		}
 
 		mDevice.destroyDescriptorPool(mDescriptorPool);
 
@@ -1773,7 +1786,7 @@ void CADRender::createSwapChain()
 		
 		mDevice.destroyCommandPool(mCommandPool);
 
-		mDevice.destroyPipeline(mTextPipeline, nullptr);
+		
 
 		mDevice.destroyPipelineLayout(mPipelineLayout, nullptr);
 		mDevice.destroyDescriptorSetLayout(mDescriptorSetLayout, nullptr);
@@ -1813,22 +1826,22 @@ void CADRender::createSwapChain()
 
 	}
 
-/* 	void CADRender::runCamera() {
+	void CADRender::runCamera() {
 		
 		
 		double x, y;
-		glfwGetCursorPos(mMainCanvas.window, &x, &y);
+		glfwGetCursorPos(mMainWindow, &x, &y);
 		Cam.updateMouseRay(static_cast<float>(x), static_cast<float>(y), u.model, u.view, u.proj,
-						   mMainCanvas.mExtent.width, mMainCanvas.mExtent.height
+						   mExtent.width, mExtent.height
 		);
 
 		if (Cam.flags.test(cam::pan)) {
-			glfwGetCursorPos(mMainCanvas.window, &Cam.xpos, &Cam.ypos);
+			glfwGetCursorPos(mMainWindow, &Cam.xpos, &Cam.ypos);
 			Cam.pan({ 0.0f, 0.0f, 0.0f }, glm::normalize(Cam.pos - Cam.focus));
 		}
 
 		Cam.update();
-	} */
+	}
 
 /* 	void CADRender::render(Model &M) {
 
