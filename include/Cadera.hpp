@@ -1,7 +1,6 @@
 #pragma once
 #include "gui.hpp"
-//#include "callbacks.hpp"
-#include "CADRender.hpp"
+
 
 
 
@@ -27,10 +26,6 @@ namespace CADERA_APP_NAMESPACE {
 	private:
 		
 		void initCallbacks();
-
-        void switchCallbacks();
-
-        //void switchCallbacks();
 		
 		std::map<int, Model> Models;
 

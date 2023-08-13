@@ -1,5 +1,6 @@
 #pragma once
 #include "TextRender.hpp"
+#include "grid.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 	
@@ -31,10 +32,15 @@ namespace CADERA_APP_NAMESPACE {
 
 		std::map<int, txt::Text> Notes;
 		
+		virtual std::vector<Vertex> getGridLine();
+		virtual std::vector<GridRotationAxis> getGridAxii();
+
 		virtual std::vector<txt::Text> getRelationTexts();
 
 		virtual std::vector<glm::vec3> getVertices();
 		virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);
+
+		
 		
 	};
 

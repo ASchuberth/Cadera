@@ -1,10 +1,9 @@
 #pragma once
 
 #include "callbacks.hpp"
-#include "RenderUtil.hpp"
 #include "Camera.hpp"
 #include "SketchSolver.hpp"
-#include "TextRender.hpp"
+
 
 
 
@@ -417,6 +416,8 @@ namespace CADERA_APP_NAMESPACE {
         void runCamera();
 
         void render(Model &M);
+
+        void renderSketchGrid(Model &S);
 
         void renderSketchNotes(Model &S);
 

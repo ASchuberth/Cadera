@@ -207,7 +207,15 @@ namespace sketch {
 		}
 	}
 
-	std::vector<glm::vec3> Sketch::getVertices(std::vector<glm::vec3>& colors) {
+    std::vector<Vertex> Sketch::getGridLine() {
+        return mGrid.line;
+    }
+
+    std::vector<GridRotationAxis> Sketch::getGridAxii() {
+        return mGrid.createGridInstanceAxii();
+    }
+
+    std::vector<glm::vec3> Sketch::getVertices(std::vector<glm::vec3>& colors) {
 
 		std::vector<glm::vec3> vertices;
 		colors.clear();

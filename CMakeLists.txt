@@ -21,7 +21,8 @@ add_executable(Cadera   src/Cadera.cpp
                         src/Point.cpp
                         src/Model.cpp
                         src/Feature.cpp
-                        src/Relation.cpp         
+                        src/Relation.cpp
+                        src/grid.cpp      
                         src/Main.cpp
                        
                       

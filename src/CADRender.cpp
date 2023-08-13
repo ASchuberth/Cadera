@@ -1813,11 +1813,31 @@ void CADRender::createSwapChain()
 
 		
 		if (M.getType() == cad_sketch) {
+			renderSketchGrid(M);
 			renderSketchPoints(M);
 			renderSketchNotes(M);
 		}
 
 		flags.reset(render_update_sketch);
+	}
+
+	void CADRender::renderSketchGrid(Model& S) {
+		
+		std::vector<GridRotationAxis> axii;
+		std::vector<Vertex> line;
+
+		line = S.getGridLine();
+		axii = S.getGridAxii();
+
+		if (!axii.empty() && !line.empty()) {
+			updateBuffer(BUF_SKETCH_GRID_LINE, line, vk::BufferUsageFlagBits::eVertexBuffer);
+			updateBuffer(BUF_SKETCH_GRID_AXII, axii, vk::BufferUsageFlagBits::eVertexBuffer);
+		}
+		else {
+			deleteBuffer(BUF_SKETCH_GRID_LINE);
+			deleteBuffer(BUF_SKETCH_GRID_AXII);
+		}
+
 	}
 
 	void CADRender::renderSketchNotes(Model& S) {
