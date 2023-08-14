@@ -1384,7 +1384,7 @@ void CADRender::createSwapChain()
 			BindingDescriptionInstance
 		};
 
-		std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(5);
+		std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(6);
 
 
 		AttributeDescriptions[0].binding = 0;
@@ -1406,11 +1406,16 @@ void CADRender::createSwapChain()
 		AttributeDescriptions[3].location = 3;
 		AttributeDescriptions[3].format = vk::Format::eR32G32B32Sfloat;
 		AttributeDescriptions[3].offset = offsetof(GridRotationAxis, axis);
-
+		
 		AttributeDescriptions[4].binding = 1;
 		AttributeDescriptions[4].location = 4;
-		AttributeDescriptions[4].format = vk::Format::eR32Sfloat;
-		AttributeDescriptions[4].offset = offsetof(GridRotationAxis, angle);
+		AttributeDescriptions[4].format = vk::Format::eR32G32B32Sfloat;
+		AttributeDescriptions[4].offset = offsetof(GridRotationAxis, color);
+
+		AttributeDescriptions[5].binding = 1;
+		AttributeDescriptions[5].location = 5;
+		AttributeDescriptions[5].format = vk::Format::eR32Sfloat;
+		AttributeDescriptions[5].offset = offsetof(GridRotationAxis, angle);
 		  
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
@@ -1557,14 +1562,17 @@ void CADRender::createSwapChain()
 			if (!mBuffers[BUF_SKETCH_POINTS].isEmpty) {
 				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
 				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_POINTS].mBuffer, offsets);
-				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINTS].mPointSize, 1, 0, 0);
+				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINTS].mPointSize+2, 1, 0, 0);
 			}
 
 			// Grid
-			mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
-			mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[1].mBuffer, offsets);
-			mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[2].mBuffer, offsets);
-			mCommandBuffers[i].draw(2, 4002, 0, 0);
+			if (!mBuffers[BUF_SKETCH_GRID_LINE].isEmpty) {
+				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
+				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_GRID_LINE].mBuffer, offsets);
+				mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[BUF_SKETCH_GRID_AXII].mBuffer, offsets);
+				mCommandBuffers[i].draw(2, mBuffers[BUF_SKETCH_GRID_AXII].mPointSize, 0, 0);
+				//mCommandBuffers[i].draw(2, 4, 0, 0);
+			}
 
 			// Text
 			if (!mBuffers[BUF_TEXT_VERTICES].isEmpty) {
@@ -1826,9 +1834,9 @@ void CADRender::createSwapChain()
 		std::vector<GridRotationAxis> axii;
 		std::vector<Vertex> line;
 
-		line = S.getGridLine();
+		
 		axii = S.getGridAxii();
-
+		line = S.getGridLine();
 		if (!axii.empty() && !line.empty()) {
 			updateBuffer(BUF_SKETCH_GRID_LINE, line, vk::BufferUsageFlagBits::eVertexBuffer);
 			updateBuffer(BUF_SKETCH_GRID_AXII, axii, vk::BufferUsageFlagBits::eVertexBuffer);

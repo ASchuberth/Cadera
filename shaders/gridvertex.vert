@@ -58,7 +58,8 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;
 layout(location = 2) in vec3 inTranslate;
 layout(location = 3) in vec3 axis;
-layout(location = 4) in float angle;
+layout(location = 4) in vec3 instanceColor;
+layout(location = 5) in float angle;
 
 
 layout(location = 0) out vec4 fragColor;
@@ -77,16 +78,7 @@ void main()
 	vec4 pos = vec4(P, 1.0);
 	gl_Position = ubo.proj * ubo.view * ubo.model * pos;
 	
-	if (gl_InstanceIndex == 2000) {
-		fragColor = vec4(0.0, 1.0, 0.0, 1.0);
-	}
-	else if (gl_InstanceIndex == 2001) {
-		fragColor = vec4(1.0, 0.0, 0.0, 1.0);
-	}
-	else if (gl_InstanceIndex % 4 < 2) {
-		fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-	}
-	else {
-		fragColor = vec4(inColor.xyz, 0.5);
-	}
+  fragColor = vec4(instanceColor, 1.0);
+
+	
 }
