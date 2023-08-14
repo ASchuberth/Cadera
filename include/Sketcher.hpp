@@ -1,7 +1,8 @@
 #pragma once
 #include "Point.hpp"
 #include "Model.hpp"
-#include "TextRender.hpp"
+
+
 
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {

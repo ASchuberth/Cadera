@@ -5,29 +5,18 @@
 
 namespace CADERA_APP_NAMESPACE {
 	
-	// void Cadera::initCallbacks() {
+	void Cadera::initCallbacks() {
 		
-	// 	glfwSetWindowUserPointer(Render.mMainCanvas.window, this);
+		glfwSetWindowUserPointer(Render.mMainWindow, this);
 		
-	// 	glfwSetMouseButtonCallback(Render.mMainCanvas.window, mouse_button_callback);
-	// 	glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
-	// 	glfwSetFramebufferSizeCallback(Render.mMainCanvas.window, framebuffer_resize_callback);
-	// 	glfwSetCursorPosCallback(Render.mMainCanvas.window, cursor_position_callback);
-	// 	glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
+		glfwSetMouseButtonCallback(Render.mMainWindow, mouse_button_callback);
+		glfwSetScrollCallback(Render.mMainWindow, scroll_callback);
+		glfwSetFramebufferSizeCallback(Render.mMainWindow, framebuffer_resize_callback);
+		glfwSetCursorPosCallback(Render.mMainWindow, cursor_position_callback);
+		glfwSetKeyCallback(Render.mMainWindow, key_callback);
 
 		
-	// }
-
-	// void Cadera::switchCallbacks() {
-	// 	if (ImGui::IsAnyWindowHovered()) {
-	// 		glfwSetScrollCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_ScrollCallback);
-	// 		glfwSetKeyCallback(Render.mMainCanvas.window, ImGui_ImplGlfw_KeyCallback);
-	// 	}
-	// 	else {
-	// 		glfwSetScrollCallback(Render.mMainCanvas.window, scroll_callback);
-	// 		glfwSetKeyCallback(Render.mMainCanvas.window, key_callback);
-	// 	}
-	// }
+	}
 
 	Cadera::Cadera() {
 		modelIdCounter = 0;
@@ -36,49 +25,26 @@ namespace CADERA_APP_NAMESPACE {
 
 	Cadera::~Cadera() {
 
-		//Render.destroy();
+		Render.destroy();
 	}
 
-	// void Cadera::loadFonts() {
-
-	// 	// Text
-	// 	Render.TxtRend.setFontSize(10.0f);
-	// 	Render.TxtRend.loadFont("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Cadera\\Cadera\\textures\\test.csv");
-	// 	Render.createTextPipeline();
-
-	// }
 
 	void Cadera::run() {
 		
 
+
 		Render.setBGColor(glm::vec4(0.1f, 0.1f, 0.1f, 0.1f));
 
-		// Render.Cam.flags.set(cam::ortho);
-		// Render.setup();
-		// //Render.preparePipelines(); 
+		Render.Cam.flags.set(cam::ortho);
+		Render.setup();
 
-		// Render.initImgui();
+		initCallbacks();
 
-		//Render.SktSolver.setActiveSketch(&Sketch);
+		Render.initImgui();
 
-		//loadFonts();
+		Render.SktSolver.setActiveSketch(&Sketch);
 
-		//// Grid Test DELETE
-		//std::vector<GridRotationAxis> axii = createGridInstanceAxii();
-
-		//Vertex p1, p2;
-		//p1 = { {0.0f, -1000.0f, 0.0f}, {.0f, .0f, .0f} };
-		//p2 = { {0.0f,  1000.0f, 0.0f}, {.0f, .0f, .0f} };
-
-
-		//std::vector<Vertex> line = { p1, p2 };
-		// 
-		//Render.createDeviceBuffer(1, line, vk::BufferUsageFlagBits::eVertexBuffer);
-		//Render.createDeviceBuffer(2, axii, vk::BufferUsageFlagBits::eVertexBuffer);
-		//// End Grid Test DELETE
-
-		// initCallbacks();
-	
+		
 		mainLoop();
 	}
 
@@ -89,40 +55,42 @@ namespace CADERA_APP_NAMESPACE {
 	 */
 	void Cadera::mainLoop() {
 
-		// while (!glfwWindowShouldClose(Render.mMainCanvas.window)) {
-			
-		// 	switchCallbacks();
 
-		// 	glfwPollEvents();
-
-		// 	gui::imguiRun(Sketch, Render, Render.Sel);
-		// 	/*
-
-		// 	if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
-		// 		Sketch.deletion(Render.Sel.getSelectedPointIds());
-		// 		Render.Sel.clear();
-		// 		Render.Sel.setFlags();
-		// 		Render.flags.set(render_update_sketch);
-		// 		flags.reset(cadera_delete);
-		// 	}
-		// 	else {
-		// 		flags.reset(cadera_delete);
-		// 	}
-
-		// 	if (Render.flags.test(render_update_sketch)) {
-		// 		Render.render(Sketch);
-		// 	}
-
-			
-			
-		// 	Render.createCommandBuffers();
-		// 	Render.drawFrame();
-		// 	Render.runCamera();*/
-
-		// 	glfwWaitEvents();
+		while (!glfwWindowShouldClose(Render.mMainWindow)) {  
 			
 
-		//}
+			glfwPollEvents();
+
+
+		 	gui::imguiRun(Sketch, Render, Render.Sel);
+			
+
+			if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
+				Sketch.deletion(Render.Sel.getSelectedPointIds());
+				Render.Sel.clear();
+				Render.Sel.setFlags();
+				Render.flags.set(render_update_sketch);
+				flags.reset(cadera_delete);
+			}
+			else {
+				flags.reset(cadera_delete);
+			}
+
+			if (Render.flags.test(render_update_sketch)) {
+				Render.render(Sketch);
+			}
+
+			
+			
+		Render.createCommandBuffers();
+		Render.drawFrame();
+		Render.runCamera();
+
+			glfwWaitEvents();
+			
+
+
+		}
 	}
 
 }

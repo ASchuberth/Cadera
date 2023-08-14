@@ -32,8 +32,18 @@ namespace CADERA_APP_NAMESPACE {
 		return mType;
 	}
 
-	std::vector<txt::Text> Model::getRelationTexts()
-	{
+    std::vector<Vertex> Model::getGridLine()
+    {
+        return std::vector<Vertex>();
+    }
+
+    std::vector<GridRotationAxis> Model::getGridAxii()
+    {
+        return std::vector<GridRotationAxis>();
+    }
+
+    std::vector<txt::Text> Model::getRelationTexts()
+    {
 		return std::vector<txt::Text>();
 	}
 
