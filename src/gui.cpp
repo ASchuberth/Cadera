@@ -17,6 +17,46 @@ namespace gui {
 		ImGui::Render();
 	}
 
+
+	void mainMenuBar() {
+	
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+
+				ImGui::MenuItem("New");
+				ImGui::MenuItem("Open");
+				ImGui::MenuItem("Save");
+				ImGui::MenuItem("Close");
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Edit")) {
+
+				ImGui::MenuItem("Undo");
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("View")) {
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Tools")) {
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Help")) {
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
+		}
+	}
+
 	void startMenu(sketch::Sketch& Sketch, CADRender& Render, sel::Selector& Sel, 
 		           std::bitset<gui_num_flags> &flags) {
 
@@ -26,6 +66,7 @@ namespace gui {
 			
 			flags.set(gui_sketch_menu);
 
+			Sketch.setType(cad_sketch);
 			Sketch.setCameraDistance(&Render.Cam.camDistance);
 			Sel.setActiveSketch(&Sketch);
 
@@ -43,7 +84,7 @@ namespace gui {
 
 		ImGui::SetNextWindowPos({ 0, 20 });
 		ImGui::SetNextWindowSize({ 300.0f,
-								   static_cast<float>(Render.mMainCanvas.mExtent.height - 20) });
+								   static_cast<float>(Render.mExtent.height - 20) });
 
 		ImGui::Begin("Sketching");
 
@@ -63,6 +104,11 @@ namespace gui {
 
 #endif
 
+		if (ImGui::Button("Grid Options")) {
+
+			flags.set(gui_sketch_grid_menu);
+		}
+
 		if (ImGui::Button("Point")) {
 
 			Sketch.activatePointTool();
@@ -79,8 +125,8 @@ namespace gui {
 			
 
 			static ImGuiInputTextFlags flags = {};
-			ImGui::InputTextMultiline("##source", Sketch.text , IM_ARRAYSIZE(Sketch.text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
-
+			
+			ImGui::InputTextMultiline("Note Text", &Sketch.noteText );
 		}
 
 		if (ImGui::CollapsingHeader("Relations", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -126,6 +172,25 @@ namespace gui {
 
 		}
 
+
+		ImGui::End();
+
+	}
+
+	void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+		            std::bitset<gui_num_flags> &flags) {
+
+		ImGui::SetNextWindowPos({ 320, 20 });
+		ImGui::SetNextWindowSize({ 300.0f, 300.0f });
+
+		ImGui::Begin("Grid Options Menu");
+
+		ImGui::InputInt("Grid Size", &Sketch.mGrid.size);
+		ImGui::InputFloat("Grid Spacing", &Sketch.mGrid.spacing);
+
+		if (ImGui::Button("Close")) {
+			flags.reset(gui_sketch_grid_menu);
+		}
 
 		ImGui::End();
 
@@ -287,9 +352,11 @@ namespace gui {
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();
 
+		mainMenuBar();
 		
 		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, flags);
 		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, flags);
+		if (flags.test(gui_sketch_grid_menu))  gridMenu(Sketch, Render, Sel, flags);
 
 		
 

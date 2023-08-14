@@ -38,11 +38,12 @@ namespace sketch {
 		
 		float* mCamDistance;
 
+		Grid mGrid;
+
 		std::map<int, Point> Points;
 		std::map<int, Relation> mRelations;
 
-		char text[1024 * 16];
-
+		std::string noteText;
 
 		Sketch();
 		Sketch(int i);
@@ -78,6 +79,10 @@ namespace sketch {
 		Point* addNotePoint(glm::vec3 point);
 
 		void deletion(std::vector<int> ids);
+
+		std::vector<Vertex> getGridLine();
+
+		std::vector<GridRotationAxis> getGridAxii();
 		
 		std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);
 
