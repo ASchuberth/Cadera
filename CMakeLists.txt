@@ -27,8 +27,10 @@ add_executable(Cadera   src/Cadera.cpp
                        
                       
 )
-                   
+    
 
+add_executable(tester test/tester.cpp)
+add_test(tester tester)
 
 target_precompile_headers(Cadera PRIVATE include/pch.hpp)
 target_include_directories(Cadera PRIVATE include/)
