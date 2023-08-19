@@ -4,7 +4,6 @@
 *.sln
 *.vcx*
 /imgui
-<<<<<<< HEAD
 /packages
 /Cadera
 shaders/compile.bat
@@ -16,8 +15,6 @@ imgui.ini
 build/
 .vscode/
 *.spv
-doc/
+doc/Doxyfile
+doc/html
 *.code-workspace
-=======
-/Cadera
->>>>>>> master
