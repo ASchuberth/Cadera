@@ -8,16 +8,56 @@ namespace cam {
 
 	Camera::Camera()
 	{
-		pos = { -20.0f, 0.0f, 0.0f };
+		pos = { 0.0f, 0.0f, 20.0f };
 		focus = { 0.0f, 0.0f, 0.0f };
-		cameraVec = { 1.0f, 0.0f, 0.0f };
+		cameraVec = { 0.0f, 0.0f, -1.0f };
 		xpos = 0.0;
 		ypos = 0.0;
 		mouseRay = { 0.0f, 0.0f, 0.0f };
 		left = -10.0f;
 		camDistance = 0.0f;
 
+		up = {0.0f, 1.0f, 0.0f};
+
+		cross = glm::cross(cameraVec, up);
+
 	}
+
+
+	void Camera::setXYView() {
+
+		pos = { 0.0f, 0.0f, 20.0f };
+		focus = { 0.0f, 0.0f, 0.0f };
+		cameraVec = { 0.0f, 0.0f, -1.0f };
+
+		up = {0.0f, 1.0f, 0.0f};
+		cross = glm::cross(cameraVec, up);
+
+	}
+
+	void Camera::setYZView() {
+
+		pos = { 20.0f, 0.0f, 0.0f };
+		focus = { 0.0f, 0.0f, 0.0f };
+		cameraVec = { -1.0f, 0.0f, 0.0f };
+
+		up = {0.0f, 0.0f, 1.0f};
+		cross = glm::cross(cameraVec, up);
+
+	}
+
+	void Camera::setZXView() {
+
+		pos = { 0.0f, 20.0f, 0.0f };
+		focus = { 0.0f, 0.0f, 0.0f };
+		cameraVec = { 0.0f, -1.0f, 0.0f };
+
+		up = {1.0f, 0.0f, 0.0f};
+		cross = glm::cross(cameraVec, up);
+
+	}
+
+
 
 	void Camera::update() {
 
@@ -88,10 +128,12 @@ namespace cam {
 
 			diff = mouseRay - prevMouseRay;
 
-			pos.y -= diff.y;
-			pos.z -= diff.x;
-			focus.y -= diff.y;
-			focus.z -= diff.x;
+
+
+			pos -= diff.y * up;
+			pos -= diff.x * cross;
+			focus -= diff.y * up;
+			focus -= diff.x * cross;
 
 		}
 		else {

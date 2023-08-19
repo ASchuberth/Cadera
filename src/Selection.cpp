@@ -109,12 +109,16 @@ namespace sel {
 
 	}
 
-	void Selector::select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, bool isOrtho) {
+	void Selector::select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, glm::vec3 cross, bool isOrtho) {
 
 		if (isOrtho) {
-			point.x = 0.0f;
-			point.y = mouseRay.y + pos.y;
-			point.z = mouseRay.x + pos.z;
+			glm::vec3 up = glm::cross(cross, normal);
+
+			glm::vec3 x = mouseRay.x * cross;
+			glm::vec3 y = mouseRay.y * up;
+
+			glm::vec3 posOnPlane = origin + ( up + cross) * pos;
+			point = posOnPlane + x + y;
 		}
 		else {
 			point = calcPOnPlane(mouseRay, origin, normal, pos);

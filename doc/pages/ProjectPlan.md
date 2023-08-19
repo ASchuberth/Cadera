@@ -30,7 +30,7 @@
 
 ### Sketch
 
-- [ ] Create a sketch on any 3 base planes (x/y, y/z, x/z)
+- [x] Create a sketch on any 3 base planes (x/y, z/x, y/z)
 
 ### Grid
 

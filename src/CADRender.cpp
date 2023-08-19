@@ -1598,8 +1598,11 @@ void CADRender::createSwapChain()
 
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
-		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
+		//u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
+		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), Cam.up);
+		u.view = glm::lookAt(Cam.pos, Cam.focus, Cam.up);
+		
 		
 		
 		if (Cam.flags.test(cam::ortho)) {
