@@ -1,5 +1,22 @@
 # Project Plan
 
+- [Project Plan](#project-plan)
+  - [Version 0.1 Sketch Tooling](#version-01-sketch-tooling)
+  - [Version 0.0.1 Grids](#version-001-grids)
+    - [Sketch](#sketch)
+    - [Grid](#grid)
+  - [Version 0.0.2 Points/Lines/Rectangles](#version-002-pointslinesrectangles)
+    - [Points](#points)
+    - [Lines](#lines)
+    - [Rectangles](#rectangles)
+  - [Version 0.0.3 Rounds](#version-003-rounds)
+    - [Circles](#circles)
+    - [Arcs](#arcs)
+  - [Version 0.0.4 Notes](#version-004-notes)
+    - [Text](#text)
+- [History](#history)
+
+
 ## Version 0.1 Sketch Tooling
 
 - [ ] 0.0.1

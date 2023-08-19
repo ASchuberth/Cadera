@@ -1571,7 +1571,6 @@ void CADRender::createSwapChain()
 				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_GRID_LINE].mBuffer, offsets);
 				mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[BUF_SKETCH_GRID_AXII].mBuffer, offsets);
 				mCommandBuffers[i].draw(2, mBuffers[BUF_SKETCH_GRID_AXII].mPointSize, 0, 0);
-				//mCommandBuffers[i].draw(2, 4, 0, 0);
 			}
 
 			// Text
