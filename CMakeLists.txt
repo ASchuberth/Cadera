@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_TOOLCHAIN_FILE "C:\\vcpkg\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake" )
-project(Cadera VERSION 0.1.0)
+project(Cadera VERSION 0.0.1)
 
 include(CTest)
 enable_testing()
