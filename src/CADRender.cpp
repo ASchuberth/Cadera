@@ -1571,7 +1571,6 @@ void CADRender::createSwapChain()
 				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_GRID_LINE].mBuffer, offsets);
 				mCommandBuffers[i].bindVertexBuffers(1, 1, &mBuffers[BUF_SKETCH_GRID_AXII].mBuffer, offsets);
 				mCommandBuffers[i].draw(2, mBuffers[BUF_SKETCH_GRID_AXII].mPointSize, 0, 0);
-				//mCommandBuffers[i].draw(2, 4, 0, 0);
 			}
 
 			// Text
@@ -1599,8 +1598,11 @@ void CADRender::createSwapChain()
 
 	void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
-		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
+		//u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// u.view = glm::lookAt(Cam.pos, Cam.focus, glm::vec3(0.0f, 1.0f, 0.0f));
+		u.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), Cam.up);
+		u.view = glm::lookAt(Cam.pos, Cam.focus, Cam.up);
+		
 		
 		
 		if (Cam.flags.test(cam::ortho)) {

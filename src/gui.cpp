@@ -62,17 +62,47 @@ namespace gui {
 
 		ImGui::Begin("Start Screen");
 
-		if (ImGui::Button("New Sketch")) {
+		
+
+		static int modelTypeInt;
+		ImGui::RadioButton("Sketch", &modelTypeInt, 0); ImGui::SameLine();
+		ImGui::RadioButton("Part",  &modelTypeInt, 1);
+
+		if (modelTypeInt == 0) {
 			
-			flags.set(gui_sketch_menu);
+			ImGui::Text("Sketch Plane:");
 
-			Sketch.setType(cad_sketch);
-			Sketch.setCameraDistance(&Render.Cam.camDistance);
-			Sel.setActiveSketch(&Sketch);
+			static int sketchViewInt;
+			ImGui::RadioButton("XY", &sketchViewInt, 0); ImGui::SameLine();
+			ImGui::RadioButton("ZX", &sketchViewInt, 1); ImGui::SameLine();
+			ImGui::RadioButton("YZ", &sketchViewInt, 2);
 
-			Render.flags.set(render_update_sketch);
+			if (ImGui::Button("New Sketch")) {
+				
+				flags.set(gui_sketch_menu);
+				
+				if (sketchViewInt == 0) {
+					Render.Cam.setXYView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
+				} 
+				else if (sketchViewInt == 1) {
+					Render.Cam.setZXView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
+				}
+				else {
+					Render.Cam.setYZView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
+				}
 
-			flags.reset(gui_start_menu);
+
+				Sketch.setType(cad_sketch);
+				Sketch.setCameraDistance(&Render.Cam.camDistance);
+				Sel.setActiveSketch(&Sketch);
+
+				Render.flags.set(render_update_sketch);
+
+				flags.reset(gui_start_menu);
+			}
 		}
 
 		ImGui::End();
@@ -220,6 +250,16 @@ namespace gui {
 				Render.Cam.flags.reset(cam::ortho);
 
 			}
+
+			if (ImGui::Button("Set XY View")) {
+				Render.Cam.setXYView();
+			}
+			if (ImGui::Button("Set ZX View")) {
+				Render.Cam.setZXView();
+			}
+			if (ImGui::Button("Set YZ View")) {
+				Render.Cam.setYZView();
+			}
 			
 
 			ImGui::Text("Left: %f", Render.Cam.left);
@@ -250,7 +290,19 @@ namespace gui {
 			ImGui::Text("Camera Distance");
 			ImGui::Text("Distance: %f", Render.Cam.camDistance);
 	
-	
+			ImGui::NewLine();
+
+			ImGui::Text("Up");
+			ImGui::Text("x: %f", Render.Cam.up.x);
+			ImGui::Text("y: %f", Render.Cam.up.y);
+			ImGui::Text("z: %f", Render.Cam.up.z);
+
+			ImGui::NewLine();
+
+			ImGui::Text("Cross");
+			ImGui::Text("x: %f", Render.Cam.cross.x);
+			ImGui::Text("y: %f", Render.Cam.cross.y);
+			ImGui::Text("z: %f", Render.Cam.cross.z);
 	
 		}
 

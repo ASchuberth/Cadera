@@ -44,7 +44,7 @@ namespace sel {
 
 		void setActiveSketch(sketch::Sketch* pSketch);
 
-		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, bool isOrtho);
+		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, glm::vec3 cross, bool isOrtho);
 
 		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 

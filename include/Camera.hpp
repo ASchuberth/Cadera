@@ -38,6 +38,12 @@ namespace cam {
 		/// The length of the cameraVec vector
 		float camDistance;  
 
+		/// Up direction of Camera
+		glm::vec3 up;
+
+		/// Direction to move Camera to the side, for panning
+		glm::vec3 cross;
+
 		// Ortho view
 		float left;
 	
@@ -49,9 +55,15 @@ namespace cam {
 		double xpos;
 		double ypos;
 
-		void update();
+        void setXYView();
 
-		/**
+        void setYZView();
+
+        void setZXView();
+
+        void update();
+
+        /**
 		 * @brief 
 		 * 
 		 * @param yoffset 
