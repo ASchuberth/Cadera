@@ -18,7 +18,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
 				
 				app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f), 
-									glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
+									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
 									app->Render.Cam.flags.test(cad::cam::ortho));
 
 				if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
@@ -30,7 +30,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			else if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
 				
 				app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-									glm::vec3(1.0f, 0.0f, 0.0f), app->Render.Cam.pos,
+									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
 									app->Render.Cam.flags.test(cad::cam::ortho));
 
 				int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
