@@ -17,13 +17,21 @@ class Grid {
 
 
     Grid();
-    
+
+    void setGridOrientation(glm::vec3 normal, glm::vec3 up, glm::vec3 cross);
+
+ 
+
     /// @brief To generate the values needed to instance each grid line from the base line
     /// @return Vector to be used for rendering the instances
     std::vector<GridRotationAxis> createGridInstanceAxii();
     
     Vertex p1;
     Vertex p2;
+
+    glm::vec3 gNormal;
+    glm::vec3 gUp;
+    glm::vec3 gCross;
 
     /// @brief The container for rendering the base line
     std::vector<Vertex> line;

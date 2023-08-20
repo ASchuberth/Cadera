@@ -35,8 +35,7 @@
 ### Grid
 
 - [x] Resize 
-- [ ] Major/Minor Axis
-- [ ] Works on any plane
+- [x] Works on any plane
 
 ## Version 0.0.2 Points/Lines/Rectangles
 

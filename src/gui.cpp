@@ -83,12 +83,15 @@ namespace gui {
 				
 				if (sketchViewInt == 0) {
 					Render.Cam.setXYView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
 				} 
 				else if (sketchViewInt == 1) {
 					Render.Cam.setZXView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
 				}
 				else {
 					Render.Cam.setYZView();
+					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
 				}
 
 
