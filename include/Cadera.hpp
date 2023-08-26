@@ -42,7 +42,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		~Cadera();
 
-		void run();
+        void runSelection();
+
+        void run();
 
 		void mainLoop();
 	};

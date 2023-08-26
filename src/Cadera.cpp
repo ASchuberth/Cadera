@@ -20,7 +20,6 @@ namespace CADERA_APP_NAMESPACE {
 
 	Cadera::Cadera() {
 		modelIdCounter = 0;
-		//Sketch.setType(cad_sketch);
 	}
 
 	Cadera::~Cadera() {
@@ -28,6 +27,24 @@ namespace CADERA_APP_NAMESPACE {
 		Render.destroy();
 	}
 
+	void Cadera::runSelection() {
+
+		if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
+			Sketch.deletion(Render.Sel.getSelectedPointIds());
+			Render.Sel.clear();
+			Render.Sel.setFlags();
+			Render.flags.set(render_update_sketch);
+			flags.reset(cadera_delete);
+		}
+		else {
+			flags.reset(cadera_delete);
+		}
+
+		if (Render.flags.test(render_update_sketch)) {
+			Render.render(Sketch);
+		}
+
+	}
 
 	void Cadera::run() {
 		
@@ -65,26 +82,15 @@ namespace CADERA_APP_NAMESPACE {
 		 	gui::imguiRun(Sketch, Render, Render.Sel);
 			
 
-			if (flags.test(cadera_delete) && !Render.Sel.selectedPoints.empty()) {
-				Sketch.deletion(Render.Sel.getSelectedPointIds());
-				Render.Sel.clear();
-				Render.Sel.setFlags();
-				Render.flags.set(render_update_sketch);
-				flags.reset(cadera_delete);
-			}
-			else {
-				flags.reset(cadera_delete);
-			}
+			runSelection();
 
-			if (Render.flags.test(render_update_sketch)) {
-				Render.render(Sketch);
-			}
+
 
 			
 			
-		Render.createCommandBuffers();
-		Render.drawFrame();
-		Render.runCamera();
+			Render.createCommandBuffers();
+			Render.drawFrame();
+			Render.runCamera();
 
 			glfwWaitEvents();
 			
