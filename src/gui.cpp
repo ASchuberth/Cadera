@@ -94,7 +94,7 @@ namespace gui {
 					Sketch.mGrid.setGridOrientation(Render.Cam.cameraVec, Render.Cam.up, Render.Cam.cross);
 				}
 
-
+				Sketch.flags.set(sketch::skt_active);
 				Sketch.setType(cad_sketch);
 				Sketch.setCameraDistance(&Render.Cam.camDistance);
 				Sel.setActiveSketch(&Sketch);
@@ -336,6 +336,7 @@ namespace gui {
 		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_DefaultOpen)) {
 			
 			ImGui::Text("Sketch Tools:");
+			ImGui::Text("Sketch Active: %d", Sketch.flags.test(sketch::skt_active));
 			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
 			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
 			ImGui::Text("Note Tool Active: %d", Sketch.flags.test(sketch::skt_note_tool));

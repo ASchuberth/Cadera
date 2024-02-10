@@ -38,6 +38,8 @@ namespace sel {
 
 		glm::vec3 point;
 
+		bool pointJustAdded;
+
 		std::map<int, Point> selectedPoints;
 
 		Selector();
@@ -49,6 +51,8 @@ namespace sel {
 		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
 		int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+
+		int remove(glm::vec3 pointToRemove, std::map<int, Point> &points, float skScale);
 
 		bool existingPoint(glm::vec3 point);
 

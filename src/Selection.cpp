@@ -111,6 +111,8 @@ namespace sel {
 
 	void Selector::select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, glm::vec3 cross, bool isOrtho) {
 
+		
+
 		if (isOrtho) {
 			glm::vec3 up = glm::cross(cross, normal);
 
@@ -156,6 +158,8 @@ namespace sel {
 			setFlags();
 		}
 
+		pointJustAdded = false;
+
 		int selectedPointId = selectPoint(pointToAdd, points, skScale);
 
 		// If a point is selected
@@ -166,18 +170,13 @@ namespace sel {
 				
 				selectedPoints[selectedPointId] = points[selectedPointId];
 				setFlags();
-				
-				return selectedPointId;
 
-			}
-			else {
-
-				selectedPoints.erase(selectedPointId);
-				setFlags();
+				pointJustAdded = true;
 
 				return selectedPointId;
 
 			}
+		
 		}
 
 		// If not CTRL and selectedPointId < 0
@@ -192,7 +191,31 @@ namespace sel {
 
 	}
 
-	bool Selector::existingPoint(glm::vec3 point) {
+    int Selector::remove(glm::vec3 pointToRemove, std::map<int, Point> &points, float skScale)
+    {
+        if(!flags.test(select_isCTRL))
+			return -1;
+		
+		if (pointJustAdded)
+			return -1;
+
+		int selectedPointId = selectPoint(pointToRemove, points, skScale);
+
+		
+		if (selectedPointId >= 0) {
+
+			selectedPoints.erase(selectedPointId);
+			setFlags();
+
+			return selectedPointId;
+
+		}
+
+
+		return -1;
+    }
+
+    bool Selector::existingPoint(glm::vec3 point) {
 
 		if (pActiveSketch == nullptr)
 			throw std::runtime_error("Selection.existingPoint(): pActiveSketch is not set!");
