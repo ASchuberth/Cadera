@@ -111,7 +111,6 @@ namespace CADERA_APP_NAMESPACE {
 	
 	void CADRender::createSurface() {
 		
-		vk::SurfaceKHR tempSurface;
 
 		if (glfwCreateWindowSurface(mInstance, mMainWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&mSurface)) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create window surface!");

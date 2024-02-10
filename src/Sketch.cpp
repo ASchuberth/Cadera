@@ -47,7 +47,10 @@ namespace sketch {
 
 	void Sketch::deactivateTools() {
 		
-		flags.reset();
+		flags.reset(skt_point_tool);
+		flags.reset(skt_note_tool);
+		flags.reset(skt_tool_active);
+		
 	}
 
 	void Sketch::add(glm::vec3 point) {
@@ -167,10 +170,10 @@ namespace sketch {
 		txt::Text T;
 
 		T.cursorPos = point;
-		T.cursorDirX = { 0.0f, 0.0f, 1.0f };
+		T.cursorDirX = { 1.0f, 0.0f, 0.0f };
 		T.cursorDirY = { 0.0f, 1.0f, 0.0f };
 		T.backgroundColor = { 0.1f, 0.1f, 0.1f };
-		T.textColor = { 1.0f, 1.0f, 1.0f };
+		T.textColor = { 1.0f, 0.0f, 0.0f };
 		T.text = noteText;
 
 		Notes[featureCounter] = T;

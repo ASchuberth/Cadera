@@ -1,7 +1,16 @@
 #include "pch.hpp"
 #include "callbacks.hpp"
 #include "Cadera.hpp"
-//#include "Selection.hpp"
+
+void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action, int &mods);
+
+void sketch_select_addPoint(cad::Cadera *app);
+
+void sketch_select_removePoint(cad::Cadera *app);
+
+void sketch_add_point(cad::Cadera *app);
+
+void sketch_move_point(cad::Cadera *app);
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 
@@ -13,34 +22,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     // (2) ONLY forward mouse data to your underlying app/game.
     if (!io.WantCaptureMouse) {
 
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow) &&
-				app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
+		
+		if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_active)) {
 				
-				app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f), 
-									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
-									app->Render.Cam.flags.test(cad::cam::ortho));
-
-				if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
-					app->Sketch.add(app->Render.Sel.point);
-
-				app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
+			sketch_mode_callbacks(app, button, action, mods);
 				
-			}
-			else if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
-				
-				app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
-									app->Render.Cam.flags.test(cad::cam::ortho));
-
-				int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
-
-				if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
-					app->Render.flags.set(cad::render_update_sketch);
-				}
-				
-			}
 		}
+		
+		
 	}
 	
 
@@ -112,3 +101,70 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 
 }
 
+
+void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action, int &mods) {
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active))
+			sketch_add_point(app);
+		else {
+			sketch_select_addPoint(app);
+			sketch_move_point(app);
+		}
+		
+	} else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)	{
+		if (!app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active))
+			sketch_select_removePoint(app);
+	}
+}
+
+void sketch_select_addPoint(cad::Cadera *app) {
+
+		app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
+									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
+									app->Render.Cam.flags.test(cad::cam::ortho));
+
+		int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
+
+		if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
+			app->Render.flags.set(cad::render_update_sketch);
+		}
+}
+
+void sketch_select_removePoint(cad::Cadera *app) {
+
+	app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
+						   app->Render.Cam.cameraVec, app->Render.Cam.pos, 
+						   app->Render.Cam.cross,
+						   app->Render.Cam.flags.test(cad::cam::ortho));
+
+	int id = app->Render.Sel.remove(app->Render.Sel.point, app->Sketch.Points, 
+	                             app->Render.Cam.camDistance);			
+
+
+	if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
+			app->Render.flags.set(cad::render_update_sketch);
+	}					
+
+}
+
+
+
+void sketch_add_point(cad::Cadera *app) {
+
+	app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f), 
+									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
+									app->Render.Cam.flags.test(cad::cam::ortho));
+
+	if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
+		app->Sketch.add(app->Render.Sel.point);
+
+	app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
+
+}
+
+void sketch_move_point(cad::Cadera *app) {
+
+	app->Render.Sel.selectedPoints;
+
+}
