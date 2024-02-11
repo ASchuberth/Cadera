@@ -309,6 +309,7 @@ namespace gui {
 		if (ImGui::CollapsingHeader("Selection", ImGuiTreeNodeFlags_None)) {
 
 			ImGui::Text("Selection Flags");
+			ImGui::Text("First Click: %d", Render.Sel.flags.test(sel::select_first_click));
 			ImGui::Text("Single Point: %d", Render.Sel.flags.test(sel::select_single_point));
 			ImGui::Text("Double Point: %d", Render.Sel.flags.test(sel::select_double_point));
 			ImGui::Text("Multi Point: %d", Render.Sel.flags.test(sel::select_multi_point));
@@ -336,10 +337,7 @@ namespace gui {
 		if (ImGui::CollapsingHeader("Sketch", ImGuiTreeNodeFlags_DefaultOpen)) {
 			
 			ImGui::Text("Sketch Tools:");
-			ImGui::Text("Sketch Active: %d", Sketch.flags.test(sketch::skt_active));
-			ImGui::Text("Tool Active: %d", Sketch.flags.test(sketch::skt_tool_active));
-			ImGui::Text("Point Tool Active: %d", Sketch.flags.test(sketch::skt_point_tool));
-			ImGui::Text("Note Tool Active: %d", Sketch.flags.test(sketch::skt_note_tool));
+
 			ImGui::Text("FeatureCounter: %d", Sketch.getFeatureCounter());
 		
 			ImGui::Text("Camera Distance");
@@ -347,6 +345,58 @@ namespace gui {
 
 			ImGui::NewLine();
 			
+
+			static ImGuiTableFlags flags = ImGuiTableFlags_Resizable | 
+											ImGuiTableFlags_Reorderable | 
+											ImGuiTableFlags_Hideable |
+											ImGuiTableFlags_RowBg;
+											
+
+			if (ImGui::BeginTable("Sketch Flags Debug", 2, flags))
+			{
+
+				ImGui::TableSetupColumn("Flag Name");
+				ImGui::TableSetupColumn("Status");
+				ImGui::TableHeadersRow();
+				
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Sketch Active");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", Sketch.flags.test(sketch::skt_active));
+				
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Sketch Points Have Moved");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", Sketch.flags.test(sketch::skt_points_have_moved));
+				
+				ImGui::TableNextRow();	
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Tool Active");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", Sketch.flags.test(sketch::skt_tool_active));	
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Point Tool Active");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", Sketch.flags.test(sketch::skt_point_tool));
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("Note Tool Active");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", Sketch.flags.test(sketch::skt_note_tool));
+
+				
+				
+
+            	ImGui::EndTable();
+			}
+
+
+
 			for (auto& rel : Sketch.mRelations) {
 
 				if (rel.second.mId == 0)
@@ -368,27 +418,53 @@ namespace gui {
 				}
 				
 			}
+
+
+
+
+
+
+
 			
+			// Sketch Points
+											
+
+			if (ImGui::BeginTable("Sketch Points Debug", 4, flags))
+			{
+
+				ImGui::TableSetupColumn("Id");
+				ImGui::TableSetupColumn("x");
+				ImGui::TableSetupColumn("y");
+				ImGui::TableSetupColumn("z");
+				ImGui::TableHeadersRow();
+				
+				
+				for (const auto &point : Sketch.Points)
+				{
+					
+					ImGui::TableNextRow();
+					
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("%d", point.first);
+
+					ImGui::TableSetColumnIndex(1);
+					ImGui::Text("%f", point.second.pos.x);
+
+					ImGui::TableSetColumnIndex(2);
+					ImGui::Text("%f", point.second.pos.y);
+
+					ImGui::TableSetColumnIndex(3);
+					ImGui::Text("%f", point.second.pos.z);
+					
+				
+				}
+
+            	ImGui::EndTable();
+			}
+
 			ImGui::NewLine();
 
-			for (auto& p : Sketch.Points) {
-				ImGui::Text("Sketch Point: %d", p.second.getId());
-				
-				if (p.second.Type == feat_point)
-					ImGui::Text("Type: Point");
-
-				ImGui::Text("x: %f", p.second.pos.x);
-				ImGui::Text("y: %f", p.second.pos.y);
-				ImGui::Text("z: %f", p.second.pos.z);
-				ImGui::NewLine();
-
-				ImGui::Text("Relation Ids:");
-				for (const auto& id : p.second.relationIds) {
-					ImGui::Text("%d", id);
-				}
-				ImGui::NewLine();
-
-			}
+			
 		}
 
 		ImGui::End();

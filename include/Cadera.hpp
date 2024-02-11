@@ -42,7 +42,9 @@ namespace CADERA_APP_NAMESPACE {
 
 		~Cadera();
 
-		void run();
+        void updateSelectionPoints(std::vector<int> ids);
+
+        void run();
 
 		void mainLoop();
 	};

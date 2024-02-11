@@ -184,7 +184,46 @@ namespace sketch {
 		return &Points[featureCounter - 2];
 	}
 
-	void Sketch::deletion(std::vector<int> ids) {
+    void Sketch::movePoints(std::map<int, cad::Point> ids, const glm::vec3 &POnPlane, const bool& isFirstClick) {
+
+
+		static glm::vec3 initPoint = POnPlane;
+
+
+		if (isFirstClick)
+			initPoint = POnPlane;
+
+		glm::vec3 difference = POnPlane - initPoint;
+
+
+		if (glm::length2(difference) < .001)
+			return;
+
+		for (const auto& id : ids) {
+
+			if (id.first == 0) 
+				continue;
+
+			
+			
+
+			Points[id.first].pos += difference;
+
+			if (Points[id.first].Type == feat_note) {
+				
+				Notes[Points[id.first].noteId].cursorPos = Points[id.first].pos;
+			}
+			
+		}
+
+
+
+		flags.set(skt_points_have_moved);
+		
+		initPoint = POnPlane;
+    }
+
+    void Sketch::deletion(std::vector<int> ids) {
 
 		for (const auto& id : ids) {
 			

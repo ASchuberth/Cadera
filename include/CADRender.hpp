@@ -56,7 +56,7 @@ namespace CADERA_APP_NAMESPACE {
 		render_update_sketch,
 		render_num_flags
 	};
-
+	
 	class CADRender  {
 		
 	private:

@@ -108,27 +108,38 @@ void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action, int &mods
 		if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active))
 			sketch_add_point(app);
 		else {
+			
 			sketch_select_addPoint(app);
-			sketch_move_point(app);
+			app->Sketch.flags.set(cad::sketch::skt_move_points);
+			
 		}
 		
+		
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)	{
-		if (!app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active))
-			sketch_select_removePoint(app);
+		
+		if (!app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
+			
+			if (!app->Sketch.flags.test(cad::sketch::skt_points_have_moved))
+				sketch_select_removePoint(app);
+
+			app->Render.Sel.flags.set(cad::sel::select_first_click);
+			app->Sketch.flags.reset(cad::sketch::skt_move_points);
+			app->Sketch.flags.reset(cad::sketch::skt_points_have_moved);
+		}
 	}
 }
 
 void sketch_select_addPoint(cad::Cadera *app) {
 
-		app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-									app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
-									app->Render.Cam.flags.test(cad::cam::ortho));
+	app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
+								app->Render.Cam.cameraVec, app->Render.Cam.pos, app->Render.Cam.cross,
+								app->Render.Cam.flags.test(cad::cam::ortho));
 
-		int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
+	int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points, app->Render.Cam.camDistance);
 
-		if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
-			app->Render.flags.set(cad::render_update_sketch);
-		}
+	if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
+		app->Render.flags.set(cad::render_update_sketch);
+	}
 }
 
 void sketch_select_removePoint(cad::Cadera *app) {
@@ -163,8 +174,3 @@ void sketch_add_point(cad::Cadera *app) {
 
 }
 
-void sketch_move_point(cad::Cadera *app) {
-
-	app->Render.Sel.selectedPoints;
-
-}

@@ -20,4 +20,4 @@ doc/html
 *.code-workspace
 doc/visuals/**/media/
 doc/visuals/**/__pycache__/
-
+*.drawio
