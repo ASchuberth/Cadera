@@ -32,8 +32,8 @@
 
 ### Points
 
-- [ ] Movable
-- [ ] Table (Debug)
+- [x] Movable
+- [x] Table (Debug)
 
 ### Lines
 
