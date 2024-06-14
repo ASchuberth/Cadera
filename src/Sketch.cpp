@@ -50,6 +50,7 @@ namespace sketch {
 		flags.reset(skt_point_tool);
 		flags.reset(skt_note_tool);
 		flags.reset(skt_tool_active);
+		flags.set(skt_event_tool_deactivated);
 		
 	}
 
@@ -169,6 +170,7 @@ namespace sketch {
 
 		txt::Text T;
 
+		T.textSize = 1.0f;
 		T.cursorPos = point;
 		T.cursorDirX = { 1.0f, 0.0f, 0.0f };
 		T.cursorDirY = { 0.0f, 1.0f, 0.0f };

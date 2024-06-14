@@ -34,6 +34,7 @@
 
 - [x] Movable
 - [x] Table (Debug)
+- [x] Point Tool Floating Point
 
 ### Lines
 

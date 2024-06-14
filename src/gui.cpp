@@ -218,7 +218,8 @@ namespace gui {
 		ImGui::InputInt("Grid Size", &Sketch.mGrid.size);
 		ImGui::InputFloat("Grid Spacing", &Sketch.mGrid.spacing);
 
-		if (ImGui::Button("Close")) {
+		if (ImGui::Button("OK")) {
+			Render.flags.set(render_update_sketch);
 			flags.reset(gui_sketch_grid_menu);
 		}
 

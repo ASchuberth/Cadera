@@ -21,3 +21,4 @@ doc/html
 doc/visuals/**/media/
 doc/visuals/**/__pycache__/
 *.drawio
+*.pdb

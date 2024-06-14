@@ -10,7 +10,7 @@ namespace CADERA_APP_NAMESPACE {
 	/// @brief Flags that can be toggled in a bitset to trigger events
 	enum CaderaFlags {
 		/// Will trigger deletion of the currently selected object
-		cadera_delete, 
+		cadera_delete,
 		/// Number of flags to be used in the creation of the bitset 
 		cadera_num_flags  
 	};
@@ -41,6 +41,8 @@ namespace CADERA_APP_NAMESPACE {
 		Cadera();
 
 		~Cadera();
+
+        void SketchEvents();
 
         void updateSelectionPoints(std::vector<int> ids);
 

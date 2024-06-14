@@ -81,6 +81,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		app->Sketch.deactivateTools();
+		
 	}
 
 	if (key == GLFW_KEY_DELETE && action == GLFW_PRESS) {

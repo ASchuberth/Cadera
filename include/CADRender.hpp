@@ -423,6 +423,8 @@ namespace CADERA_APP_NAMESPACE {
 
         void renderSketchPoints(Model &S);
 
+        void renderSketchPointTool();
+
         //void runCamera();
 
 		//void render(Model &M);

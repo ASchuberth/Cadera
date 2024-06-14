@@ -607,7 +607,7 @@ void CADRender::createSwapChain()
 
     void CADRender::loadFonts() {
 
-		TxtRend.setFontSize(10.0f);
+		TxtRend.setFontSize(100.0f);
 		TxtRend.loadFont("../../textures/test.csv");
 		
 
@@ -1564,6 +1564,14 @@ void CADRender::createSwapChain()
 				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINTS].mPointSize+2, 1, 0, 0);
 			}
 
+			// Sketch Tools
+			if (!mBuffers[BUF_SKETCH_POINT_TOOL].isEmpty) {
+				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchPoint);
+				mCommandBuffers[i].bindVertexBuffers(0, 1, &mBuffers[BUF_SKETCH_POINT_TOOL].mBuffer, offsets);
+				mCommandBuffers[i].draw(mBuffers[BUF_SKETCH_POINT_TOOL].mPointSize, 1, 0, 0);
+			}
+
+
 			// Grid
 			if (!mBuffers[BUF_SKETCH_GRID_LINE].isEmpty) {
 				mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, Pipelines.SketchGrid);
@@ -1917,4 +1925,46 @@ void CADRender::createSwapChain()
 	}
 
 	
+	void CADRender::renderSketchPointTool() {
+								
+
+		glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
+		std::vector<glm::vec3> pointToolPoint;
+		std::vector<Vertex> Vertices;
+
+
+		glm::vec3 point;
+
+		if (Cam.flags.test(cam::ortho)) {
+			glm::vec3 up = glm::cross(Cam.cross, Cam.cameraVec);
+
+			glm::vec3 x = Cam.mouseRay.x * Cam.cross;
+			glm::vec3 y = Cam.mouseRay.y * up;
+
+			glm::vec3 posOnPlane = origin + ( up + Cam.cross) * Cam.pos;
+			point = posOnPlane + x + y;
+		}
+		else {
+			point = sel::calcPOnPlane(Cam.mouseRay, origin, Cam.cameraVec, Cam.pos);
+		}
+
+		pointToolPoint.push_back(point);
+
+		if (!pointToolPoint.empty()) {
+
+				Vertices.push_back({ point, {1.0f, 1.0f, 1.0f} });
+
+		}
+
+
+		if (!Vertices.empty()) {
+			updateBuffer(BUF_SKETCH_POINT_TOOL, Vertices, vk::BufferUsageFlagBits::eVertexBuffer);
+		}
+		else if (!mBuffers[BUF_SKETCH_POINT_TOOL].isEmpty){
+			deleteBuffer(BUF_SKETCH_POINT_TOOL);
+		}
+
+
+	}
+
 }
