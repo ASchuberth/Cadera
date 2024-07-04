@@ -14,7 +14,7 @@ add_executable(Cadera   src/Cadera.cpp
                         src/Selection.cpp
                         src/Camera.cpp   
                         src/Callbacks.cpp
-                        src/gui.cpp
+                        src/ux/gui.cpp
                         src/Sketch.cpp
                         src/Sketcher.cpp
                         src/SketchSolver.cpp
