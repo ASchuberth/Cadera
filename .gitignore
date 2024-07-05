@@ -22,5 +22,4 @@ doc/visuals/**/media/
 doc/visuals/**/__pycache__/
 *.drawio
 *.pdb
-vcpkg-configuration.json
 vcpkg_installed/
