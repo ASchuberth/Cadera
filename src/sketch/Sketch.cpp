@@ -186,7 +186,7 @@ namespace sketch {
 		return &Points[featureCounter - 2];
 	}
 
-    void Sketch::movePoints(std::map<int, cad::Point> ids, const glm::vec3 &POnPlane, const bool& isFirstClick) {
+    void Sketch::movePoints(std::map<int, Point> ids, const glm::vec3 &POnPlane, const bool& isFirstClick) {
 
 
 		static glm::vec3 initPoint = POnPlane;

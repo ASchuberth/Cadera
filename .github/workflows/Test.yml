@@ -11,32 +11,32 @@ jobs:
   build:
     runs-on: windows-latest
 
-    permissions:
-      contents: read
-      packages: read
+    # permissions:
+    #   contents: read
+    #   packages: read
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
+    # steps:
+    #   - uses: actions/checkout@v4
+    #     with:
+    #       submodules: true
 
-      - uses: lukka/get-cmake@latest
+    #   - uses: lukka/get-cmake@latest
 
-      - name: Restore from cache and setup vcpkg executable and data files.
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgJsonGlob: 'vcpkg.json'
+    #   - name: Restore from cache and setup vcpkg executable and data files.
+    #     uses: lukka/run-vcpkg@v11
+    #     with:
+    #       vcpkgJsonGlob: 'vcpkg.json'
 
-      # Note: if the preset misses the "configuration", it is possible to explicitly select the
-      # configuration with the additional `--config` flag, e.g.:
-      #   buildPreset: 'ninja-vcpkg'
-      #   buildPresetAdditionalArgs: "[`--config`, `Release`]"
-      #   testPreset: 'ninja-vcpkg'
-      #   testPresetAdditionalArgs: "[`--config`, `Release`]"
-      - name: Run CMake+vcpkg+Ninja+CTest to build packages and generate/build/test the code.
-        uses: lukka/run-cmake@v10
-        with:
-          configurePreset: 'ninja-multi-vcpkg'
-          buildPreset: 'ninja-vcpkg-release'
-          testPreset: 'test-release'
+    #   # Note: if the preset misses the "configuration", it is possible to explicitly select the
+    #   # configuration with the additional `--config` flag, e.g.:
+    #   #   buildPreset: 'ninja-vcpkg'
+    #   #   buildPresetAdditionalArgs: "[`--config`, `Release`]"
+    #   #   testPreset: 'ninja-vcpkg'
+    #   #   testPresetAdditionalArgs: "[`--config`, `Release`]"
+    #   - name: Run CMake+vcpkg+Ninja+CTest to build packages and generate/build/test the code.
+    #     uses: lukka/run-cmake@v10
+    #     with:
+    #       configurePreset: 'ninja-multi-vcpkg'
+    #       buildPreset: 'ninja-vcpkg-release'
+    #       testPreset: 'test-release'
       
