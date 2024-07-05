@@ -10,8 +10,6 @@
 #include <fstream>
 #include <chrono>
 
-
-
 #define CADERA_APP_NAMESPACE cad
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS

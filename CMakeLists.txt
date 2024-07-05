@@ -1,6 +1,28 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.14)
 set(CMAKE_TOOLCHAIN_FILE "C:\\vcpkg\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake" )
-project(Cadera VERSION 0.1.0)
+project(Cadera VERSION 0.1.2)
+
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+
+FetchContent_Declare(
+	glm
+	GIT_REPOSITORY	https://github.com/g-truc/glm.git
+	GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e #refs/tags/1.0.1
+)
+
+FetchContent_MakeAvailable(glm)
 
 include(CTest)
 enable_testing()
@@ -53,11 +75,13 @@ target_link_libraries(CaderaApp PRIVATE Microsoft.GSL::GSL)
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(CaderaApp PRIVATE imgui::imgui)
 
+# find_package(glm CONFIG REQUIRED)
+target_link_libraries(CaderaApp PRIVATE glm::glm)
 
 #=========================================
 # Testing
 #=========================================
-include_directories(test)
+add_subdirectory(test)
 
 
 

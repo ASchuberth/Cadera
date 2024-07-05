@@ -1,6 +1,6 @@
 #include "pch.hpp"
 #include "Cadera.hpp"
-#include <gsl/gsl>
+
 
 
 
