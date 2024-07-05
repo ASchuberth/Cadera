@@ -1,4 +1,4 @@
-#include "pch.hpp"
+#include "../pch.hpp"
 #include "gui.hpp"
 
 namespace CADERA_APP_NAMESPACE {
