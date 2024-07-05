@@ -16,9 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: true
-          fetch-depth: 0
+        
 
       - uses: lukka/get-cmake@latest
       - name: List $RUNNER_WORKSPACE before vcpkg is setup
