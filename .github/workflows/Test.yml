@@ -2,23 +2,46 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "exp" ]
+    branches: [ exp, testing ]
   pull_request:
-    branches: [ "exp" ]
+    branches: [ exp, testing ]
 
 
 jobs:
   build:
+    runs-on: windows-latest
 
-    runs-on: ubuntu-latest
+    permissions:
+      packages: read
 
     steps:
-    - uses: actions/checkout@v3
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: ASchuberth/get-cmake@latest
+      - name: List $RUNNER_WORKSPACE before vcpkg is setup
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+
+
+      - name: Setup vcpkg
+        uses: ASchuberth/run-vcpkg@v11
+        id: runvcpkg
+
+      - name: List $RUNNER_WORKSPACE before build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+      - name: Prints output of run-vcpkg's action.
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
+      - name: Run CMake+vcpkg+Ninja
+        uses: ASchuberth/run-cmake@v10
+        id: runcmake
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+      - name: List $RUNNER_WORKSPACE after build
+        run: find $RUNNER_WORKSPACE
+        shell: bash
