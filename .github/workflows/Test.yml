@@ -20,14 +20,14 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - uses: ASchuberth/get-cmake@latest
+      - uses: lukka/get-cmake@latest
       - name: List $RUNNER_WORKSPACE before vcpkg is setup
         run: find $RUNNER_WORKSPACE
         shell: bash
 
 
       - name: Setup vcpkg
-        uses: ASchuberth/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v11
         id: runvcpkg
 
       - name: List $RUNNER_WORKSPACE before build
@@ -36,7 +36,7 @@ jobs:
       - name: Prints output of run-vcpkg's action.
         run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
       - name: Run CMake+vcpkg+Ninja
-        uses: ASchuberth/run-cmake@v10
+        uses: lukka/run-cmake@v10
         id: runcmake
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/cmakepresets/CMakeLists.txt'
