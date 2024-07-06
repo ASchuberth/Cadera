@@ -2,6 +2,7 @@
 
 #include "../render/CADRender.hpp"
 #include "Nodes.hpp"
+#include "Events.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace gui {
@@ -14,7 +15,7 @@ namespace gui {
 		gui_num_flags
 	};
 
-	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector& Sel);
+	void imguiRun(Events &CadEvents, sketch::Sketch &Sketch, CADRender &Render, sel::Selector& Sel);
 
 	void imguiBegin();
 

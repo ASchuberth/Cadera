@@ -489,11 +489,11 @@ namespace gui {
 
 	}
 
-	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel) {
+	void imguiRun(Events &CadEvents, sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel) {
 
 		static std::bitset<gui_num_flags> flags(gui_start_menu + 1);
 		
-
+		
 
 		// Cadera imgui begin, not part of Dear Imgui
 		imguiBegin();

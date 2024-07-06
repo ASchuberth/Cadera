@@ -110,6 +110,7 @@ namespace CADERA_APP_NAMESPACE {
 	 */
 	void Cadera::mainLoop() {
 
+		
 
 		while (!glfwWindowShouldClose(Render.mMainWindow)) {  
 			
@@ -117,7 +118,7 @@ namespace CADERA_APP_NAMESPACE {
 			glfwPollEvents();
 
 
-		 	gui::imguiRun(Sketch, Render, Render.Sel);
+		 	gui::imguiRun(CaderaEvents, Sketch, Render, Render.Sel);
 			
 			SketchEvents();
 

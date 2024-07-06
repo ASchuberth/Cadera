@@ -34,6 +34,7 @@ add_executable(CaderaApp    src/Cadera.cpp
                             src/Selection.cpp
                             src/Callbacks.cpp
                             src/Model.cpp    
+                            src/Events.cpp    
                             src/Main.cpp
                                      
 )

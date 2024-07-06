@@ -24,6 +24,7 @@ target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
                                     ../src/Selection.cpp
                                     ../src/Model.cpp
                                     ../src/callbacks.cpp
+                                    ../src/Events.cpp
                                     ../src/Cadera.cpp
                                     ../src/ux/gui.cpp
                                     ../src/ux/Nodes.cpp

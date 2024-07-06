@@ -7,6 +7,7 @@ namespace sketch {
 
     Sketcher::Sketcher() {
 
+        
 
     }
     
@@ -16,7 +17,7 @@ namespace sketch {
     }
 
     void Sketcher::add(glm::vec3 pointToAdd) {
-        
+
     }
 }
 }
