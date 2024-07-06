@@ -134,6 +134,11 @@ namespace gui {
 
 #endif
 
+		if (ImGui::Button("Node Editor")) {
+
+			flags.set(gui_sketch_node_editor);
+		}
+
 		if (ImGui::Button("Grid Options")) {
 
 			flags.set(gui_sketch_grid_menu);
@@ -227,7 +232,18 @@ namespace gui {
 
 	}
 
-	void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+    void nodeMenu() {
+		
+
+		NodeTest N;
+
+
+		N.show();
+
+	
+    }
+
+    void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
 		                 std::bitset<gui_num_flags> &flags) {
 
 
@@ -487,6 +503,7 @@ namespace gui {
 		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, flags);
 		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, flags);
 		if (flags.test(gui_sketch_grid_menu))  gridMenu(Sketch, Render, Sel, flags);
+		if (flags.test(gui_sketch_node_editor))  nodeMenu();
 
 		
 

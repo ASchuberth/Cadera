@@ -555,9 +555,7 @@ void CADRender::createSwapChain()
 		if (mDevice.createDescriptorSetLayout(&layoutInfo, nullptr, &this->mDescriptorSetLayout) != vk::Result::eSuccess)
 			throw std::runtime_error("failed to create descriptor set layout!");
 
-		std::cout << "Descriptor Set Layout CadRender:\t" << mDescriptorSetLayout;
-		std::cout << std::endl;
-		
+	
 	}
 
 	void CADRender::createPipelineLayout() {

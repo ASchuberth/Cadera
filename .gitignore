@@ -23,3 +23,4 @@ doc/visuals/**/__pycache__/
 *.drawio
 *.pdb
 vcpkg_installed/
+src/ux/imnodes/
