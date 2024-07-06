@@ -20,6 +20,19 @@ namespace sketch {
 
 	class Sketcher {
 
+		Sketcher();
+
+		~Sketcher();
+
+		
+		
+
+		std::bitset<skt_num_flags> flags;
+
+		void add(glm::vec3 pointToAdd);
+
+
+
 	};
 
 }
