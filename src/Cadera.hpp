@@ -30,14 +30,19 @@ namespace CADERA_APP_NAMESPACE {
 		
 		void initCallbacks();
 		
-		std::map<int, std::unique_ptr<Model>> Models;
 		
+		std::map<int, std::unique_ptr<Model>> Models;
 		int modelIdCounter;
 
 	public:
+
 		
+		
+
 		CADRender Render;
 		sketch::Sketch Sketch;
+
+		sketch::Sketcher Sktr;
 
 		Events CaderaEvents;
 

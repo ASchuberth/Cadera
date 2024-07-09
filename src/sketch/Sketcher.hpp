@@ -11,11 +11,16 @@ namespace sketch {
 
 	class Sketcher {
 
+		
+
+	public:
+		
 		Sketcher();
 
 		~Sketcher();
 
-		std::unique_ptr<Sketch> activeSketch;
+		std::unique_ptr<Model> activeSketch;
+		
 		
 
 		std::bitset<skt_num_flags> flags;
