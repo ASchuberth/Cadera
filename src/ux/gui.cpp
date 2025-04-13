@@ -7,10 +7,16 @@ namespace gui {
 
 	
 
-	void imguiBegin() {
+	void imguiBegin(ax::NodeEditor::EditorContext *& NodeEditorContext) {
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		// Node Editor Startup
+		ed::Config config;
+		config.SettingsFile = "Simple.json";
+
+		NodeEditorContext = ed::CreateEditor(&config);
 	}
 
 	void imguiEnd() {
@@ -232,13 +238,14 @@ namespace gui {
 
 	}
 
-    void nodeMenu() {
+    void nodeMenu(CADRender &Render) {
 		
 
 		NodeTest N;
 
 
-		N.show();
+		// N.showImNodes();
+		N.showNodeEditor(Render.m_NodeEditorContext);
 
 	
     }
@@ -496,14 +503,14 @@ namespace gui {
 		
 
 		// Cadera imgui begin, not part of Dear Imgui
-		imguiBegin();
+		imguiBegin(Render.m_NodeEditorContext);
 
 		mainMenuBar();
 		
 		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, flags);
 		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, flags);
 		if (flags.test(gui_sketch_grid_menu))  gridMenu(Sketch, Render, Sel, flags);
-		if (flags.test(gui_sketch_node_editor))  nodeMenu();
+		if (flags.test(gui_sketch_node_editor))  nodeMenu(Render);
 
 		
 

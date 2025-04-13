@@ -29,6 +29,10 @@ target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
                                     ../src/ux/gui.cpp
                                     ../src/ux/Nodes.cpp
                                     ../src/ux/imnodes/imnodes.cpp
+                                    ../src/ux/nodeeditor/imgui_node_editor.cpp
+                                    ../src/ux/nodeeditor/imgui_canvas.cpp
+                                    ../src/ux/nodeeditor/imgui_node_editor_api.cpp
+                                    ../src/ux/nodeeditor/crude_json.cpp 
                                     )
 
 

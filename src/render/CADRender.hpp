@@ -4,7 +4,7 @@
 #include "Camera.hpp"
 
 
-
+#include "../ux/Nodes.hpp"
 
 
 
@@ -199,6 +199,7 @@ namespace CADERA_APP_NAMESPACE {
 		ImGui_ImplVulkanH_Window mImguiWindowData;
 		VkSurfaceKHR mImguiSurface;
 
+		ax::NodeEditor::EditorContext* m_NodeEditorContext;
 
 		void setup();
 		

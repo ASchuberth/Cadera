@@ -1798,6 +1798,8 @@ void CADRender::createSwapChain()
 
 	void CADRender::destroy() {
 
+		ed::DestroyEditor(m_NodeEditorContext);
+
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();

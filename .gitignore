@@ -23,4 +23,20 @@ doc/visuals/**/__pycache__/
 *.drawio
 *.pdb
 vcpkg_installed/
+
+# Imgui files
 src/ux/imnodes/
+src/ux/nodeeditor/crude_json.cpp
+src/ux/nodeeditor/crude_json.h
+src/ux/nodeeditor/imgui_bezier_math.h
+src/ux/nodeeditor/imgui_bezier_math.inl
+src/ux/nodeeditor/imgui_canvas.cpp
+src/ux/nodeeditor/imgui_canvas.h
+src/ux/nodeeditor/imgui_extra_math.h
+src/ux/nodeeditor/imgui_extra_math.inl
+src/ux/nodeeditor/imgui_node_editor_api.cpp
+src/ux/nodeeditor/imgui_node_editor_internal.h
+src/ux/nodeeditor/imgui_node_editor_internal.inl
+src/ux/nodeeditor/imgui_node_editor.cpp
+src/ux/nodeeditor/imgui_node_editor.h
+src/ux/nodeeditor/LICENSE
