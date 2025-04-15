@@ -648,8 +648,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("../../shaders/textvert.spv");
-		auto fragShaderCode = readFile("../../shaders/textfrag.spv");
+		auto vertShaderCode = readFile("shaders/textvert.spv");
+		auto fragShaderCode = readFile("shaders/textfrag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -901,7 +901,7 @@ void CADRender::createSwapChain()
 
 		int texWidth, texHeight, texChannels;
 
-		stbi_uc* pixels = stbi_load("C:\\Users\\amsch\\Documents\\Programming\\Cpp\\Pecos\\textures\\test.png", &texWidth, &texHeight,
+		stbi_uc* pixels = stbi_load("textures/test.png", &texWidth, &texHeight,
 			&texChannels, STBI_rgb_alpha);
 		vk::DeviceSize imageSize = (uint64_t)texWidth * (uint64_t)texHeight * 4;
 
@@ -1172,7 +1172,6 @@ void CADRender::createSwapChain()
 			endSingleTimeCommands(command_buffer);
 
 			
-			ImGui_ImplVulkan_DestroyFontUploadObjects();
 			
 		}
 
@@ -1797,6 +1796,8 @@ void CADRender::createSwapChain()
 	}
 
 	void CADRender::destroy() {
+
+		
 
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();

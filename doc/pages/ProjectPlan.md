@@ -1,23 +1,29 @@
+<!-- vscode-markdown-toc -->
+* [Version 0.1.0 Sketch Tooling](#Version0.1.0SketchTooling)
+	* [Version 0.1.2 Points/Lines/Rectangles](#Version0.1.2PointsLinesRectangles)
+		* [Points](#Points)
+		* [Lines](#Lines)
+		* [Rectangles](#Rectangles)
+	* [Version 0.1.3 Rounds](#Version0.1.3Rounds)
+		* [Circles](#Circles)
+		* [Arcs](#Arcs)
+	* [Version 0.1.4 Notes](#Version0.1.4Notes)
+		* [Text](#Text)
+	* [Version 0.1.1 Grids](#Version0.1.1Grids)
+		* [Sketch](#Sketch)
+		* [Grid](#Grid)
+
+<!-- vscode-markdown-toc-config
+	numbering=false
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
 # Project Plan
 
-- [Project Plan](#project-plan)
-  - [Version 0.1.0 Sketch Tooling](#version-010-sketch-tooling)
-  - [Version 0.0.2 Points/Lines/Rectangles](#version-002-pointslinesrectangles)
-    - [Points](#points)
-    - [Lines](#lines)
-    - [Rectangles](#rectangles)
-  - [Version 0.0.3 Rounds](#version-003-rounds)
-    - [Circles](#circles)
-    - [Arcs](#arcs)
-  - [Version 0.0.4 Notes](#version-004-notes)
-    - [Text](#text)
-- [History](#history)
-  - [Version 0.0.1 Grids](#version-001-grids)
-    - [Sketch](#sketch)
-    - [Grid](#grid)
 
 
-## Version 0.1.0 Sketch Tooling
+## <a name='Version0.1.0SketchTooling'></a>Version 0.1.0 Sketch Tooling
 
 - [x] 0.1.1
 - [ ] 0.1.2
@@ -28,15 +34,15 @@
 
 
 
-## Version 0.0.2 Points/Lines/Rectangles
+### <a name='Version0.1.2PointsLinesRectangles'></a>Version 0.1.2 Points/Lines/Rectangles
 
-### Points
+#### <a name='Points'></a>Points
 
 - [x] Movable
 - [x] Table (Debug)
 - [x] Point Tool Floating Point
 
-### Lines
+#### <a name='Lines'></a>Lines
 
 - [ ] Line Tool
 - [ ] Add
@@ -45,26 +51,26 @@
 - [ ] Movable
 - [ ] Debug
 
-### Rectangles
+#### <a name='Rectangles'></a>Rectangles
 - [ ] Rectangle Tool
 
 
-## Version 0.0.3 Rounds
+### <a name='Version0.1.3Rounds'></a>Version 0.1.3 Rounds
 
-### Circles
+#### <a name='Circles'></a>Circles
 
 - [ ] Circle Tool
 - [ ] Selection
 
-### Arcs
+#### <a name='Arcs'></a>Arcs
 
 - [ ] Arc Tool (3 pt)
 - [ ] Selection
 
 
-## Version 0.0.4 Notes
+### <a name='Version0.1.4Notes'></a>Version 0.1.4 Notes
 
-### Text
+#### <a name='Text'></a>Text
 
 - [ ] Font Size
 - [ ] Selection
@@ -73,16 +79,17 @@
 - [ ] Tabs 
 
 
-# History
+# <a name='History'></a>History
 
 
-## Version 0.0.1 Grids
 
-### Sketch
+### <a name='Version0.1.1Grids'></a>Version 0.1.1 Grids
+
+#### <a name='Sketch'></a>Sketch
 
 - [x] Create a sketch on any 3 base planes (x/y, z/x, y/z)
 
-### Grid
+#### <a name='Grid'></a>Grid
 
 - [x] Resize 
 - [x] Works on any plane

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_TOOLCHAIN_FILE "C:\\vcpkg\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake" )
+
+
 project(Cadera VERSION 0.1.2)
 
 # GoogleTest requires at least C++14
@@ -32,7 +33,7 @@ enable_testing()
 #=========================================
 add_executable(CaderaApp    src/Cadera.cpp
                             src/Selection.cpp
-                            src/Callbacks.cpp
+                            src/callbacks.cpp
                             src/Model.cpp    
                             src/Main.cpp
                                      
@@ -60,23 +61,19 @@ target_include_directories(CaderaApp PRIVATE src/)
 #=========================================
 # Libraries
 #=========================================
+
 find_package(Vulkan REQUIRED)
-target_link_libraries(CaderaApp PRIVATE Vulkan::Vulkan)
-
 find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE glfw)
-
 find_package(Stb REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+
+target_link_libraries(CaderaApp PRIVATE Vulkan::Vulkan)
+target_link_libraries(CaderaApp PRIVATE glfw)
+target_link_libraries(CaderaApp PRIVATE imgui::imgui)
+target_link_libraries(CaderaApp PRIVATE glm::glm)
 target_include_directories(CaderaApp PRIVATE ${Stb_INCLUDE_DIR})
 
-find_package(Microsoft.GSL CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE Microsoft.GSL::GSL)
-
-find_package(imgui CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE imgui::imgui)
-
-# find_package(glm CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE glm::glm)
 
 #=========================================
 # Testing

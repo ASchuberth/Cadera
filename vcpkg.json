@@ -2,9 +2,13 @@
   "dependencies": [
     "glfw3",
     "glm",
-    "gsl",
-    "gtest",
-    "imgui",
+    {
+      "name": "imgui",
+      "features": [
+        "glfw-binding",
+        "vulkan-binding"
+      ]
+    },
     "stb",
     "vulkan"
   ]

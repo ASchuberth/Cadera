@@ -108,8 +108,8 @@ namespace CADERA_APP_NAMESPACE {
 		// Secondary Vulkan Objects
 
 		// mInstance
-		vk::DynamicLoader dl;
-		vk::DispatchLoaderDynamic dldy;
+		vk::detail::DynamicLoader dl;
+		vk::detail::DispatchLoaderDynamic dldy;
 		VkDebugUtilsMessengerEXT mDebug;
 		vk::ApplicationInfo mAppInfo;
 		bool enableValidationLayers;
