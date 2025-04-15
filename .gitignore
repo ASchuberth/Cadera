@@ -25,3 +25,6 @@ doc/visuals/**/__pycache__/
 vcpkg_installed/
 src/ux/imnodes/
 out/
+shaders/frag.spv
+shaders/gridvert.spv
+shaders/vert.spv

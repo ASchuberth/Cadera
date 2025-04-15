@@ -74,6 +74,55 @@ target_link_libraries(CaderaApp PRIVATE imgui::imgui)
 target_link_libraries(CaderaApp PRIVATE glm::glm)
 target_include_directories(CaderaApp PRIVATE ${Stb_INCLUDE_DIR})
 
+#=========================================
+# Textures/Shaders
+#=========================================
+
+# Copy textures/*.png to build directory
+## Make textures/ directory
+add_custom_command(
+        TARGET CaderaApp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/textures/
+        )
+
+## Gather list of all .png files in /shaders/
+file(GLOB TextureFiles ${CMAKE_SOURCE_DIR}/textures/*.png
+                      ${CMAKE_SOURCE_DIR}/textures/*.csv)
+
+foreach(TextureFile ${TextureFiles})
+  add_custom_command(TARGET CaderaApp POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E
+                         copy ${TextureFile} ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/textures/)
+endforeach()
+               
+
+# Copy shaders/*.spv to build directory
+## Make shaders/ directory
+add_custom_command(
+        TARGET CaderaApp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders/
+        )
+
+## Gather list of all .spv files in /shaders/
+file(GLOB ShaderFiles ${CMAKE_SOURCE_DIR}/shaders/*.spv)
+
+foreach(ShaderFile ${ShaderFiles})
+  add_custom_command(TARGET CaderaApp POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E
+                         copy ${ShaderFile} ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders/)
+endforeach()
+
+# Compile Shaders
+
+if(WIND32)
+    execute_process(COMMAND ${CMAKE_SOURCE_DIR}/shaders/compile_shaders.bat ${CMAKE_SOURCE_DIR}/shaders/)
+endif(WIN32)
+
+if(UNIX)
+    execute_process(COMMAND bash ${CMAKE_SOURCE_DIR}/shaders/compile_shaders.sh ${CMAKE_SOURCE_DIR}/shaders/)
+endif(UNIX)
 
 #=========================================
 # Testing

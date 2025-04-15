@@ -606,7 +606,7 @@ void CADRender::createSwapChain()
     void CADRender::loadFonts() {
 
 		TxtRend.setFontSize(100.0f);
-		TxtRend.loadFont("../../textures/test.csv");
+		TxtRend.loadFont("textures/test.csv");
 		
 
     }
@@ -1203,8 +1203,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("../../shaders/vert.spv");
-		auto fragShaderCode = readFile("../../shaders/frag.spv");
+		auto vertShaderCode = readFile("shaders/vert.spv");
+		auto fragShaderCode = readFile("shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1298,8 +1298,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("../../shaders/vert.spv");
-		auto fragShaderCode = readFile("../../shaders/frag.spv");
+		auto vertShaderCode = readFile("shaders/vert.spv");
+		auto fragShaderCode = readFile("shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1416,8 +1416,8 @@ void CADRender::createSwapChain()
 		vk::PipelineVertexInputStateCreateInfo VertexInputInfo({}, static_cast<uint32_t>(BindingDescriptions.size()), BindingDescriptions.data(),
 			static_cast<uint32_t>(AttributeDescriptions.size()), AttributeDescriptions.data());
 
-		auto vertShaderCode = readFile("../../shaders/gridvert.spv");
-		auto fragShaderCode = readFile("../../shaders/frag.spv");
+		auto vertShaderCode = readFile("shaders/gridvert.spv");
+		auto fragShaderCode = readFile("shaders/frag.spv");
 
 		vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 		vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1506,7 +1506,6 @@ void CADRender::createSwapChain()
 		commandBuffer.copyBuffer(srcBuffer, dstBuffer, copyRegion);
 
 		endSingleTimeCommands(commandBuffer);
-
 
 	}
 
