@@ -13,6 +13,7 @@ shaders/compile.bat
 *.ini
 imgui.ini
 build/
+builds/
 .vscode/
 *.spv
 doc/Doxyfile
