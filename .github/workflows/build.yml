@@ -31,6 +31,7 @@ jobs:
         with:
           submodules: true
 
+      
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
         run: |
@@ -46,6 +47,10 @@ jobs:
 
              brew install googletest
 
+      - name: Install Windows Dependencies
+        if: runner.os == 'Windows'
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+            
 
       - uses: lukka/get-cmake@latest
 
