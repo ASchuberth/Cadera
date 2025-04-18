@@ -12,7 +12,7 @@ shaders/compile.bat
 *.gfxr
 *.ini
 imgui.ini
-build/
+
 .vscode/
 *.spv
 doc/Doxyfile
@@ -24,7 +24,10 @@ doc/visuals/**/__pycache__/
 *.pdb
 vcpkg_installed/
 src/ux/imnodes/
-out/
 shaders/frag.spv
 shaders/gridvert.spv
 shaders/vert.spv
+
+# Build Install Directories
+build/
+install/
