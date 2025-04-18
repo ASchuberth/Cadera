@@ -1,438 +1,384 @@
 #pragma once
 
-#include "callbacks.hpp"
 #include "Camera.hpp"
-
-
-
-
-
-
+#include "callbacks.hpp"
+#include "RenderUtil.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
+struct SwapChainSupportDetails {
+  vk::SurfaceCapabilitiesKHR capabilities;
+  std::vector<vk::SurfaceFormatKHR> formats;
+  std::vector<vk::PresentModeKHR> presentModes;
+};
+
+struct QueueFamilyIndices {
+  int graphicsFamily = -1;
+  int presentFamily = -1;
 
-	struct SwapChainSupportDetails {
-		vk::SurfaceCapabilitiesKHR capabilities;
-		std::vector<vk::SurfaceFormatKHR> formats;
-		std::vector<vk::PresentModeKHR> presentModes;
-	};
+  bool isComplete() { return graphicsFamily >= 0 && presentFamily >= 0; }
 
-	struct QueueFamilyIndices {
-		int graphicsFamily = -1;
-		int presentFamily = -1;
+  bool isDifferent() { return graphicsFamily != presentFamily; }
+};
 
-		bool isComplete() {
-			return graphicsFamily >= 0 && presentFamily >= 0;
-		}
+struct ubo {
+  glm::mat4 model;
+  glm::mat4 view;
+  glm::mat4 proj;
+};
 
-		bool isDifferent() {
-			return graphicsFamily != presentFamily;
-		}
-	};
+struct Buffer {
 
+  vk::Buffer mBuffer;
+  vk::DeviceMemory mMemory;
+  vk::DeviceSize mDeviceSize;
+  uint32_t mPointSize;
+  bool isEmpty = true;
+};
 
+enum RenderFlags { render_update_sketch, render_num_flags };
 
-	struct ubo {
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 proj;
-	};
+class CADRender {
 
+private:
+  std::vector<const char *> validationLayers = {
+      "VK_LAYER_LUNARG_standard_validation"};
 
-	struct Buffer {
+  std::vector<const char *> deviceExtensions = {
+      VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
+  vk::DescriptorPool mGuiDescriptorPool;
+  VkAllocationCallbacks *mGuiAllocator;
 
-		vk::Buffer mBuffer;
-		vk::DeviceMemory mMemory;
-		vk::DeviceSize mDeviceSize;
-		uint32_t mPointSize;
-		bool isEmpty = true;
+  PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
+  PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
+  PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = 0;
+  PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTag = 0;
+  PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectName = 0;
+  PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBegin = 0;
+  PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEnd = 0;
+  PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsert = 0;
 
-	};
+  struct {
 
+    vk::Pipeline SketchPoint;
+    vk::Pipeline SketchLine;
+    vk::Pipeline SketchGrid;
 
-	enum RenderFlags {
-		render_update_sketch,
-		render_num_flags
-	};
-	
-	class CADRender  {
-		
-	private:
-		std::vector<const char*> validationLayers = {
-			"VK_LAYER_LUNARG_standard_validation"
-		};
+  } Pipelines;
 
-		std::vector<const char*> deviceExtensions = {
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
+public:
+  // GLFW
+  GLFWwindow *mMainWindow;
 
-		vk::DescriptorPool mGuiDescriptorPool;
-		VkAllocationCallbacks* mGuiAllocator; 
+  // Main Vulkan Objects
+  vk::Instance mInstance;
+  vk::PhysicalDevice mPhysicalDevice;
+  vk::Device mDevice;
+  vk::RenderPass mRenderPass;
 
-		PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-		PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
-		PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = 0;
-		PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTag = 0;
-		PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectName = 0;
-		PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBegin = 0;
-		PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEnd = 0;
-		PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsert = 0;
+  // Secondary Vulkan Objects
 
-		struct {
+  // mInstance
+  vk::detail::DynamicLoader dl;
+  vk::detail::DispatchLoaderDynamic dldy;
+  VkDebugUtilsMessengerEXT mDebug;
+  vk::ApplicationInfo mAppInfo;
+  bool enableValidationLayers;
+  vk::DebugUtilsMessengerEXT mCallback;
+  vk::SurfaceKHR mSurface;
 
-			vk::Pipeline SketchPoint;
-			vk::Pipeline SketchLine;
-			vk::Pipeline SketchGrid;
+  // Physical mDevice
+  QueueFamilyIndices mIndices;
 
-		} Pipelines; 
+  // Logical mDevice
+  vk::Queue mGraphicsQueue;
+  vk::Queue mPresentQueue;
 
-	
+  // Swapchain
+  int mWidth = 750;
+  int mHeight = 750;
 
-	public:
+  bool frameBufferResized;
 
-		
+  std::vector<vk::Image> mImages;
+  std::vector<vk::ImageView> mImageViews;
+  vk::Format mFormat;
+  vk::Extent2D mExtent;
 
-		// GLFW
-		GLFWwindow* mMainWindow;
+  vk::Image depthImage;
+  vk::DeviceMemory depthImageMemory;
+  vk::ImageView depthImageView;
 
+  vk::SwapchainKHR mSwapchain;
 
+  // Pipeline
+  vk::PipelineCache mPipelineCache;
 
-		// Main Vulkan Objects
-		vk::Instance mInstance;
-		vk::PhysicalDevice mPhysicalDevice;
-		vk::Device mDevice;
-		vk::RenderPass mRenderPass;
+  vk::PipelineLayout mPipelineLayout;
 
-		// Secondary Vulkan Objects
+  vk::Pipeline mTextPipeline;
 
-		// mInstance
-		vk::detail::DynamicLoader dl;
-		vk::detail::DispatchLoaderDynamic dldy;
-		VkDebugUtilsMessengerEXT mDebug;
-		vk::ApplicationInfo mAppInfo;
-		bool enableValidationLayers;
-		vk::DebugUtilsMessengerEXT mCallback;
-		vk::SurfaceKHR mSurface;
+  // Buffers
+  vk::CommandPool mCommandPool;
+  std::vector<vk::CommandBuffer> mCommandBuffers;
+  std::vector<vk::Framebuffer> mFramebuffers;
 
+  std::vector<vk::Buffer> mUniformBuffers;
+  std::vector<vk::DeviceMemory> mUniformBufferMemories;
 
-		// Physical mDevice
-		QueueFamilyIndices mIndices;
+  vk::DescriptorPool mDescriptorPool;
+  std::vector<vk::DescriptorSet> mDescriptorSets;
 
-		// Logical mDevice
-		vk::Queue mGraphicsQueue;
-		vk::Queue mPresentQueue;
+  std::map<uint32_t, Buffer> mBuffers;
 
-		// Swapchain
-		int mWidth = 750;
-		int mHeight = 750;
+  // Textures
+  vk::Image mTextureImage;
+  vk::DeviceMemory mTextureMemory;
+  vk::ImageView mTextureImageView;
+  vk::Sampler mTextureSampler;
 
-		bool frameBufferResized;
+  // Sync Objects
+  std::vector<vk::Semaphore> mImageAvailableSemaphores;
+  std::vector<vk::Semaphore> mRenderFinishedSemaphores;
+  std::vector<vk::Fence> mInFlightFences;
+  size_t mCurrentFrame = 0;
 
-		std::vector<vk::Image> mImages;
-		std::vector<vk::ImageView> mImageViews;
-		vk::Format mFormat;
-		vk::Extent2D mExtent;
+  // Options
+  glm::vec4 bgColor;
 
-		vk::Image depthImage;
-		vk::DeviceMemory depthImageMemory;
-		vk::ImageView depthImageView;
+  vk::DescriptorSetLayout mDescriptorSetLayout;
 
-		vk::SwapchainKHR mSwapchain;
+  std::bitset<render_num_flags> flags;
 
-		// Pipeline
-		vk::PipelineCache mPipelineCache;
+  ubo u;
 
-		vk::PipelineLayout mPipelineLayout;
+  cam::Camera Cam;
 
-		vk::Pipeline mTextPipeline;
+  sel::Selector Sel;
 
-		// Buffers
-		vk::CommandPool mCommandPool;
-		std::vector<vk::CommandBuffer> mCommandBuffers;
-		std::vector<vk::Framebuffer> mFramebuffers;
+  sketch::SketchSolver SktSolver;
 
-		std::vector<vk::Buffer> mUniformBuffers;
-		std::vector<vk::DeviceMemory> mUniformBufferMemories;
+  txt::TextRender TxtRend;
 
-		vk::DescriptorPool mDescriptorPool;
-		std::vector<vk::DescriptorSet> mDescriptorSets;
+  // Imgui
 
-		std::map<uint32_t, Buffer> mBuffers;
+  ImGui_ImplVulkanH_Window mImguiWindowData;
+  VkSurfaceKHR mImguiSurface;
 
-		// Textures
-		vk::Image mTextureImage;
-		vk::DeviceMemory mTextureMemory;
-		vk::ImageView mTextureImageView;
-		vk::Sampler mTextureSampler;
+  void setup();
 
+  //-------------------------------------------
 
-		// Sync Objects
-		std::vector<vk::Semaphore> mImageAvailableSemaphores;
-		std::vector<vk::Semaphore> mRenderFinishedSemaphores;
-		std::vector<vk::Fence> mInFlightFences;
-		size_t mCurrentFrame = 0;
+  // Functions
 
-		// Options
-		glm::vec4 bgColor;
+  void setBGColor(glm::vec4 color);
 
+  // GLFW
 
+  void createWindow();
 
-		vk::DescriptorSetLayout mDescriptorSetLayout;
+  // Instance
 
+  void createInstance();
 
-		std::bitset<render_num_flags> flags;
+  void createSurface();
 
-		ubo u;
+  // Physical Device
 
-		cam::Camera Cam;
+  void pickPhysicalDevice();
 
-		sel::Selector Sel;
+  SwapChainSupportDetails
+  querySwapChainSupport(const vk::PhysicalDevice &device);
 
-		sketch::SketchSolver SktSolver;
+  QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device,
+                                       VkSurfaceKHR surface);
 
-		txt::TextRender TxtRend;
+  bool isDeviceSuitable(vk::PhysicalDevice device);
 
-		// Imgui
+  bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
 
-		ImGui_ImplVulkanH_Window mImguiWindowData;
-		VkSurfaceKHR mImguiSurface;
+  // Logical mDevice
+  void createLogicalDevice();
 
+  // Swapchain
+  bool checkFormat(vk::Format Format);
 
-		void setup();
-		
-		
-		//-------------------------------------------
+  vk::SurfaceFormatKHR chooseSwapSurfaceFormat(
+      const std::vector<vk::SurfaceFormatKHR> &availableFormats);
 
+  vk::PresentModeKHR chooseSwapPresentMode(
+      const std::vector<vk::PresentModeKHR> availablePresentModes);
 
-		// Functions
+  vk::Extent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR &capabilities);
 
-		void setBGColor(glm::vec4 color);
+  void createSwapChain();
 
-		// GLFW
+  void recreateSwapchain();
 
-		void createWindow();
+  void createImageViews();
 
-		// Instance
+  vk::ImageView createImageView(vk::Image image, vk::Format format,
+                                vk::ImageAspectFlags aspectFlags);
 
-		void createInstance();
+  vk::Format findSupportedFormat(vk::PhysicalDevice const &PhysicalDevice,
+                                 const std::vector<vk::Format> &candidates,
+                                 vk::ImageTiling tiling,
+                                 vk::FormatFeatureFlags features);
 
-		void createSurface();
+  vk::Format findDepthFormat(vk::PhysicalDevice const &PhysicalDevice);
 
-		// Physical Device
+  void createRenderPass();
 
-		void pickPhysicalDevice();
+  void createDescriptorSetLayout();
 
-        SwapChainSupportDetails querySwapChainSupport(const vk::PhysicalDevice &device);
+  void createPipelineLayout();
 
-        QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device, VkSurfaceKHR surface);
+  std::vector<char> readFile(const std::string filename);
 
-        bool isDeviceSuitable(vk::PhysicalDevice device);
+  vk::ShaderModule createShaderModule(const std::vector<char> &code);
 
-        bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
+  void loadFonts();
 
-		// Logical mDevice
-		void createLogicalDevice();
+  void createTextPipeline();
 
-		// Swapchain
-		bool checkFormat(vk::Format Format);
+  void createCommandPool();
 
-		
-		vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+  uint32_t findMemoryType(uint32_t typeFilter,
+                          vk::MemoryPropertyFlags properties);
 
-		vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> availablePresentModes);
+  void createImage(vk::PhysicalDevice const &PhysicalDevice,
+                   vk::Device const &Device, uint32_t width, uint32_t height,
+                   vk::Format format, vk::ImageTiling tiling,
+                   vk::ImageUsageFlags usage,
+                   vk::MemoryPropertyFlags properties, vk::Image &image,
+                   vk::DeviceMemory &imageMemory);
 
-        vk::Extent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR &capabilities);
+  void createDepthResources();
 
-        void createSwapChain();
+  void createBuffer(vk::DeviceSize &size, const vk::BufferUsageFlags &usage,
+                    const vk::MemoryPropertyFlags &properties,
+                    vk::Buffer &buffer, vk::DeviceMemory &bufferMemory);
 
-        void recreateSwapchain();
+  vk::CommandBuffer
+  beginSingleTimeCommands(const vk::CommandBufferLevel &level,
+                          const vk::CommandBufferInheritanceInfo &inheritance);
 
-        void createImageViews();
+  void endSingleTimeCommands(vk::CommandBuffer &commandBuffer);
 
-        vk::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
+  void transitionImageLayout(vk::Image &image, vk::Format format,
+                             vk::ImageLayout oldLayout,
+                             vk::ImageLayout newLayout);
 
-        vk::Format findSupportedFormat(vk::PhysicalDevice const &PhysicalDevice, const std::vector<vk::Format> &candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features);
+  void copyBufferToImage(vk::Buffer &buffer, vk::Image &image, uint32_t width,
+                         uint32_t height);
 
-        vk::Format findDepthFormat(vk::PhysicalDevice const &PhysicalDevice);
+  void createTextureImage();
 
-        void createRenderPass();
+  void createTextureImageView();
 
-        void createDescriptorSetLayout();
+  void createTextureSampler();
 
-        void createPipelineLayout();
+  void createFramebuffers();
 
-        std::vector<char> readFile(const std::string filename);
+  void createUniformBuffer();
 
-        vk::ShaderModule createShaderModule(const std::vector<char> &code);
+  void createDescriptorPool();
 
-		void loadFonts();
+  void createDescriptorSets();
 
-        void createTextPipeline();
+  void allocCommandBuffers();
 
-        void createCommandPool();
+  void createSyncObjects();
 
-        uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
+  void initImgui();
 
-        void createImage(vk::PhysicalDevice const &PhysicalDevice, vk::Device const &Device, uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image &image, vk::DeviceMemory &imageMemory);
+  void createSketchPointPipeline();
 
-        void createDepthResources();
+  void createSketchLinePipeline();
 
-        void createBuffer(vk::DeviceSize &size, const vk::BufferUsageFlags &usage, const vk::MemoryPropertyFlags &properties, vk::Buffer &buffer, vk::DeviceMemory &bufferMemory);
+  void createSketchGridPipeline();
 
-        vk::CommandBuffer beginSingleTimeCommands(const vk::CommandBufferLevel &level, const vk::CommandBufferInheritanceInfo &inheritance);
+  void preparePipelines();
 
-        void endSingleTimeCommands(vk::CommandBuffer &commandBuffer);
+  void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer,
+                  vk::DeviceSize size);
 
-        void transitionImageLayout(vk::Image &image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
+  void deleteBuffer(uint32_t id);
 
-        void copyBufferToImage(vk::Buffer &buffer, vk::Image &image, uint32_t width, uint32_t height);
+  void createCommandBuffers();
 
-        void createTextureImage();
+  void updateUniformBuffer(uint32_t currentImage);
 
-        void createTextureImageView();
+  void drawFrame();
 
-        void createTextureSampler();
+  template <class T>
+  inline void createDeviceBuffer(uint32_t id, std::vector<T> const &points,
+                                 vk::BufferUsageFlagBits const &flag) {
 
-        void createFramebuffers();
+    vk::Buffer stagingBuffer;
+    vk::DeviceMemory stagingBufferMemory;
 
-        void createUniformBuffer();
+    mBuffers[id].mPointSize = static_cast<uint32_t>(points.size());
+    mBuffers[id].mDeviceSize = sizeof(points[0]) * points.size();
 
-        void createDescriptorPool();
+    createBuffer(mBuffers[id].mDeviceSize,
+                 vk::BufferUsageFlagBits::eTransferSrc,
+                 vk::MemoryPropertyFlagBits::eHostVisible |
+                     vk::MemoryPropertyFlagBits::eHostCoherent,
+                 stagingBuffer, stagingBufferMemory);
 
-        void createDescriptorSets();
+    vk::MemoryMapFlags memMapFlags;
 
-        void allocCommandBuffers();
+    void *data;
+    data = mDevice.mapMemory(stagingBufferMemory, 0, mBuffers[id].mDeviceSize,
+                             memMapFlags);
+    memcpy(data, points.data(), (size_t)mBuffers[id].mDeviceSize);
+    mDevice.unmapMemory(stagingBufferMemory);
 
-        void createSyncObjects();
+    createBuffer(mBuffers[id].mDeviceSize,
+                 vk::BufferUsageFlagBits::eTransferDst | flag,
+                 vk::MemoryPropertyFlagBits::eDeviceLocal, mBuffers[id].mBuffer,
+                 mBuffers[id].mMemory);
 
-        void initImgui();
+    copyBuffer(stagingBuffer, mBuffers[id].mBuffer, mBuffers[id].mDeviceSize);
 
-        void createSketchPointPipeline();
+    mDevice.destroyBuffer(stagingBuffer);
+    mDevice.freeMemory(stagingBufferMemory);
 
-        void createSketchLinePipeline();
+    mBuffers[id].isEmpty = false;
+  };
 
-        void createSketchGridPipeline();
+  template <class T>
+  inline void updateBuffer(uint32_t id, std::vector<T> const &points,
+                           vk::BufferUsageFlagBits const &flag) {
+    if (mBuffers[id].isEmpty) {
+      createDeviceBuffer(id, points, flag);
+    } else {
+      deleteBuffer(id);
+      createDeviceBuffer(id, points, flag);
+    }
+  }
 
-        void preparePipelines();
+  void destroyPipelines();
 
-        void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer, vk::DeviceSize size);
+  void cleanupSwapchain();
 
-        void deleteBuffer(uint32_t id);
+  // Cleanup
+  void cleanup();
 
-        void createCommandBuffers();
+  void destroy();
 
-        void updateUniformBuffer(uint32_t currentImage);
+  void runCamera();
 
-        void drawFrame();
+  void render(Model &M);
 
-        template <class T>
-		inline void createDeviceBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
+  void renderSketchGrid(Model &S);
 
-			vk::Buffer stagingBuffer;
-			vk::DeviceMemory stagingBufferMemory;
+  void renderSketchNotes(Model &S);
 
-			mBuffers[id].mPointSize = static_cast<uint32_t>(points.size());
-			mBuffers[id].mDeviceSize = sizeof(points[0]) * points.size();
+  void renderSketchPoints(Model &S);
 
-			createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferSrc,
-				vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-				stagingBuffer, stagingBufferMemory);
-
-			vk::MemoryMapFlags memMapFlags;
-
-			void* data;
-			data = mDevice.mapMemory(stagingBufferMemory, 0, mBuffers[id].mDeviceSize, memMapFlags);
-			memcpy(data, points.data(), (size_t)mBuffers[id].mDeviceSize);
-			mDevice.unmapMemory(stagingBufferMemory);
-
-			createBuffer(mBuffers[id].mDeviceSize, vk::BufferUsageFlagBits::eTransferDst | flag,
-				vk::MemoryPropertyFlagBits::eDeviceLocal,
-				mBuffers[id].mBuffer, mBuffers[id].mMemory);
-
-
-			copyBuffer(stagingBuffer, mBuffers[id].mBuffer, mBuffers[id].mDeviceSize);
-
-			mDevice.destroyBuffer(stagingBuffer);
-			mDevice.freeMemory(stagingBufferMemory);
-
-			mBuffers[id].isEmpty = false;
-
-		};
-
-        
-
-                
-              
-
-			template <class T>
-			inline void updateBuffer(uint32_t id, std::vector<T> const& points, vk::BufferUsageFlagBits const& flag) {
-				if (mBuffers[id].isEmpty) {
-					createDeviceBuffer(id, points, flag);
-				}
-				else {
-					deleteBuffer(id);
-					createDeviceBuffer(id, points, flag);
-				}
-			}
-
-              
-
-        void destroyPipelines();
-
-        void cleanupSwapchain();
-
-        // Cleanup
-        void cleanup();
-
-
-
-		//-------------------------------
-
-		// void initImgui();
-
-		// void imguiRun();
-
-		/* void createSketchPointPipeline();
-		void createSketchLinePipeline();
-
-		void createSketchGridPipeline();
-
-		void preparePipelines();
-
-		void destroyPipelines();
-
-		void createDescriptorPool();
-
-		void createDescriptorSets();
-
-		void createCommandBuffers();
-
-		void updateUniformBuffer(uint32_t currentImage);
- */
-		void destroy();
-
-        void runCamera();
-
-        void render(Model &M);
-
-        void renderSketchGrid(Model &S);
-
-        void renderSketchNotes(Model &S);
-
-        void renderSketchPoints(Model &S);
-
-        void renderSketchPointTool();
-
-        //void runCamera();
-
-		//void render(Model &M);
-
-		//void renderSketchNotes(Model& S);
-
-		//void renderSketchPoints(Model &S);
-
-	};
-}
-
+  void renderSketchPointTool();
+};
+} // namespace CADERA_APP_NAMESPACE

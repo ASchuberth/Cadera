@@ -1778,8 +1778,9 @@ void CADRender::render(Model &M) {
 void CADRender::renderSketchGrid(Model &S) {
 
   std::vector<GridRotationAxis> axii;
-  std::vector<Vertex> line;
+  std::vector<glm::vec3> line;
 
+  
   axii = S.getGridAxii();
   line = S.getGridLine();
   if (!axii.empty() && !line.empty()) {

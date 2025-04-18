@@ -32,9 +32,9 @@ namespace CADERA_APP_NAMESPACE {
 		return mType;
 	}
 
-    std::vector<Vertex> Model::getGridLine()
+    std::vector<glm::vec3> Model::getGridLine()
     {
-        return std::vector<Vertex>();
+        return std::vector<glm::vec3>();
     }
 
     std::vector<GridRotationAxis> Model::getGridAxii()

@@ -1,8 +1,8 @@
 #pragma once
-#include "render/RenderUtil.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
+/// @brief The axis of rotation for the grid lines
 struct GridRotationAxis {
     glm::vec3 pos;
     glm::vec3 axis;
@@ -26,15 +26,15 @@ class Grid {
     /// @return Vector to be used for rendering the instances
     std::vector<GridRotationAxis> createGridInstanceAxii();
     
-    Vertex p1;
-    Vertex p2;
+    glm::vec3 p1;
+    glm::vec3 p2;
 
     glm::vec3 gNormal;
     glm::vec3 gUp;
     glm::vec3 gCross;
 
     /// @brief The container for rendering the base line
-    std::vector<Vertex> line;
+    std::vector<glm::vec3> line;
 
     /// @brief The size of the grid. The number of times the grid gets incremented.
     int32_t size;

@@ -32,18 +32,17 @@ target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
                                     ../src/sketch/Sketcher.cpp
                                     ../src/sketch/Sketch.cpp
                                     ../src/sketch/SketchSolver.cpp
-                                    ../src/render/grid.cpp
+                                    ../src/sketch/grid.cpp
                                     ../src/render/RenderUtil.cpp
                                     ../src/render/CADRender.cpp
-                                    ../src/render/TextRender.cpp
+                                    ../src/text/TextRender.cpp
                                     ../src/render/Camera.cpp
                                     ../src/Selection.cpp
-                                    ../src/Model.cpp
+                                    ../src/sketch/Model.cpp
                                     ../src/callbacks.cpp
                                     ../src/Cadera.cpp
                                     ../src/ux/gui.cpp
                                     ../src/ux/Nodes.cpp
-                                    # ../src/ux/imnodes/imnodes.cpp
                                     )
 
 

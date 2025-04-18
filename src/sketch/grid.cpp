@@ -9,8 +9,8 @@ Grid::Grid() {
     size = 10;
     spacing = 1.0f;
 
-    p1 = { {0.0f, -size, 0.0f}, {.0f, .0f, .0f} };
-	p2 = { {0.0f,  size, 0.0f}, {.0f, .0f, .0f} };
+    p1 =  {0.0f, -size, 0.0f} ;
+	p2 =  {0.0f,  size, 0.0f} ;
 
     line = { p1, p2 };
 
@@ -30,8 +30,8 @@ std::vector<GridRotationAxis> Grid::createGridInstanceAxii() {
 		std::vector<GridRotationAxis> axii;
 
 
-        p1 =  {(-size*spacing) * gUp, {.0f, .0f, .0f}};//{ {0.0f, -size * spacing, 0.0f}, {.0f, .0f, .0f} };
-        p2 = {(size*spacing) * gUp, {.0f, .0f, .0f}};//  { {0.0f,  size * spacing, 0.0f}, {.0f, .0f, .0f} };
+        p1 =  (-size*spacing) * gUp;
+        p2 = (size*spacing) * gUp;
 
         line = { p1, p2 };
 

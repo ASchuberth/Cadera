@@ -1,13 +1,17 @@
-#include <algorithm>
+#include <bitset>
+#include <fstream>
 #include <list>
 #include <map>
+#include <set>
+#include <sstream>
+#include <string>
 #include <vector>
+#include <iostream>
 
 #define CADERA_APP_NAMESPACE cad
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
 
 // Windows MINGW64 gcc
 #ifdef _DEBUG

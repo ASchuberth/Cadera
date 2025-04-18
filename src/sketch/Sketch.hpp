@@ -82,7 +82,7 @@ namespace sketch {
 
 		void deletion(std::vector<int> ids);
 
-		std::vector<Vertex> getGridLine();
+		std::vector<glm::vec3> getGridLine();
 
 		std::vector<GridRotationAxis> getGridAxii();
 		

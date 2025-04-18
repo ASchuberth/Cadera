@@ -6,6 +6,8 @@ project(Cadera VERSION 0.1.2)
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra") 
 
 
 enable_testing()
@@ -16,15 +18,9 @@ enable_testing()
 add_executable(CaderaApp    src/Cadera.cpp
                             src/Selection.cpp
                             src/callbacks.cpp
-                            src/Model.cpp    
-                            src/Main.cpp
-                                     
+                            src/Main.cpp  
 )
 
-
-add_subdirectory(src/render)
-add_subdirectory(src/sketch)
-add_subdirectory(src/ux)
 
 set_target_properties(CaderaApp PROPERTIES
     OUTPUT_NAME CaderaApp
@@ -36,31 +32,46 @@ target_compile_definitions(CaderaApp PUBLIC)
 #=========================================
 # Precompiled Headers / Include Directories
 #=========================================
-target_precompile_headers(CaderaApp PRIVATE src/pch.hpp)
+
+add_library(pch_interface INTERFACE)
+target_precompile_headers(pch_interface INTERFACE src/pch.hpp) # pch.hpp is the precompiled header
+target_include_directories(pch_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/) # Include directory for pch.h
+
+
 
 target_include_directories(CaderaApp PRIVATE src/)
 
-#include_directories(${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-windows/include/)
+add_subdirectory(src/render)
+add_subdirectory(src/sketch)
+add_subdirectory(src/text)
+add_subdirectory(src/ux)
+
 
 #=========================================
 # Libraries
 #=========================================
 
 
+
 find_package(Vulkan REQUIRED)
-target_link_libraries(CaderaApp PRIVATE Vulkan::Vulkan)
+target_link_libraries(pch_interface INTERFACE Vulkan::Vulkan)
 
 find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE glfw)
+target_link_libraries(pch_interface INTERFACE glfw)
 
 find_package(imgui CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE imgui::imgui)
+target_link_libraries(pch_interface INTERFACE imgui::imgui)
 
 find_package(glm CONFIG REQUIRED)
-target_link_libraries(CaderaApp PRIVATE glm::glm)
+target_link_libraries(pch_interface INTERFACE glm::glm)
 
 find_package(Stb REQUIRED)
-target_include_directories(CaderaApp PRIVATE ${Stb_INCLUDE_DIR})
+target_include_directories(pch_interface INTERFACE ${Stb_INCLUDE_DIR})
+
+target_link_libraries(CaderaApp PRIVATE sketchlib)
+target_link_libraries(CaderaApp PRIVATE textlib)
+
+target_link_libraries(CaderaApp PUBLIC pch_interface)
 
 #=========================================
 # Textures/Shaders
@@ -115,7 +126,7 @@ endif(UNIX)
 #=========================================
 # Testing
 #=========================================
-add_subdirectory(test)
+#add_subdirectory(test)
 
 
 

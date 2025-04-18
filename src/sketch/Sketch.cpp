@@ -251,7 +251,7 @@ namespace sketch {
 		}
 	}
 
-    std::vector<Vertex> Sketch::getGridLine() {
+    std::vector<glm::vec3> Sketch::getGridLine() {
         return mGrid.line;
     }
 
