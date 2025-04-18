@@ -53,6 +53,11 @@ jobs:
         with:
           vcpkgJsonGlob: 'vcpkg.json'
 
+      - name: Update vcpkg
+        run: |
+              ./vcpkg update
+
+
       - name: Set preset name
         id: preset
         shell: bash

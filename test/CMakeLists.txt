@@ -16,6 +16,8 @@ endif(WIN32)
 
 include(CTest)
 
+find_package(GTest REQUIRED)
+
 add_executable(GTest_Cadera test_sketch.cpp
                             test_camera.cpp
 )
@@ -46,6 +48,7 @@ target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
                                     )
 
 
+                                    find_package(GTest REQUIRED)
 target_link_libraries(GTest_Cadera PRIVATE GTest::gtest_main)
 target_link_libraries(GTest_Cadera PRIVATE glm::glm)
 find_package(Vulkan REQUIRED)
