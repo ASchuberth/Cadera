@@ -48,8 +48,8 @@ target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
                                     )
 
 
-                                    find_package(GTest REQUIRED)
-target_link_libraries(GTest_Cadera PRIVATE GTest::gtest_main)
+target_include_directories( GTest_Cadera PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+target_link_libraries(GTest_Cadera PRIVATE ${GTEST_BOTH_LIBRARIES})
 target_link_libraries(GTest_Cadera PRIVATE glm::glm)
 find_package(Vulkan REQUIRED)
 target_link_libraries(GTest_Cadera PRIVATE Vulkan::Vulkan)
