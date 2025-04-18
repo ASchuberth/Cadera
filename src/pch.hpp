@@ -1,16 +1,14 @@
 #pragma once
 
-#include <cassert>
-#include <iostream>
-#include <map>
-#include <vector>
 #include <bitset>
-#include <list>
-#include <set>
-#include <fstream>
+#include <cassert>
 #include <chrono>
-
-
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <set>
+#include <vector>
 
 #define CADERA_APP_NAMESPACE cad
 #define GLM_ENABLE_EXPERIMENTAL
@@ -38,7 +36,6 @@
 #include "GLFW/glfw3.h"
 
 #include <imgui.h>
-#include <imgui_impl_vulkan.h>
 #include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
 #include <imgui_stdlib.h>
-

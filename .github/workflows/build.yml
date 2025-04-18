@@ -3,11 +3,11 @@ name: Build
   push:
     branches:
       - main
-      - linux
+      - develop
   pull_request:
     branches:
       - main
-      - linux
+      - develop
 jobs:
   build:
     name: Build
