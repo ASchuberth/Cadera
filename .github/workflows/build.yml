@@ -38,6 +38,22 @@ jobs:
               sudo apt update
               sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libglu1-mesa-dev pkg-config xorg-dev
               sudo apt install googletest libgtest-dev
+              cd /usr/src/gtest
+              sudo cmake .
+              sudo make
+              sudo cp *.a /usr/lib
+      
+      - name: Install Mac OSX Dependencies
+        if: runner.os == 'macOS'
+        run: |
+
+             git clone https://github.com/google/googletest
+             cd googletest
+             mkdir build
+             cd build
+             cmake .. -DCMAKE_CXX_STANDARD=17
+             make
+             make install
 
 
       - uses: lukka/get-cmake@latest
