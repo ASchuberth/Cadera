@@ -1,0 +1,76 @@
+name: Build
+'on':
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows
+          - ubuntu
+          - macos
+        conf:
+          - release
+          - debug
+        arch:
+          - x64
+        
+    runs-on: ${{ matrix.os }}-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: |
+
+              sudo apt update
+              sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libglu1-mesa-dev pkg-config xorg-dev
+              sudo apt install googletest libgtest-dev
+              
+      
+      - name: Install Mac OSX Dependencies
+        if: runner.os == 'macOS'
+        run: |
+
+             brew install googletest
+
+      - name: Install Windows Dependencies
+        if: runner.os == 'Windows'
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+            
+
+      - uses: lukka/get-cmake@latest
+
+      - name: Prepare Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.1
+        with:
+          vulkan-query-version: 1.4.304.1
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Restore from cache and setup vcpkg executable and data files.
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+
+      - name: Set preset name
+        id: preset
+        shell: bash
+        run: |
+            echo "name=${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.conf }}" | sed s/ubuntu/linux/ >> $GITHUB_OUTPUT
+
+      - name: Run CMake
+        run: cmake --workflow --preset ${{ steps.preset.outputs.name }}
