@@ -10,8 +10,8 @@
       {
           "name": "common-base",
           "hidden": true,
-          "binaryDir": "${sourceDir}/out/build/${presetName}",
-          "installDir": "${sourceDir}/out/install/${presetName}",
+          "binaryDir": "${sourceDir}/build/${presetName}",
+          "installDir": "${sourceDir}/install/${presetName}",
           "cacheVariables": {
               "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
           }
@@ -74,7 +74,7 @@
           "name": "windows-base",
           "hidden": true,
           "inherits": "common-base",
-          "generator": "Ninja Multi-Config",
+          "generator": "Visual Studio 17 2022",
           "condition": {
             "type": "equals",
             "lhs": "${hostSystemName}",
