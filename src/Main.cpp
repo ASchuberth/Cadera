@@ -1,7 +1,6 @@
 #include "pch.hpp"
 #include "Cadera.hpp"
-#include <gsl/gsl>
-#include <CADRender.hpp>
+
 
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE

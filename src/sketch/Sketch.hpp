@@ -78,6 +78,8 @@ namespace sketch {
 
 		Point* addNotePoint(glm::vec3 point);
 
+		void movePoints(std::map<int, Point> ids, const glm::vec3 &POnPlane, const bool& isFirstClick);
+
 		void deletion(std::vector<int> ids);
 
 		std::vector<Vertex> getGridLine();

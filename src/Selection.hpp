@@ -1,5 +1,5 @@
 #pragma once
-#include "Sketch.hpp"
+#include "sketch/SketchSolver.hpp"
 
 
 namespace CADERA_APP_NAMESPACE {
@@ -25,6 +25,7 @@ namespace sel {
 		select_single_point,
 		select_double_point,
 		select_multi_point,
+		select_first_click,
 		select_number_flags               // Number of flags for bitset
 	};
 
@@ -50,7 +51,9 @@ namespace sel {
 
 		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
-		int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+        void update(std::map<int, Point> points);
+
+        int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
 		int remove(glm::vec3 pointToRemove, std::map<int, Point> &points, float skScale);
 

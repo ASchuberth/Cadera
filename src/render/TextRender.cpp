@@ -11,7 +11,7 @@ namespace CADERA_APP_NAMESPACE {
 namespace txt {
 	
 	TextRender::TextRender() {
-		mFontSize = 1.0;
+		mFontSize = 100.0;
 		mAtlasSize = 2864.0f;
 
 		mCursorPos = { 0.0f, 0.0f, 0.0f };

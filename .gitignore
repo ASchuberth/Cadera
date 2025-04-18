@@ -12,7 +12,7 @@ shaders/compile.bat
 *.gfxr
 *.ini
 imgui.ini
-build/
+
 .vscode/
 *.spv
 doc/Doxyfile
@@ -20,4 +20,14 @@ doc/html
 *.code-workspace
 doc/visuals/**/media/
 doc/visuals/**/__pycache__/
+*.drawio
+*.pdb
+vcpkg_installed/
+src/ux/imnodes/
+shaders/frag.spv
+shaders/gridvert.spv
+shaders/vert.spv
 
+# Build Install Directories
+build/
+install/

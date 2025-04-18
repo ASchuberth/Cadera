@@ -101,6 +101,8 @@ namespace sel {
 
 		point = { 0.0f, 0.0f, 0.0f };
 
+		flags.set(select_first_click);
+
 	}
 
 	void Selector::setActiveSketch(sketch::Sketch* pSketch) {
@@ -148,6 +150,16 @@ namespace sel {
 		}
 
 		return -1;
+	}
+
+	void Selector::update(std::map<int, Point> points) {
+
+		selectedPoints.clear();
+
+		for (const auto &point : points) {
+
+			selectedPoints[point.first] = point.second;
+		}
 	}
 
 	int Selector::add(glm::vec3 pointToAdd, std::map<int, Point>& points, float skScale) {

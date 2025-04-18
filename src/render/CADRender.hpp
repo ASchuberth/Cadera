@@ -2,7 +2,7 @@
 
 #include "callbacks.hpp"
 #include "Camera.hpp"
-#include "SketchSolver.hpp"
+
 
 
 
@@ -56,7 +56,7 @@ namespace CADERA_APP_NAMESPACE {
 		render_update_sketch,
 		render_num_flags
 	};
-
+	
 	class CADRender  {
 		
 	private:
@@ -108,8 +108,8 @@ namespace CADERA_APP_NAMESPACE {
 		// Secondary Vulkan Objects
 
 		// mInstance
-		vk::DynamicLoader dl;
-		vk::DispatchLoaderDynamic dldy;
+		vk::detail::DynamicLoader dl;
+		vk::detail::DispatchLoaderDynamic dldy;
 		VkDebugUtilsMessengerEXT mDebug;
 		vk::ApplicationInfo mAppInfo;
 		bool enableValidationLayers;
@@ -422,6 +422,8 @@ namespace CADERA_APP_NAMESPACE {
         void renderSketchNotes(Model &S);
 
         void renderSketchPoints(Model &S);
+
+        void renderSketchPointTool();
 
         //void runCamera();
 

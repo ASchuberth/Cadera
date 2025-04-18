@@ -1,6 +1,6 @@
 #pragma once
-#include "TextRender.hpp"
-#include "grid.hpp"
+#include "render/TextRender.hpp"
+#include "render/grid.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 	

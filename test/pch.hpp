@@ -10,14 +10,13 @@
 #include <fstream>
 #include <chrono>
 
-
-
 #define CADERA_APP_NAMESPACE cad
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLFW_INCLUDE_VULKAN
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 
 #ifdef _DEBUG
