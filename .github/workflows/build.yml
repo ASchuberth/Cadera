@@ -47,13 +47,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
 
-             git clone https://github.com/google/googletest
-             cd googletest
-             mkdir build
-             cd build
-             cmake .. -DCMAKE_CXX_STANDARD=17
-             make
-             make install
+             brew install googletest
 
 
       - uses: lukka/get-cmake@latest
