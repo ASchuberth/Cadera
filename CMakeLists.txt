@@ -58,20 +58,26 @@ target_precompile_headers(CaderaApp PRIVATE src/pch.hpp)
 
 target_include_directories(CaderaApp PRIVATE src/)
 
+#include_directories(${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/x64-windows/include/)
+
 #=========================================
 # Libraries
 #=========================================
 
-find_package(Vulkan REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(Stb REQUIRED)
-find_package(imgui CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 
+find_package(Vulkan REQUIRED)
 target_link_libraries(CaderaApp PRIVATE Vulkan::Vulkan)
+
+find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(CaderaApp PRIVATE glfw)
+
+find_package(imgui CONFIG REQUIRED)
 target_link_libraries(CaderaApp PRIVATE imgui::imgui)
+
+find_package(glm CONFIG REQUIRED)
 target_link_libraries(CaderaApp PRIVATE glm::glm)
+
+find_package(Stb REQUIRED)
 target_include_directories(CaderaApp PRIVATE ${Stb_INCLUDE_DIR})
 
 #=========================================
@@ -116,7 +122,7 @@ endforeach()
 
 # Compile Shaders
 
-if(WIND32)
+if(WIN32)
     execute_process(COMMAND ${CMAKE_SOURCE_DIR}/shaders/compile_shaders.bat ${CMAKE_SOURCE_DIR}/shaders/)
 endif(WIN32)
 

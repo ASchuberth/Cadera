@@ -37,6 +37,7 @@ find_package(Vulkan REQUIRED)
 target_link_libraries(GTest_Cadera PRIVATE Vulkan::Vulkan)
 target_link_libraries(GTest_Cadera PRIVATE glfw)
 target_include_directories(GTest_Cadera PRIVATE ${Stb_INCLUDE_DIR})
+find_package(imgui CONFIG REQUIRED)
 target_link_libraries(GTest_Cadera PRIVATE imgui::imgui)
 
 

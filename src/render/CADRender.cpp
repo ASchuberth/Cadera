@@ -86,7 +86,7 @@ namespace CADERA_APP_NAMESPACE {
 
 
 
-		 createInfo.enabledLayerCount = 0;
+		createInfo.enabledLayerCount = 0;
 
 		auto glfwExtensionCount = 0u;
 		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
