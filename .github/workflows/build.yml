@@ -55,7 +55,7 @@ jobs:
 
       - name: Update vcpkg
         run: |
-              ./vcpkg update
+              vcpkg update
 
 
       - name: Set preset name
