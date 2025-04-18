@@ -20,7 +20,13 @@
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 #define IMGUI_DEFINE_MATH_OPERATORS
 
+// Windows MINGW64 gcc
 #ifdef _DEBUG
+#define CADERA_DEBUG
+#endif
+
+// Linux gcc
+#ifndef NDEBUG
 #define CADERA_DEBUG
 #endif
 
