@@ -116,7 +116,7 @@ endforeach()
 
 # Compile Shaders
 
-if(WIND32)
+if(WIN32)
     execute_process(COMMAND ${CMAKE_SOURCE_DIR}/shaders/compile_shaders.bat ${CMAKE_SOURCE_DIR}/shaders/)
 endif(WIN32)
 
@@ -136,4 +136,5 @@ add_subdirectory(test)
 #=========================================
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+install(TARGETS CaderaApp RUNTIME DESTINATION bin)
 include(CPack)
