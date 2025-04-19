@@ -1780,11 +1780,21 @@ void CADRender::renderSketchGrid(Model &S) {
   std::vector<GridRotationAxis> axii;
   std::vector<glm::vec3> line;
 
+  std::vector<Vertex> Vertices;
   
   axii = S.getGridAxii();
   line = S.getGridLine();
-  if (!axii.empty() && !line.empty()) {
-    updateBuffer(BUF_SKETCH_GRID_LINE, line,
+
+  // Convert vector of glm::vec3 to vector of Vertex
+  for (const auto & point : line) {
+
+    Vertex V = {point, {0.0f, 0.0f, 0.0f}};
+    Vertices.push_back(V);
+
+  }
+  
+  if (!axii.empty() && !Vertices.empty()) {
+    updateBuffer(BUF_SKETCH_GRID_LINE, Vertices,
                  vk::BufferUsageFlagBits::eVertexBuffer);
     updateBuffer(BUF_SKETCH_GRID_AXII, axii,
                  vk::BufferUsageFlagBits::eVertexBuffer);

@@ -9,8 +9,8 @@ Grid::Grid() {
     size = 10;
     spacing = 1.0f;
 
-    p1 =  {0.0f, -size, 0.0f} ;
-	p2 =  {0.0f,  size, 0.0f} ;
+    p1 =  {0.0f, -size, 0.0f};
+	p2 =  {0.0f,  size, 0.0f};
 
     line = { p1, p2 };
 

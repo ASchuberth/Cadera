@@ -126,7 +126,7 @@ endif(UNIX)
 #=========================================
 # Testing
 #=========================================
-#add_subdirectory(test)
+add_subdirectory(test)
 
 
 
