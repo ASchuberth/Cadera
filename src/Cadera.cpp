@@ -100,7 +100,7 @@ void Cadera::mainLoop() {
 
     glfwPollEvents();
 
-    gui::imguiRun(Sketch, Render, Render.Sel);
+    gui::imguiRun(Sketch, Render, Render.Sel, m_ActionQueue);
 
     SketchEvents();
 
@@ -108,8 +108,11 @@ void Cadera::mainLoop() {
     Render.drawFrame();
     Render.runCamera();
 
+    m_ActionQueue.poll();
+
     glfwWaitEvents();
   }
 }
+
 
 } // namespace CADERA_APP_NAMESPACE

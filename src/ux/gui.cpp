@@ -57,7 +57,7 @@ namespace gui {
 		}
 	}
 
-	void startMenu(sketch::Sketch& Sketch, CADRender& Render, sel::Selector& Sel, 
+	void startMenu(sketch::Sketch& Sketch, CADRender& Render, sel::Selector& Sel, action::ActionQueue & ActionQueue, 
 		           std::bitset<gui_num_flags> &flags) {
 
 		ImGui::Begin("Start Screen");
@@ -109,7 +109,7 @@ namespace gui {
 
 	}
 
-	void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+	void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue, 
 		            std::bitset<gui_num_flags> &flags) {
 
 		ImGui::SetNextWindowPos({ 0, 20 });
@@ -129,15 +129,10 @@ namespace gui {
 		ImGui::Checkbox("Debug Window", &debugCheck);
 
 
-		if (debugCheck) showDebugWindow(Sketch, Render, Sel, flags);
+		if (debugCheck) showDebugWindow(Sketch, Render, Sel, ActionQueue, flags);
 
 
 #endif
-
-		if (ImGui::Button("Node Editor")) {
-
-			flags.set(gui_sketch_node_editor);
-		}
 
 		if (ImGui::Button("Grid Options")) {
 
@@ -145,6 +140,10 @@ namespace gui {
 		}
 
 		if (ImGui::Button("Point")) {
+
+			action::Action Act;
+
+			ActionQueue.add(Act);
 
 			Sketch.activatePointTool();
 
@@ -212,7 +211,7 @@ namespace gui {
 
 	}
 
-	void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+	void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue, 
 		            std::bitset<gui_num_flags> &flags) {
 
 		ImGui::SetNextWindowPos({ 320, 20 });
@@ -232,18 +231,8 @@ namespace gui {
 
 	}
 
-    void nodeMenu() {
-		
 
-		NodeTest N;
-
-
-		N.show();
-
-	
-    }
-
-    void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+    void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue, 
 		                 std::bitset<gui_num_flags> &flags) {
 
 
@@ -489,7 +478,7 @@ namespace gui {
 
 	}
 
-	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel) {
+	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue) {
 
 		static std::bitset<gui_num_flags> flags(gui_start_menu + 1);
 		
@@ -500,10 +489,10 @@ namespace gui {
 
 		mainMenuBar();
 		
-		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, flags);
-		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, flags);
-		if (flags.test(gui_sketch_grid_menu))  gridMenu(Sketch, Render, Sel, flags);
-		if (flags.test(gui_sketch_node_editor))  nodeMenu();
+		if (flags.test(gui_start_menu))   startMenu(Sketch, Render, Sel, ActionQueue, flags);
+		if (flags.test(gui_sketch_menu))  sketchMenu(Sketch, Render, Sel, ActionQueue, flags);
+		if (flags.test(gui_sketch_grid_menu))  gridMenu(Sketch, Render, Sel, ActionQueue, flags);
+		
 
 		
 

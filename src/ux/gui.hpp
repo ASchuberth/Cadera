@@ -10,11 +10,10 @@ namespace gui {
 		gui_start_menu,
 		gui_sketch_menu,
 		gui_sketch_grid_menu,
-		gui_sketch_node_editor,
 		gui_num_flags
 	};
 
-	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector& Sel);
+	void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector& Sel, action::ActionQueue & ActionQueue);
 
 	void imguiBegin();
 
@@ -22,18 +21,17 @@ namespace gui {
 
 	void mainMenuBar();
 
-	void startMenu(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, 
+	void startMenu(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue, 
 		           std::bitset<gui_num_flags> &flags);
 
-	void sketchMenu(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, 
+	void sketchMenu(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue,
 		            std::bitset<gui_num_flags> &flags);
 	
-	void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, 
+	void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue,
 		            std::bitset<gui_num_flags> &flags);
 
-	void nodeMenu();
 	
-	void showDebugWindow(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, 
+	void showDebugWindow(sketch::Sketch& Sketch, CADRender &Render, sel::Selector &Sel, action::ActionQueue & ActionQueue,
 		                 std::bitset<gui_num_flags> &flags);
 
 }

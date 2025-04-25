@@ -38,6 +38,8 @@ namespace CADERA_APP_NAMESPACE {
 		CADRender Render;
 		sketch::Sketch Sketch;
 
+		action::ActionQueue m_ActionQueue;
+
 		std::bitset<cadera_num_flags> flags;
 
 		Cadera();
@@ -51,6 +53,7 @@ namespace CADERA_APP_NAMESPACE {
         void run();
 
 		void mainLoop();
+
 	};
 
 }
