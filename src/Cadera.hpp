@@ -27,10 +27,11 @@ private:
 
   int modelIdCounter;
 
-	public:
-		
-		CADRender Render;
-		sketch::Sketch Sketch;
+public:
+  CADRender Render;
+  sketch::Sketch Sketch;
+
+  action::ActionQueue ActionQueue;
 
   std::bitset<cadera_num_flags> flags;
 
@@ -42,9 +43,9 @@ private:
 
   void updateSelectionPoints(std::vector<int> ids);
 
-        void run();
+  void run();
 
-		void mainLoop();
-	};
+  void mainLoop();
+};
 
 } // namespace CADERA_APP_NAMESPACE

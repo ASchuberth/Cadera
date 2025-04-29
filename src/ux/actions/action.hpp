@@ -6,29 +6,19 @@ namespace CADERA_APP_NAMESPACE {
 
 namespace action {
 
+enum class ActionType { sketch_add, sketch_delete, number_action_types };
 
-    enum ActionType {
-        sketch_add,
-        sketch_delete,
-        number_action_types
-    };
+class Action {
 
+  // ModelType m_ModelType;
 
-    class Action {
+public:
+  ActionType m_ActionType;
 
+  Action();
+  ~Action();
 
-        
-        //ModelType m_ModelType;
-    
-    public:
-        
-        ActionType m_ActionType;
-        
-        Action();
-        ~Action();
-
-        virtual void submit();
-    
-    };
-}
-}
+  virtual void submit();
+};
+} // namespace action
+} // namespace CADERA_APP_NAMESPACE

@@ -1,32 +1,23 @@
 #include "action_queue.hpp"
 
-
 namespace CADERA_APP_NAMESPACE {
-    namespace action {
+namespace action {
 
-        ActionQueue::ActionQueue() {
+ActionQueue::ActionQueue() {}
 
-        }
+ActionQueue::~ActionQueue() {}
 
-        ActionQueue::~ActionQueue() {
+void ActionQueue::poll() {
 
-        }
+  for (auto &Act : Actions) {
 
-        void ActionQueue::poll() {
+    Act.submit();
+  }
 
-            for (auto & Act : Actions) {
+  Actions.clear();
+}
 
-                Act.submit();
-            }
+void ActionQueue::add(Action &Act) { Actions.push_back(Act); }
 
-            Actions.clear();
-        }
-
-        void ActionQueue::add(Action &Act) {
-
-            Actions.push_back(Act);
-        }
-
-    } // namespace action
+} // namespace action
 } // namespace CADERA_APP_NAMESPACE
-    

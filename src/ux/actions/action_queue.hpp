@@ -6,22 +6,17 @@ namespace CADERA_APP_NAMESPACE {
 
 namespace action {
 
+class ActionQueue {
 
+public:
+  ActionQueue();
+  ~ActionQueue();
 
-    class ActionQueue {
+  std::list<Action> Actions;
 
-    
-    public:
+  void poll();
 
-        ActionQueue();
-        ~ActionQueue();
-
-        std::list<Action> Actions;
-        
-        void poll();
-
-        void add(Action& Act);
-    
-    };
-}
-}
+  void add(Action &Act);
+};
+} // namespace action
+} // namespace CADERA_APP_NAMESPACE

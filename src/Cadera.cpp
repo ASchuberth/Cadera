@@ -100,7 +100,7 @@ void Cadera::mainLoop() {
 
     glfwPollEvents();
 
-    gui::imguiRun(Sketch, Render, Render.Sel, m_ActionQueue);
+    gui::imguiRun(Sketch, Render, Render.Sel, ActionQueue);
 
     SketchEvents();
 
@@ -108,7 +108,7 @@ void Cadera::mainLoop() {
     Render.drawFrame();
     Render.runCamera();
 
-    m_ActionQueue.poll();
+    ActionQueue.poll();
 
     glfwWaitEvents();
   }

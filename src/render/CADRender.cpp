@@ -1703,14 +1703,16 @@ void CADRender::cleanup() {
     }
   }
 
-  mDevice.destroyDescriptorPool(mDescriptorPool);
-
   for (auto &framebuffer : mFramebuffers) {
     mDevice.destroyFramebuffer(framebuffer, nullptr);
   }
 
   for (auto &Buffer : mUniformBuffers) {
     mDevice.destroyBuffer(Buffer);
+  }
+
+  for (auto &memory : mUniformBufferMemories) {
+    mDevice.freeMemory(memory);
   }
 
   mDevice.destroySampler(mTextureSampler);
@@ -1723,7 +1725,8 @@ void CADRender::cleanup() {
   mDevice.destroyImageView(depthImageView);
 
   mDevice.destroyCommandPool(mCommandPool);
-
+  mDevice.destroyDescriptorPool(mGuiDescriptorPool);
+  mDevice.destroyDescriptorPool(mDescriptorPool);
   mDevice.destroyPipelineLayout(mPipelineLayout, nullptr);
   mDevice.destroyDescriptorSetLayout(mDescriptorSetLayout, nullptr);
   mDevice.destroy(mRenderPass, nullptr);
@@ -1735,6 +1738,7 @@ void CADRender::cleanup() {
   mDevice.destroySwapchainKHR(mSwapchain, nullptr);
 
   vkDestroyDevice(mDevice, nullptr);
+  vkDestroySurfaceKHR(mInstance, mImguiSurface, nullptr);
   vkDestroySurfaceKHR(mInstance, mSurface, nullptr);
   vkDestroyInstance(mInstance, nullptr);
 
