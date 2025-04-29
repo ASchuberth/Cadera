@@ -1,35 +1,32 @@
 #pragma once
 
-
 namespace CADERA_APP_NAMESPACE {
 
-	enum RelationType {
-		rel_vertical,
-		rel_horizontal,
-		rel_coincident,
-	};
+enum RelationType {
+  rel_vertical,
+  rel_horizontal,
+  rel_coincident,
+};
 
-	struct Relation {
+struct Relation {
 
-		int mId;
-		std::list<int> mFeatureIds;
-		RelationType mType;
+  int mId;
+  std::list<int> mFeatureIds;
+  RelationType mType;
 
-		inline void removeId(int id) {
-			
-			std::list<int>::iterator iter = mFeatureIds.begin();
+  inline void removeId(int id) {
 
-			while (iter != mFeatureIds.end()) {
-				
-				if (*iter == id) {
-					iter = mFeatureIds.erase(iter);
-				}
-				else {
-					++iter;
-				}
-			}
+    std::list<int>::iterator iter = mFeatureIds.begin();
 
-		}
-	};
+    while (iter != mFeatureIds.end()) {
 
-}
+      if (*iter == id) {
+        iter = mFeatureIds.erase(iter);
+      } else {
+        ++iter;
+      }
+    }
+  }
+};
+
+} // namespace CADERA_APP_NAMESPACE

@@ -8,7 +8,6 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-
 // Windows MINGW64 gcc
 #ifdef _DEBUG
 #define CADERA_DEBUG

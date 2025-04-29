@@ -1,12 +1,12 @@
 #include <bitset>
 #include <fstream>
+#include <iostream>
 #include <list>
 #include <map>
 #include <set>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #define CADERA_APP_NAMESPACE cad
 #define GLM_ENABLE_EXPERIMENTAL

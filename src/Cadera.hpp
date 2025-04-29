@@ -1,56 +1,49 @@
 #pragma once
 #include "ux/gui.hpp"
 
-
-
-
-
 namespace CADERA_APP_NAMESPACE {
 
-	/// @brief Flags that can be toggled in a bitset to trigger events
-	enum CaderaFlags {
-		
-		
-		/// Will trigger deletion of the currently selected object
-		cadera_delete,
-		/// Number of flags to be used in the creation of the bitset 
-		cadera_num_flags  
-	};
+/// @brief Flags that can be toggled in a bitset to trigger events
+enum CaderaFlags {
+
+  /// Will trigger deletion of the currently selected object
+  cadera_delete,
+  /// Number of flags to be used in the creation of the bitset
+  cadera_num_flags
+};
 
 /**
  * @brief Cadera
  * @author Austin Schuberth
  * @page Cadera
- * 
+ *
  */
-	class Cadera {
+class Cadera {
 
-	private:
-		
-		void initCallbacks();
-		
-		std::map<int, Model> Models;
+private:
+  void initCallbacks();
 
-		int modelIdCounter;
+  std::map<int, Model> Models;
 
-	public:
-		
-		CADRender Render;
-		sketch::Sketch Sketch;
+  int modelIdCounter;
 
-		std::bitset<cadera_num_flags> flags;
+public:
+  CADRender Render;
+  sketch::Sketch Sketch;
 
-		Cadera();
+  std::bitset<cadera_num_flags> flags;
 
-		~Cadera();
+  Cadera();
 
-        void SketchEvents();
+  ~Cadera();
 
-        void updateSelectionPoints(std::vector<int> ids);
+  void SketchEvents();
 
-        void run();
+  void updateSelectionPoints(std::vector<int> ids);
 
-		void mainLoop();
-	};
+  void run();
 
-}
+  void mainLoop();
+};
+
+} // namespace CADERA_APP_NAMESPACE

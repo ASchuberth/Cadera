@@ -2,38 +2,28 @@
 #include "Relation.hpp"
 
 namespace CADERA_APP_NAMESPACE {
-	
-	enum FeatureType {
-		feat_origin,
-		feat_point,
-		feat_edge,
-		feat_round,
-		feat_construction,
-		feat_note
-	};
-	
 
-	class Feature {
+enum FeatureType {
+  feat_origin,
+  feat_point,
+  feat_edge,
+  feat_round,
+  feat_construction,
+  feat_note
+};
 
-		 int mId;
+class Feature {
 
+  int mId;
 
-	public:
+public:
+  Feature();
+  Feature(int i);
 
-		Feature();
-		Feature(int i);
+  FeatureType Type;
 
-		FeatureType Type;
+  void setId(int i);
 
-		
-		
-
-		void setId(int i);
-
-		int getId();
-
-		
-
-	};
-}
-
+  int getId();
+};
+} // namespace CADERA_APP_NAMESPACE

@@ -1,130 +1,125 @@
-#include "pch.hpp"
 #include "SketchSolver.hpp"
+#include "pch.hpp"
 
-void CADERA_APP_NAMESPACE::sketch::SketchSolver::setActiveSketch(Sketch* S) {
+void CADERA_APP_NAMESPACE::sketch::SketchSolver::setActiveSketch(Sketch *S) {
 
-	pActiveSketch = S;
-
+  pActiveSketch = S;
 }
 
+bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkNewRelation(
+    const Relation &R) {
 
+  std::list<int> newRelationIds = R.mFeatureIds;
 
-bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkNewRelation(const Relation& R) {
+  // If relation doesn't involve any features, don't add relation
+  if (newRelationIds.size() == 0)
+    return false;
 
-	std::list<int> newRelationIds = R.mFeatureIds;
+  for (const auto &id : newRelationIds) {
 
-	// If relation doesn't involve any features, don't add relation
-	if (newRelationIds.size() == 0)
-		return false;
+    // If point doesn't have any other relation, skip
+    if (pActiveSketch->Points[id].relationIds.size() == 0) {
+      continue;
+    }
 
-	
+    // Does the point already have relations to the other points in the new
+    // relation
+    std::list<int> relatedPointIds = getRelatedPointIds(id);
 
-	for (const auto& id : newRelationIds) {
+    bool hasRelations = false;
 
-		// If point doesn't have any other relation, skip
-		if (pActiveSketch->Points[id].relationIds.size() == 0) {
-			continue;
-		}
+    for (const auto &relPtId : relatedPointIds) {
 
-		// Does the point already have relations to the other points in the new relation
-		std::list<int> relatedPointIds = getRelatedPointIds(id);
+      // Returns true if related point id is in the new relation ids;
+      hasRelations = std::find(newRelationIds.begin(), newRelationIds.end(),
+                               relPtId) != newRelationIds.end();
 
-		
+      if (hasRelations)
+        return false;
+    }
+  }
 
-		bool hasRelations = false;
-
-		for (const auto& relPtId : relatedPointIds) {
-
-			// Returns true if related point id is in the new relation ids;
-			hasRelations = std::find(newRelationIds.begin(), newRelationIds.end(), relPtId) != newRelationIds.end();
-
-
-			if (hasRelations)
-				return false;
-		}
-		
-	}
-
-	return true;
+  return true;
 }
 
-bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkCommenRelationPts(const Relation& R) {
+bool CADERA_APP_NAMESPACE::sketch::SketchSolver::checkCommenRelationPts(
+    const Relation &R) {
 
-	std::list<int> newRelationIds = R.mFeatureIds;
+  std::list<int> newRelationIds = R.mFeatureIds;
 
-	size_t totalsize = 0;
+  size_t totalsize = 0;
 
-	std::list<int> allUniqueRelatedPtIds;
+  std::list<int> allUniqueRelatedPtIds;
 
-	for (const auto& id : newRelationIds) {
+  for (const auto &id : newRelationIds) {
 
-		std::list<int> relatedPointIds = getRelatedPointIds(id);
+    std::list<int> relatedPointIds = getRelatedPointIds(id);
 
-		totalsize += relatedPointIds.size();
+    totalsize += relatedPointIds.size();
 
-		bool hasRelations = false;
+    bool hasRelations = false;
 
-		std::list<int> UniqueIds = getDifferenceVector(allUniqueRelatedPtIds, relatedPointIds);
+    std::list<int> UniqueIds =
+        getDifferenceVector(allUniqueRelatedPtIds, relatedPointIds);
 
-		for (const auto& relPtid : UniqueIds) {
-		
-			allUniqueRelatedPtIds.push_back(relPtid);
-			
-		}
-	}
+    for (const auto &relPtid : UniqueIds) {
 
-	if (allUniqueRelatedPtIds.size() == totalsize) {
-		return true;
-	}
-	else {
-		return false;
-	}
+      allUniqueRelatedPtIds.push_back(relPtid);
+    }
+  }
+
+  if (allUniqueRelatedPtIds.size() == totalsize) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
+// Returns a vector of the ids of points that have relations to the inputed
+// point id
+std::list<int>
+CADERA_APP_NAMESPACE::sketch::SketchSolver::getRelatedPointIds(const int &PId) {
 
-// Returns a vector of the ids of points that have relations to the inputed point id
-std::list<int> CADERA_APP_NAMESPACE::sketch::SketchSolver::getRelatedPointIds(const int& PId) {
+  if (pActiveSketch == nullptr)
+    throw std::runtime_error("SketchSolver: Active Sketch is nullptr!!!");
 
-	if (pActiveSketch == nullptr)
-		throw std::runtime_error("SketchSolver: Active Sketch is nullptr!!!");
+  Point P = pActiveSketch->Points[PId];
 
-	Point P = pActiveSketch->Points[PId];
+  std::list<int> relatedPointIds;
 
-	std::list<int> relatedPointIds;
+  for (const auto &relId : P.relationIds) {
 
-	for (const auto& relId : P.relationIds) {
+    std::list<int> v = {PId};
+    std::list<int> featureIds =
+        getDifferenceVector(v, pActiveSketch->mRelations[relId].mFeatureIds);
+    ;
 
-		std::list<int> v = { PId };
-		std::list<int> featureIds = getDifferenceVector(v, pActiveSketch->mRelations[relId].mFeatureIds);;
+    featureIds = getDifferenceVector(relatedPointIds, featureIds);
 
-		featureIds = getDifferenceVector(relatedPointIds, featureIds);
+    for (const auto &featId : featureIds) {
 
-		for (const auto& featId :featureIds) {
+      relatedPointIds.push_back(featId);
+    }
+  }
 
-			relatedPointIds.push_back(featId);
-
-		}
-
-	}
-
-	return relatedPointIds;
+  return relatedPointIds;
 }
 
-bool CADERA_APP_NAMESPACE::sketch::SketchSolver::addNewSketchRelation(const std::vector<int>& ids, RelationType Type) {
+bool CADERA_APP_NAMESPACE::sketch::SketchSolver::addNewSketchRelation(
+    const std::vector<int> &ids, RelationType Type) {
 
-	bool isSuccess = false;
+  bool isSuccess = false;
 
-	Relation NewRelation;
+  Relation NewRelation;
 
-	for (const auto& id : ids) {
-		NewRelation.mFeatureIds.push_back(id);
-	}
+  for (const auto &id : ids) {
+    NewRelation.mFeatureIds.push_back(id);
+  }
 
-	NewRelation.mType = Type;
+  NewRelation.mType = Type;
 
-	if (checkNewRelation(NewRelation) && checkCommenRelationPts(NewRelation))
-		pActiveSketch->addRelation(ids, Type);
-	
+  if (checkNewRelation(NewRelation) && checkCommenRelationPts(NewRelation))
+    pActiveSketch->addRelation(ids, Type);
 
-	return isSuccess;
+  return isSuccess;
 }

@@ -68,7 +68,7 @@ void Cadera::SketchEvents() {
   }
 
   if (Sketch.flags.test(sketch::skt_event_tool_deactivated)) {
-    Render.deleteBuffer(BUF_SKETCH_POINT_TOOL);
+    Render.deleteBuffer(BufferName::sketch_point_tool);
     Sketch.flags.reset(sketch::skt_event_tool_deactivated);
   }
 }

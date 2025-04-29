@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "callbacks.hpp"
 #include "RenderUtil.hpp"
+#include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -130,7 +130,7 @@ public:
   vk::DescriptorPool mDescriptorPool;
   std::vector<vk::DescriptorSet> mDescriptorSets;
 
-  std::map<uint32_t, Buffer> mBuffers;
+  std::map<BufferName, Buffer> mBuffers;
 
   // Textures
   vk::Image mTextureImage;
@@ -304,7 +304,7 @@ public:
   void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer,
                   vk::DeviceSize size);
 
-  void deleteBuffer(uint32_t id);
+  void deleteBuffer(BufferName id);
 
   void createCommandBuffers();
 
@@ -313,7 +313,7 @@ public:
   void drawFrame();
 
   template <class T>
-  inline void createDeviceBuffer(uint32_t id, std::vector<T> const &points,
+  inline void createDeviceBuffer(BufferName id, std::vector<T> const &points,
                                  vk::BufferUsageFlagBits const &flag) {
 
     vk::Buffer stagingBuffer;
@@ -350,7 +350,7 @@ public:
   };
 
   template <class T>
-  inline void updateBuffer(uint32_t id, std::vector<T> const &points,
+  inline void updateBuffer(BufferName id, std::vector<T> const &points,
                            vk::BufferUsageFlagBits const &flag) {
     if (mBuffers[id].isEmpty) {
       createDeviceBuffer(id, points, flag);

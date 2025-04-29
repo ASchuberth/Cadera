@@ -1,67 +1,59 @@
 #include "Nodes.hpp"
 
-void NodeTest::show()
-{
-    // ImNodes::CreateContext();
-    // ImNodes::SetNodeGridSpacePos(1, ImVec2(200.0f, 200.0f));
+void NodeTest::show() {
+  // ImNodes::CreateContext();
+  // ImNodes::SetNodeGridSpacePos(1, ImVec2(200.0f, 200.0f));
 
-    // ImGui::Begin("simple node editor");
+  // ImGui::Begin("simple node editor");
 
-    // ImNodes::BeginNodeEditor();
-    // ImNodes::BeginNode(1);
+  // ImNodes::BeginNodeEditor();
+  // ImNodes::BeginNode(1);
 
-    // ImNodes::BeginNodeTitleBar();
-    // ImGui::TextUnformatted("Node 1");
-    // ImNodes::EndNodeTitleBar();
+  // ImNodes::BeginNodeTitleBar();
+  // ImGui::TextUnformatted("Node 1");
+  // ImNodes::EndNodeTitleBar();
 
-    // ImNodes::BeginInputAttribute(2);
-    // ImGui::Text("input");
-    // ImNodes::EndInputAttribute();
+  // ImNodes::BeginInputAttribute(2);
+  // ImGui::Text("input");
+  // ImNodes::EndInputAttribute();
 
-    // static float nodeValue = 0.0f;
+  // static float nodeValue = 0.0f;
 
-    // ImGui::PushItemWidth(30.f);
-    // ImGui::InputFloat("Value", &nodeValue);
-    // ImGui::PopItemWidth();
+  // ImGui::PushItemWidth(30.f);
+  // ImGui::InputFloat("Value", &nodeValue);
+  // ImGui::PopItemWidth();
 
-    // ImNodes::BeginOutputAttribute(3);
-    // ImGui::Indent(50);
-    // ImGui::Text("output");
-    // ImNodes::EndOutputAttribute();
+  // ImNodes::BeginOutputAttribute(3);
+  // ImGui::Indent(50);
+  // ImGui::Text("output");
+  // ImNodes::EndOutputAttribute();
 
-    // ImNodes::EndNode();
+  // ImNodes::EndNode();
 
+  // ImNodes::BeginNode(4);
 
+  // ImNodes::BeginNodeTitleBar();
+  // ImGui::TextUnformatted("Node 2");
+  // ImNodes::EndNodeTitleBar();
 
-    // ImNodes::BeginNode(4);
+  // ImNodes::BeginInputAttribute(5);
+  // ImGui::Text("input");
+  // ImNodes::EndInputAttribute();
 
-    // ImNodes::BeginNodeTitleBar();
-    // ImGui::TextUnformatted("Node 2");
-    // ImNodes::EndNodeTitleBar();
+  // static float nodeValue2 = 0.0f;
 
-    // ImNodes::BeginInputAttribute(5);
-    // ImGui::Text("input");
-    // ImNodes::EndInputAttribute();
+  // ImGui::PushItemWidth(50.f);
+  // ImGui::InputFloat("Value", &nodeValue2);
+  // ImGui::PopItemWidth();
 
-    // static float nodeValue2 = 0.0f;
+  // ImNodes::BeginOutputAttribute(6);
+  // ImGui::Indent(40);
+  // ImGui::Text("output");
+  // ImNodes::EndOutputAttribute();
 
-    // ImGui::PushItemWidth(50.f);
-    // ImGui::InputFloat("Value", &nodeValue2);
-    // ImGui::PopItemWidth();
+  // ImNodes::EndNode();
 
-    // ImNodes::BeginOutputAttribute(6);
-    // ImGui::Indent(40);
-    // ImGui::Text("output");
-    // ImNodes::EndOutputAttribute();
+  // ImNodes::EndNodeEditor();
 
-    // ImNodes::EndNode();
-
-
-    // ImNodes::EndNodeEditor();
-
-    // ImGui::End();
-    
+  // ImGui::End();
 }
-
-
-

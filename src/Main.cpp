@@ -1,26 +1,20 @@
-#include "pch.hpp"
 #include "Cadera.hpp"
-
-
+#include "pch.hpp"
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
-
 
 /// @brief  main function
 /// @return 0
 int main() {
 
-	
-	cad::Cadera App;
-	
-	try {
-		App.run();
+  cad::Cadera App;
 
-	}
-	catch (const std::exception & err) {
-		std::cerr << err.what() << std::endl;
-	}
+  try {
+    App.run();
 
+  } catch (const std::exception &err) {
+    std::cerr << err.what() << std::endl;
+  }
 
-	return 0;
+  return 0;
 }

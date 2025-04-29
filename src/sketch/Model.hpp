@@ -3,46 +3,35 @@
 #include "grid.hpp"
 
 namespace CADERA_APP_NAMESPACE {
-	
-	enum ModelType {
-		cad_sketch,
-		cad_layout,
-		cad_part,
-		cad_assembly,
-		cad_drawing
-	};
-	
-	class Model {
 
-		int mId;
-		ModelType mType;
+enum ModelType { cad_sketch, cad_layout, cad_part, cad_assembly, cad_drawing };
 
-	public:
+class Model {
 
-		Model();
-		Model(int id);
+  int mId;
+  ModelType mType;
 
-		void setId(int id);
+public:
+  Model();
+  Model(int id);
 
-		int getId();
+  void setId(int id);
 
-		void setType(ModelType type);
+  int getId();
 
-		ModelType getType();
+  void setType(ModelType type);
 
-		std::map<int, txt::Text> Notes;
-		
-		virtual std::vector<glm::vec3> getGridLine();
-		virtual std::vector<GridRotationAxis> getGridAxii();
+  ModelType getType();
 
-		virtual std::vector<txt::Text> getRelationTexts();
+  std::map<int, txt::Text> Notes;
 
-		virtual std::vector<glm::vec3> getVertices();
-		virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3>& colors);
+  virtual std::vector<glm::vec3> getGridLine();
+  virtual std::vector<GridRotationAxis> getGridAxii();
 
-		
-		
-	};
+  virtual std::vector<txt::Text> getRelationTexts();
 
-}
+  virtual std::vector<glm::vec3> getVertices();
+  virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3> &colors);
+};
 
+} // namespace CADERA_APP_NAMESPACE

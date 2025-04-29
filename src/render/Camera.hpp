@@ -4,79 +4,75 @@
 namespace CADERA_APP_NAMESPACE {
 
 namespace cam {
-	
-	enum CameraFlags {
-		/// Toggle orthographics projection
-		ortho,                       
-		/// Used for resetting functions such as pan() on first mouse click
-		mouseFirstPressed,           
-		/// Toggle the camera pan() function
-		pan,                         
-		/// Bitset size
-		camera_number_flags                     
-	};
 
-	/**
-	 * @brief 
-	 * 
-	 * 
-	 */
-	class Camera {
+enum CameraFlags {
+  /// Toggle orthographics projection
+  ortho,
+  /// Used for resetting functions such as pan() on first mouse click
+  mouseFirstPressed,
+  /// Toggle the camera pan() function
+  pan,
+  /// Bitset size
+  camera_number_flags
+};
 
-	public:
+/**
+ * @brief
+ *
+ *
+ */
+class Camera {
 
-		Camera();
+public:
+  Camera();
 
-		std::bitset<camera_number_flags> flags;
-		
-		/// Position of the camera in 3D space
-		glm::vec3 pos; 
-		/// Focus point of the camera in 3D space
-		glm::vec3 focus; 
-		/// The vector going from pos to focus
-		glm::vec3 cameraVec;  
-		/// The length of the cameraVec vector
-		float camDistance;  
+  std::bitset<camera_number_flags> flags;
 
-		/// Up direction of Camera
-		glm::vec3 up;
+  /// Position of the camera in 3D space
+  glm::vec3 pos;
+  /// Focus point of the camera in 3D space
+  glm::vec3 focus;
+  /// The vector going from pos to focus
+  glm::vec3 cameraVec;
+  /// The length of the cameraVec vector
+  float camDistance;
 
-		/// Direction to move Camera to the side, for panning
-		glm::vec3 cross;
+  /// Up direction of Camera
+  glm::vec3 up;
 
-		// Ortho view
-		float left;
-	
+  /// Direction to move Camera to the side, for panning
+  glm::vec3 cross;
 
-		// For mouse input and selection
-		glm::vec3 mouseRay;
+  // Ortho view
+  float left;
 
-		// For obtaining mouse position on screen
-		double xpos;
-		double ypos;
+  // For mouse input and selection
+  glm::vec3 mouseRay;
 
-        void setXYView();
+  // For obtaining mouse position on screen
+  double xpos;
+  double ypos;
 
-        void setYZView();
+  void setXYView();
 
-        void setZXView();
+  void setYZView();
 
-        void update();
+  void setZXView();
 
-        /**
-		 * @brief 
-		 * 
-		 * @param yoffset 
-		 */
-		void zoom(float yoffset);
+  void update();
 
-		void updateMouseRay(float x, float y, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
-			                uint32_t height);
+  /**
+   * @brief
+   *
+   * @param yoffset
+   */
+  void zoom(float yoffset);
 
-		void pan(glm::vec3 origin, glm::vec3 planeNormal);
-		
+  void updateMouseRay(float x, float y, glm::mat4 modelMat, glm::mat4 viewMat,
+                      glm::mat4 projMat, uint32_t width, uint32_t height);
 
-	};
+  void pan(glm::vec3 origin, glm::vec3 planeNormal);
+};
 
-}
-}
+} // namespace cam
+} // namespace CADERA_APP_NAMESPACE

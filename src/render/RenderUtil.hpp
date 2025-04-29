@@ -1,25 +1,21 @@
 #pragma once
 
-
-
-
 namespace CADERA_APP_NAMESPACE {
 
-	const uint32_t BUF_SKETCH_GRID_LINE = 1;
-	const uint32_t BUF_SKETCH_GRID_AXII = 2;
-	const uint32_t BUF_SKETCH_POINTS = 3;
-	const uint32_t BUF_SELECTION_POINTS = 4;
-	const uint32_t BUF_TEXT_VERTICES = 5;
-	const uint32_t BUF_TEXT_INDICES = 6;
-	const uint32_t BUF_SKETCH_POINT_TOOL = 7;
-	
+enum class BufferName {
 
-	struct Vertex {
-		glm::vec3 pos;
-		glm::vec3 col;
-		
-	};
+  sketch_grid_line = 0,
+  sketch_grid_axii = 1,
+  sketch_points = 2,
+  selection_points = 3,
+  text_vertices = 4,
+  text_indices = 5,
+  sketch_point_tool = 6,
+};
 
+struct Vertex {
+  glm::vec3 pos;
+  glm::vec3 col;
+};
 
-}
-
+} // namespace CADERA_APP_NAMESPACE

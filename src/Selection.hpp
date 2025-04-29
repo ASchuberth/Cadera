@@ -1,72 +1,73 @@
 #pragma once
 #include "sketch/SketchSolver.hpp"
 
-
 namespace CADERA_APP_NAMESPACE {
 namespace sel {
-	float calcRatioToPlane(glm::vec3 currentRay, glm::vec3 cameraToPlaneDist, glm::vec3 planeOrigin,
-		glm::vec3 planeNormal);
+float calcRatioToPlane(glm::vec3 currentRay, glm::vec3 cameraToPlaneDist,
+                       glm::vec3 planeOrigin, glm::vec3 planeNormal);
 
-	glm::vec3 calcPOnPlane(glm::vec3 currentRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos);
+glm::vec3 calcPOnPlane(glm::vec3 currentRay, glm::vec3 origin, glm::vec3 normal,
+                       glm::vec3 pos);
 
-	glm::vec2 normalizeToVulkanCoords(glm::vec2 screenCoords, uint32_t surfaceWidth, uint32_t surfaceHeight);
+glm::vec2 normalizeToVulkanCoords(glm::vec2 screenCoords, uint32_t surfaceWidth,
+                                  uint32_t surfaceHeight);
 
-	glm::vec4 clipToEyeSpace(glm::vec4 clipCoords, glm::mat4 projMat);
+glm::vec4 clipToEyeSpace(glm::vec4 clipCoords, glm::mat4 projMat);
 
-	glm::vec3 toWorldCoord(glm::vec4 eyeCoords, glm::mat4 viewMat);
+glm::vec3 toWorldCoord(glm::vec4 eyeCoords, glm::mat4 viewMat);
 
-	glm::vec3 calcCurrentRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat, uint32_t width,
-		uint32_t height);
+glm::vec3 calcCurrentRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat,
+                         uint32_t width, uint32_t height);
 
+enum SelectionFlags {
+  select_toggle, // Used in callbacks to toggle selection
+  select_isCTRL, // Is CTRL pressed down
+  select_single_point,
+  select_double_point,
+  select_multi_point,
+  select_first_click,
+  select_number_flags // Number of flags for bitset
+};
 
-	enum SelectionFlags {
-		select_toggle,          // Used in callbacks to toggle selection
-		select_isCTRL,                // Is CTRL pressed down
-		select_single_point,
-		select_double_point,
-		select_multi_point,
-		select_first_click,
-		select_number_flags               // Number of flags for bitset
-	};
+class Selector {
 
-	class Selector {
+  sketch::Sketch *pActiveSketch = nullptr;
 
-		sketch::Sketch *pActiveSketch = nullptr;
+public:
+  std::bitset<select_number_flags> flags;
 
-	public:
+  glm::vec3 point;
 
-		std::bitset<select_number_flags> flags;
+  bool pointJustAdded;
 
-		glm::vec3 point;
+  std::map<int, Point> selectedPoints;
 
-		bool pointJustAdded;
+  Selector();
 
-		std::map<int, Point> selectedPoints;
+  void setActiveSketch(sketch::Sketch *pSketch);
 
-		Selector();
+  void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal,
+              glm::vec3 pos, glm::vec3 cross, bool isOrtho);
 
-		void setActiveSketch(sketch::Sketch* pSketch);
+  static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points,
+                         float skScale);
 
-		void select(glm::vec3 mouseRay, glm::vec3 origin, glm::vec3 normal, glm::vec3 pos, glm::vec3 cross, bool isOrtho);
+  void update(std::map<int, Point> points);
 
-		static int selectPoint(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+  int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
 
-        void update(std::map<int, Point> points);
+  int remove(glm::vec3 pointToRemove, std::map<int, Point> &points,
+             float skScale);
 
-        int add(glm::vec3 pointToAdd, std::map<int, Point> &points, float skScale);
+  bool existingPoint(glm::vec3 point);
 
-		int remove(glm::vec3 pointToRemove, std::map<int, Point> &points, float skScale);
+  void setFlags();
 
-		bool existingPoint(glm::vec3 point);
+  void clear();
 
-		void setFlags();
+  std::vector<glm::vec3> getVertices();
 
-		void clear();
-
-		std::vector<glm::vec3> getVertices();
-
-		std::vector<int> getSelectedPointIds();
-
-	};
-}
-}
+  std::vector<int> getSelectedPointIds();
+};
+} // namespace sel
+} // namespace CADERA_APP_NAMESPACE
