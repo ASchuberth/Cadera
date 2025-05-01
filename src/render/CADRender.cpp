@@ -1485,7 +1485,11 @@ void CADRender::createCommandBuffers() {
 
     vk::Rect2D renderArea({0, 0}, {mExtent.width, mExtent.height});
 
-    std::array<float, 4> color = {bgColor.x, bgColor.y, bgColor.z, bgColor.w};
+    std::array<float, 4> color = {mRenderColors.bgColor.x,
+                                  mRenderColors.bgColor.y,
+                                  mRenderColors.bgColor.z,
+                                  mRenderColors.bgColor.w};
+    
 
     std::array<vk::ClearValue, 2> clearValues{};
     clearValues[0].setColor(color);
@@ -1849,7 +1853,7 @@ void CADRender::renderSketchPoints(Model &S) {
   if (!selPointVertices.empty()) {
     for (const auto &v : selPointVertices) {
 
-      Vertices.push_back({v, {0.0f, 1.0f, 0.0f}});
+      Vertices.push_back({v, {mRenderColors.selPointColor.x, mRenderColors.selPointColor.y, mRenderColors.selPointColor.z}});
     }
   }
 

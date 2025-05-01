@@ -75,7 +75,7 @@ void Cadera::SketchEvents() {
 
 void Cadera::run() {
 
-  Render.setBGColor(glm::vec4(0.1f, 0.1f, 0.1f, 0.1f));
+  Render.setBGColor(glm::vec4(0.9f, 0.9f, 0.9f, 0.1f));
 
   Render.Cam.flags.set(cam::ortho);
   Render.setup();

@@ -152,7 +152,7 @@ Point *Sketch::addNotePoint(glm::vec3 point) {
   T.cursorPos = point;
   T.cursorDirX = {1.0f, 0.0f, 0.0f};
   T.cursorDirY = {0.0f, 1.0f, 0.0f};
-  T.backgroundColor = {0.1f, 0.1f, 0.1f};
+  T.backgroundColor = {0.9f, 0.9f, 0.9f};
   T.textColor = {1.0f, 0.0f, 0.0f};
   T.text = noteText;
 

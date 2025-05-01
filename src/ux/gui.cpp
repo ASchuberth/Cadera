@@ -226,6 +226,29 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
   ImGui::Begin("Debugging");
 
+
+  if (ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_None)) {
+
+    // Copy of selection point color to check for changes
+    glm::vec4 selPointColor = Render.mRenderColors.selPointColor;
+
+    ImGui::ColorPicker4("Background Color", (float *)&Render.mRenderColors.bgColor);
+    ImGui::ColorPicker4("Selection Point Color",
+                        (float *)&Render.mRenderColors.selPointColor);
+    ImGui::ColorPicker4("Sketch Point Color",
+                        (float *)&Render.mRenderColors.sketchPointColor);
+    ImGui::ColorPicker4("Sketch Line Color",
+                        (float *)&Render.mRenderColors.sketchLineColor);
+    ImGui::ColorPicker4("Sketch Grid Color",
+                        (float *)&Render.mRenderColors.sketchGridColor);
+
+    // Update rendering if selection point color has changed
+    if (selPointColor != Render.mRenderColors.selPointColor) {
+      Render.flags.set(render_update_sketch);
+      std::cout << "Selection Point Color has changed!" << std::endl;
+    }
+  }
+
   if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_None)) {
 
     static bool orthoCheck = true;

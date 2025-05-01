@@ -38,6 +38,15 @@ struct Buffer {
 
 enum RenderFlags { render_update_sketch, render_num_flags };
 
+struct RendorColors {
+  glm::vec4 bgColor = {0.0f, 0.0f, 0.0f, 1.0f};
+  glm::vec4 selPointColor = {0.0f, 1.0f, 0.0f, 1.0f};
+  glm::vec4 sketchPointColor = {1.0f, 1.0f, 1.0f, 1.0f};
+  glm::vec4 sketchLineColor = {1.0f, 1.0f, 1.0f, 1.0f};
+  glm::vec4 sketchGridColor = {0.5f, 0.5f, 0.5f, 1.0f};
+};
+
+
 class CADRender {
 
 private:
@@ -66,11 +75,14 @@ private:
     vk::Pipeline SketchGrid;
 
   } Pipelines;
+  
+  
+  
 
 public:
   // GLFW
   GLFWwindow *mMainWindow;
-
+  
   // Main Vulkan Objects
   vk::Instance mInstance;
   vk::PhysicalDevice mPhysicalDevice;
@@ -165,7 +177,9 @@ public:
 
   ImGui_ImplVulkanH_Window mImguiWindowData;
   VkSurfaceKHR mImguiSurface;
-
+  
+  RendorColors mRenderColors;
+  
   void setup();
 
   //-------------------------------------------
