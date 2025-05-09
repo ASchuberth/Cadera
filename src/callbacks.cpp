@@ -149,13 +149,16 @@ void sketch_select_removePoint(cad::Cadera *app) {
 
 void sketch_add_point(cad::Cadera *app) {
 
-  app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-                         app->Render.Cam.cameraVec, app->Render.Cam.pos,
-                         app->Render.Cam.cross,
-                         app->Render.Cam.flags.test(cad::cam::ortho));
+  // app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
+  //                        app->Render.Cam.cameraVec, app->Render.Cam.pos,
+  //                        app->Render.Cam.cross,
+  //                        app->Render.Cam.flags.test(cad::cam::ortho));
 
-  if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
-    app->Sketch.add(app->Render.Sel.point);
+  // if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
+  //   app->Sketch.add(app->Render.Sel.point);
+
+  
+  app->Render.mouse.leftMouseClick();
 
   app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
 }

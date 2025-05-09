@@ -86,6 +86,12 @@ void Cadera::run() {
 
   Render.SktSolver.setActiveSketch(&Sketch);
 
+  sketchAddPointCmd.setSketch(&Sketch);
+  sketchAddPointCmd.setSelector(&Render.Sel);
+  sketchAddPointCmd.setCamera(&Render.Cam);
+  
+  Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
+
   mainLoop();
 }
 
@@ -100,15 +106,13 @@ void Cadera::mainLoop() {
 
     glfwPollEvents();
 
-    gui::imguiRun(Sketch, Render, Render.Sel, ActionQueue);
+    gui::imguiRun(Sketch, Render, Render.Sel);
 
     SketchEvents();
 
     Render.createCommandBuffers();
     Render.drawFrame();
     Render.runCamera();
-
-    ActionQueue.poll();
 
     glfwWaitEvents();
   }

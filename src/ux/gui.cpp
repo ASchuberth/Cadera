@@ -53,7 +53,6 @@ void mainMenuBar() {
 }
 
 void startMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-               action::ActionQueue &ActionQueue,
                std::bitset<gui_num_flags> &flags) {
 
   ImGui::Begin("Start Screen");
@@ -107,7 +106,6 @@ void startMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
 }
 
 void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-                action::ActionQueue &ActionQueue,
                 std::bitset<gui_num_flags> &flags) {
 
   ImGui::SetNextWindowPos({0, 20});
@@ -127,7 +125,7 @@ void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
   ImGui::Checkbox("Debug Window", &debugCheck);
 
   if (debugCheck)
-    showDebugWindow(Sketch, Render, Sel, ActionQueue, flags);
+    showDebugWindow(Sketch, Render, Sel, flags);
 
 #endif
 
@@ -137,9 +135,6 @@ void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
   }
 
   if (ImGui::Button("Point")) {
-    action::Action Act;
-
-    ActionQueue.add(Act);
 
     Sketch.activatePointTool();
   }
@@ -201,7 +196,6 @@ void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
 }
 
 void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-              action::ActionQueue &ActionQueue,
               std::bitset<gui_num_flags> &flags) {
 
   ImGui::SetNextWindowPos({320, 20});
@@ -221,7 +215,7 @@ void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
 }
 
 void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
-                     sel::Selector &Sel, action::ActionQueue &ActionQueue,
+                     sel::Selector &Sel,
                      std::bitset<gui_num_flags> &flags) {
 
   ImGui::Begin("Debugging");
@@ -457,8 +451,7 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
   ImGui::End();
 }
 
-void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-              action::ActionQueue &ActionQueue) {
+void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel) {
 
   static std::bitset<gui_num_flags> flags(gui_start_menu + 1);
 
@@ -468,11 +461,11 @@ void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
   mainMenuBar();
 
   if (flags.test(gui_start_menu))
-    startMenu(Sketch, Render, Sel, ActionQueue, flags);
+    startMenu(Sketch, Render, Sel, flags);
   if (flags.test(gui_sketch_menu))
-    sketchMenu(Sketch, Render, Sel, ActionQueue, flags);
+    sketchMenu(Sketch, Render, Sel, flags);
   if (flags.test(gui_sketch_grid_menu))
-    gridMenu(Sketch, Render, Sel, ActionQueue, flags);
+    gridMenu(Sketch, Render, Sel, flags);
 
   // Cadera imgui end, not part of Dear Imgui
   imguiEnd();

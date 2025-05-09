@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Camera.hpp"
+#include "ux/command/mouse.hpp"
 #include "RenderUtil.hpp"
 #include "callbacks.hpp"
 
@@ -80,6 +80,10 @@ private:
   
 
 public:
+  // Restructure
+
+  command::Mouse mouse;
+
   // GLFW
   GLFWwindow *mMainWindow;
   

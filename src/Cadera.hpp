@@ -28,10 +28,12 @@ private:
   int modelIdCounter;
 
 public:
+  // Restructure
+  command::SketchAddPointCommand sketchAddPointCmd;
+  //-------------
+
   CADRender Render;
   sketch::Sketch Sketch;
-
-  action::ActionQueue ActionQueue;
 
   std::bitset<cadera_num_flags> flags;
 

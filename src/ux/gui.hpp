@@ -13,8 +13,8 @@ enum GUIFlags {
   gui_num_flags
 };
 
-void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-              action::ActionQueue &ActionQueue);
+void imguiRun(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel
+              );
 
 void imguiBegin();
 
@@ -23,19 +23,17 @@ void imguiEnd();
 void mainMenuBar();
 
 void startMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-               action::ActionQueue &ActionQueue,
                std::bitset<gui_num_flags> &flags);
 
 void sketchMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-                action::ActionQueue &ActionQueue,
                 std::bitset<gui_num_flags> &flags);
 
 void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
-              action::ActionQueue &ActionQueue,
+              
               std::bitset<gui_num_flags> &flags);
 
 void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
-                     sel::Selector &Sel, action::ActionQueue &ActionQueue,
+                     sel::Selector &Sel,
                      std::bitset<gui_num_flags> &flags);
 
 
