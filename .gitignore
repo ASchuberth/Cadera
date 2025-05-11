@@ -1,33 +1,24 @@
-/.vs
-/Debug
-/x64
-*.sln
-*.vcx*
-/imgui
-/packages
-/Cadera
-shaders/compile.bat
-/.obsidian
-*.spv
-*.gfxr
-*.ini
-imgui.ini
-
+# Visual Studio
+*.code-workspace
 .vscode/
-*.spv
+*.pdb
+
+# Documentation Files
 doc/Doxyfile
 doc/html
-*.code-workspace
 doc/visuals/**/media/
 doc/visuals/**/__pycache__/
 *.drawio
-*.pdb
-vcpkg_installed/
-src/ux/imnodes/
-shaders/frag.spv
-shaders/gridvert.spv
-shaders/vert.spv
+
+# Compiled Shaders
+*.spv
+
+# Config for Local File Paths
+config.hpp
 
 # Build Install Directories
 build/
 install/
+
+# Dear ImGui
+imgui.ini

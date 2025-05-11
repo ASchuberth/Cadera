@@ -91,6 +91,8 @@ void CADRender::createInstance() {
   vk::Result result = vk::createInstance(&createInfo, nullptr, &mInstance);
 
   VULKAN_HPP_DEFAULT_DISPATCHER.init(mInstance);
+
+  
 }
 
 void CADRender::createSurface() {
@@ -402,7 +404,13 @@ vk::ImageView CADRender::createImageView(vk::Image image, vk::Format format,
 
   vk::ImageView imageView;
 
-  mDevice.createImageView(&createInfo, nullptr, &imageView);
+  vk::Result result{};
+                                  
+  result = mDevice.createImageView(&createInfo, nullptr, &imageView);
+
+  if (result != vk::Result::eSuccess) 
+    throw("Failed to create ImageView");
+  
 
   return imageView;
 }
@@ -502,6 +510,7 @@ void CADRender::createRenderPass() {
   if (mDevice.createRenderPass(&renderPassInfo, nullptr, &mRenderPass) !=
       vk::Result::eSuccess)
     throw std::runtime_error("failed to create render pass!");
+
 }
 
 void CADRender::createDescriptorSetLayout() {
@@ -574,126 +583,25 @@ vk::ShaderModule CADRender::createShaderModule(const std::vector<char> &code) {
 void CADRender::loadFonts() {
 
   TxtRend.setFontSize(100.0f);
-  TxtRend.loadFont("textures/test.csv");
+  TxtRend.loadFont(config::arial_font_coordinates_file_path);
 }
 
-void CADRender::createTextPipeline() {
-
-  vk::VertexInputBindingDescription BindingDescription(
-      0, sizeof(txt::Vertex), vk::VertexInputRate::eVertex);
-
-  std::vector<vk::VertexInputBindingDescription> BindingDescriptions = {
-      BindingDescription};
-
-  std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(4);
-
-  AttributeDescriptions[0].binding = 0;
-  AttributeDescriptions[0].location = 0;
-  AttributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
-  AttributeDescriptions[0].offset = offsetof(txt::Vertex, pos);
-
-  AttributeDescriptions[1].binding = 0;
-  AttributeDescriptions[1].location = 1;
-  AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
-  AttributeDescriptions[1].offset = offsetof(txt::Vertex, textColor);
-
-  AttributeDescriptions[2].binding = 0;
-  AttributeDescriptions[2].location = 2;
-  AttributeDescriptions[2].format = vk::Format::eR32G32B32Sfloat;
-  AttributeDescriptions[2].offset = offsetof(txt::Vertex, backgroundColor);
-
-  AttributeDescriptions[3].binding = 0;
-  AttributeDescriptions[3].location = 3;
-  AttributeDescriptions[3].format = vk::Format::eR32G32Sfloat;
-  AttributeDescriptions[3].offset = offsetof(txt::Vertex, texCoord);
-
-  vk::PipelineVertexInputStateCreateInfo VertexInputInfo(
-      {}, static_cast<uint32_t>(BindingDescriptions.size()),
-      BindingDescriptions.data(),
-      static_cast<uint32_t>(AttributeDescriptions.size()),
-      AttributeDescriptions.data());
-
-  auto vertShaderCode = readFile("shaders/textvert.spv");
-  auto fragShaderCode = readFile("shaders/textfrag.spv");
-
-  vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-  vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
-
-  vk::PipelineShaderStageCreateInfo VertShaderInfo(
-      {}, vk::ShaderStageFlagBits::eVertex, vertShaderModule, "main");
-  vk::PipelineShaderStageCreateInfo FragShaderInfo(
-      {}, vk::ShaderStageFlagBits::eFragment, fragShaderModule, "main");
-
-  vk::PipelineShaderStageCreateInfo ShaderStages[] = {VertShaderInfo,
-                                                      FragShaderInfo};
-
-  vk::PipelineInputAssemblyStateCreateInfo InputAssemblyInfo(
-      {}, vk::PrimitiveTopology::eTriangleList, VK_FALSE);
-
-  vk::PipelineRasterizationStateCreateInfo RasterizerInfo(
-      {}, VK_FALSE, VK_FALSE, vk::PolygonMode::eFill,
-      vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise, VK_FALSE);
-
-  vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width),
-                        static_cast<float>(mExtent.height), 0.0f, 1.0f);
-
-  vk::Rect2D Scissor({0, 0}, mExtent);
-
-  vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1,
-                                                   &Scissor);
-
-  vk::PipelineMultisampleStateCreateInfo MultisampleInfo(
-      {}, vk::SampleCountFlagBits::e1, VK_FALSE, 1.0f, nullptr, VK_FALSE,
-      VK_FALSE);
-
-  vk::PipelineColorBlendAttachmentState ColorBlendAttachment(
-      VK_TRUE, vk::BlendFactor::eSrcAlpha, vk::BlendFactor::eOneMinusSrcAlpha,
-      vk::BlendOp::eAdd, vk::BlendFactor::eOne, vk::BlendFactor::eZero,
-      vk::BlendOp::eAdd,
-      vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
-          vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);
-
-  vk::PipelineColorBlendStateCreateInfo ColorBlendingInfo(
-      {}, VK_FALSE, vk::LogicOp::eCopy, 1, &ColorBlendAttachment,
-      {0.0f, 0.0f, 0.0f, 0.0f});
-
-  vk::PipelineDepthStencilStateCreateInfo depthStencilInfo(
-      {}, VK_TRUE, VK_TRUE, vk::CompareOp::eLess, VK_TRUE, VK_FALSE, {}, {},
-      0.0f, 1.0f);
-
-  vk::GraphicsPipelineCreateInfo PipelineCreateInfo;
-
-  PipelineCreateInfo.stageCount = 2;
-  PipelineCreateInfo.pStages = ShaderStages;
-  PipelineCreateInfo.pVertexInputState = &VertexInputInfo;
-  PipelineCreateInfo.pInputAssemblyState = &InputAssemblyInfo;
-  PipelineCreateInfo.pViewportState = &ViewportInfo;
-  PipelineCreateInfo.pRasterizationState = &RasterizerInfo;
-  PipelineCreateInfo.pMultisampleState = &MultisampleInfo;
-  PipelineCreateInfo.pDepthStencilState = &depthStencilInfo;
-  PipelineCreateInfo.pColorBlendState = &ColorBlendingInfo;
-
-  PipelineCreateInfo.renderPass = mRenderPass;
-  PipelineCreateInfo.subpass = 0;
-
-  PipelineCreateInfo.basePipelineIndex = -1;
-  PipelineCreateInfo.layout = mPipelineLayout;
-
-  mTextPipeline = static_cast<vk::Pipeline>(
-      mDevice
-          .createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr)
-          .value);
-
-  mDevice.destroyShaderModule(vertShaderModule, nullptr);
-  mDevice.destroyShaderModule(fragShaderModule, nullptr);
-}
 
 void CADRender::createCommandPool() {
 
   vk::CommandPoolCreateInfo commandPoolInfo(
       vk::CommandPoolCreateFlagBits::eTransient, mIndices.graphicsFamily);
 
-  mDevice.createCommandPool(&commandPoolInfo, nullptr, &mCommandPool);
+
+  vk::Result result{};
+
+  result = mDevice.createCommandPool(&commandPoolInfo, nullptr, &mCommandPool);
+
+  if (result != vk::Result::eSuccess) {
+    throw("Command Pool was not created!\n");
+  }
+  
+  
 }
 
 uint32_t CADRender::findMemoryType(uint32_t typeFilter,
@@ -868,7 +776,7 @@ void CADRender::createTextureImage() {
 
   int texWidth, texHeight, texChannels;
 
-  stbi_uc *pixels = stbi_load("textures/test.png", &texWidth, &texHeight,
+  stbi_uc *pixels = stbi_load(config::arial_font_texture_file_path, &texWidth, &texHeight,
                               &texChannels, STBI_rgb_alpha);
   vk::DeviceSize imageSize = (uint64_t)texWidth * (uint64_t)texHeight * 4;
 
@@ -942,7 +850,14 @@ void CADRender::createFramebuffers() {
         {}, mRenderPass, static_cast<uint32_t>(attachments.size()),
         attachments.data(), mExtent.width, mExtent.height, 1);
 
-    mDevice.createFramebuffer(&FramebufferInfo, nullptr, &mFramebuffers[i]);
+
+    vk::Result result{};
+
+    result = mDevice.createFramebuffer(&FramebufferInfo, nullptr, &mFramebuffers[i]);
+
+    if (result != vk::Result::eSuccess) 
+      throw("Framebuffer was not created!\n");
+    
   }
 }
 
@@ -1145,8 +1060,8 @@ void CADRender::createSketchPointPipeline() {
       static_cast<uint32_t>(AttributeDescriptions.size()),
       AttributeDescriptions.data());
 
-  auto vertShaderCode = readFile("shaders/vert.spv");
-  auto fragShaderCode = readFile("shaders/frag.spv");
+  auto vertShaderCode = readFile(config::vertex_shader_file_path);
+  auto fragShaderCode = readFile(config::fragment_shader_file_path);
 
   vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
   vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1245,8 +1160,8 @@ void CADRender::createSketchLinePipeline() {
       static_cast<uint32_t>(AttributeDescriptions.size()),
       AttributeDescriptions.data());
 
-  auto vertShaderCode = readFile("shaders/vert.spv");
-  auto fragShaderCode = readFile("shaders/frag.spv");
+  auto vertShaderCode = readFile(config::vertex_shader_file_path);
+  auto fragShaderCode = readFile(config::fragment_shader_file_path);
 
   vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
   vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1369,8 +1284,8 @@ void CADRender::createSketchGridPipeline() {
       static_cast<uint32_t>(AttributeDescriptions.size()),
       AttributeDescriptions.data());
 
-  auto vertShaderCode = readFile("shaders/gridvert.spv");
-  auto fragShaderCode = readFile("shaders/frag.spv");
+  auto vertShaderCode = readFile(config::grid_vertex_shader_file_path);
+  auto fragShaderCode = readFile(config::fragment_shader_file_path);
 
   vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
   vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -1438,6 +1353,117 @@ void CADRender::createSketchGridPipeline() {
 
   Pipelines.SketchGrid =
       mDevice.createGraphicsPipeline({}, PipelineCreateInfo, nullptr).value;
+
+  mDevice.destroyShaderModule(vertShaderModule, nullptr);
+  mDevice.destroyShaderModule(fragShaderModule, nullptr);
+}
+
+void CADRender::createTextPipeline() {
+
+  vk::VertexInputBindingDescription BindingDescription(
+      0, sizeof(txt::Vertex), vk::VertexInputRate::eVertex);
+
+  std::vector<vk::VertexInputBindingDescription> BindingDescriptions = {
+      BindingDescription};
+
+  std::vector<vk::VertexInputAttributeDescription> AttributeDescriptions(4);
+
+  AttributeDescriptions[0].binding = 0;
+  AttributeDescriptions[0].location = 0;
+  AttributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
+  AttributeDescriptions[0].offset = offsetof(txt::Vertex, pos);
+
+  AttributeDescriptions[1].binding = 0;
+  AttributeDescriptions[1].location = 1;
+  AttributeDescriptions[1].format = vk::Format::eR32G32B32Sfloat;
+  AttributeDescriptions[1].offset = offsetof(txt::Vertex, textColor);
+
+  AttributeDescriptions[2].binding = 0;
+  AttributeDescriptions[2].location = 2;
+  AttributeDescriptions[2].format = vk::Format::eR32G32B32Sfloat;
+  AttributeDescriptions[2].offset = offsetof(txt::Vertex, backgroundColor);
+
+  AttributeDescriptions[3].binding = 0;
+  AttributeDescriptions[3].location = 3;
+  AttributeDescriptions[3].format = vk::Format::eR32G32Sfloat;
+  AttributeDescriptions[3].offset = offsetof(txt::Vertex, texCoord);
+
+  vk::PipelineVertexInputStateCreateInfo VertexInputInfo(
+      {}, static_cast<uint32_t>(BindingDescriptions.size()),
+      BindingDescriptions.data(),
+      static_cast<uint32_t>(AttributeDescriptions.size()),
+      AttributeDescriptions.data());
+
+  auto vertShaderCode = readFile(config::text_vertex_shader_file_path);
+  auto fragShaderCode = readFile(config::text_fragment_shader_file_path);
+
+  vk::ShaderModule vertShaderModule = createShaderModule(vertShaderCode);
+  vk::ShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+
+  vk::PipelineShaderStageCreateInfo VertShaderInfo(
+      {}, vk::ShaderStageFlagBits::eVertex, vertShaderModule, "main");
+  vk::PipelineShaderStageCreateInfo FragShaderInfo(
+      {}, vk::ShaderStageFlagBits::eFragment, fragShaderModule, "main");
+
+  vk::PipelineShaderStageCreateInfo ShaderStages[] = {VertShaderInfo,
+                                                      FragShaderInfo};
+
+  vk::PipelineInputAssemblyStateCreateInfo InputAssemblyInfo(
+      {}, vk::PrimitiveTopology::eTriangleList, VK_FALSE);
+
+  vk::PipelineRasterizationStateCreateInfo RasterizerInfo(
+      {}, VK_FALSE, VK_FALSE, vk::PolygonMode::eFill,
+      vk::CullModeFlagBits::eNone, vk::FrontFace::eCounterClockwise, VK_FALSE);
+
+  vk::Viewport ViewPort(0.0f, 0.0f, static_cast<float>(mExtent.width),
+                        static_cast<float>(mExtent.height), 0.0f, 1.0f);
+
+  vk::Rect2D Scissor({0, 0}, mExtent);
+
+  vk::PipelineViewportStateCreateInfo ViewportInfo({}, 1, &ViewPort, 1,
+                                                   &Scissor);
+
+  vk::PipelineMultisampleStateCreateInfo MultisampleInfo(
+      {}, vk::SampleCountFlagBits::e1, VK_FALSE, 1.0f, nullptr, VK_FALSE,
+      VK_FALSE);
+
+  vk::PipelineColorBlendAttachmentState ColorBlendAttachment(
+      VK_TRUE, vk::BlendFactor::eSrcAlpha, vk::BlendFactor::eOneMinusSrcAlpha,
+      vk::BlendOp::eAdd, vk::BlendFactor::eOne, vk::BlendFactor::eZero,
+      vk::BlendOp::eAdd,
+      vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+          vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);
+
+  vk::PipelineColorBlendStateCreateInfo ColorBlendingInfo(
+      {}, VK_FALSE, vk::LogicOp::eCopy, 1, &ColorBlendAttachment,
+      {0.0f, 0.0f, 0.0f, 0.0f});
+
+  vk::PipelineDepthStencilStateCreateInfo depthStencilInfo(
+      {}, VK_TRUE, VK_TRUE, vk::CompareOp::eLess, VK_TRUE, VK_FALSE, {}, {},
+      0.0f, 1.0f);
+
+  vk::GraphicsPipelineCreateInfo PipelineCreateInfo;
+
+  PipelineCreateInfo.stageCount = 2;
+  PipelineCreateInfo.pStages = ShaderStages;
+  PipelineCreateInfo.pVertexInputState = &VertexInputInfo;
+  PipelineCreateInfo.pInputAssemblyState = &InputAssemblyInfo;
+  PipelineCreateInfo.pViewportState = &ViewportInfo;
+  PipelineCreateInfo.pRasterizationState = &RasterizerInfo;
+  PipelineCreateInfo.pMultisampleState = &MultisampleInfo;
+  PipelineCreateInfo.pDepthStencilState = &depthStencilInfo;
+  PipelineCreateInfo.pColorBlendState = &ColorBlendingInfo;
+
+  PipelineCreateInfo.renderPass = mRenderPass;
+  PipelineCreateInfo.subpass = 0;
+
+  PipelineCreateInfo.basePipelineIndex = -1;
+  PipelineCreateInfo.layout = mPipelineLayout;
+
+  mTextPipeline = static_cast<vk::Pipeline>(
+      mDevice
+          .createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr)
+          .value);
 
   mDevice.destroyShaderModule(vertShaderModule, nullptr);
   mDevice.destroyShaderModule(fragShaderModule, nullptr);
@@ -1605,13 +1631,19 @@ void CADRender::updateUniformBuffer(uint32_t currentImage) {
 
 void CADRender::drawFrame() {
 
-  mDevice.waitForFences(mInFlightFences[mCurrentFrame], VK_TRUE, UINT64_MAX);
+  vk::Result result{};
+
+  result = mDevice.waitForFences(mInFlightFences[mCurrentFrame], VK_TRUE, UINT64_MAX);
+
+  if (result != vk::Result::eSuccess)
+    throw("waitForFences failed! \n");
+  
 
   uint32_t imageIndex = 0;
 
   vk::Fence F;
 
-  vk::Result result = mDevice.acquireNextImageKHR(
+  result = mDevice.acquireNextImageKHR(
       mSwapchain, UINT64_MAX, mImageAvailableSemaphores[mCurrentFrame], F,
       &imageIndex);
 

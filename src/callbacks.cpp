@@ -54,7 +54,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
       glfwGetWindowUserPointer(window));
 
   if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-    app->Render.Cam.zoom(yoffset);
+    app->Render.Cam.zoom(static_cast<float>(yoffset));
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height) {

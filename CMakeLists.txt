@@ -71,47 +71,24 @@ target_include_directories(pch_interface INTERFACE ${Stb_INCLUDE_DIR})
 target_link_libraries(CaderaApp PRIVATE sketchlib)
 target_link_libraries(CaderaApp PRIVATE textlib)
 
+# Precompiled Headers
 target_link_libraries(CaderaApp PUBLIC pch_interface)
 
 #=========================================
 # Textures/Shaders
 #=========================================
 
-# Copy textures/*.png to build directory
-## Make textures/ directory
-add_custom_command(
-        TARGET CaderaApp POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/textures/
-        )
+get_filename_component(VERT_SHADER_FILE_PATH            ${CMAKE_SOURCE_DIR}/shaders/vert.spv     ABSOLUTE)
+get_filename_component(FRAG_SHADER_FILE_PATH            ${CMAKE_SOURCE_DIR}/shaders/frag.spv     ABSOLUTE)
+get_filename_component(GRID_VERTEX_SHADER_FILE_PATH     ${CMAKE_SOURCE_DIR}/shaders/gridvert.spv ABSOLUTE)
+get_filename_component(TEXT_VERTEX_SHADER_FILE_PATH     ${CMAKE_SOURCE_DIR}/shaders/textvert.spv ABSOLUTE)
+get_filename_component(TEXT_FRAGMENT_SHADER_FILE_PATH   ${CMAKE_SOURCE_DIR}/shaders/textfrag.spv ABSOLUTE)
 
-## Gather list of all .png files in /shaders/
-file(GLOB TextureFiles ${CMAKE_SOURCE_DIR}/textures/*.png
-                      ${CMAKE_SOURCE_DIR}/textures/*.csv)
+get_filename_component(ARIAL_FONT_TEXTURE_FILE_PATH     ${CMAKE_SOURCE_DIR}/textures/arial.png    ABSOLUTE)
+get_filename_component(ARIAL_FONT_COORDINATES_FILE_PATH ${CMAKE_SOURCE_DIR}/textures/arial.csv    ABSOLUTE)
+ 
+configure_file(${CMAKE_SOURCE_DIR}/src/config.hpp.in ${CMAKE_SOURCE_DIR}/src/config.hpp)
 
-foreach(TextureFile ${TextureFiles})
-  add_custom_command(TARGET CaderaApp POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E
-                         copy ${TextureFile} ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/textures/)
-endforeach()
-               
-
-# Copy shaders/*.spv to build directory
-## Make shaders/ directory
-add_custom_command(
-        TARGET CaderaApp POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders/
-        )
-
-## Gather list of all .spv files in /shaders/
-file(GLOB ShaderFiles ${CMAKE_SOURCE_DIR}/shaders/*.spv)
-
-foreach(ShaderFile ${ShaderFiles})
-  add_custom_command(TARGET CaderaApp POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E
-                         copy ${ShaderFile} ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/shaders/)
-endforeach()
 
 # Compile Shaders
 
