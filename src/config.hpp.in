@@ -1,0 +1,16 @@
+#pragma once 
+
+namespace CADERA_APP_NAMESPACE {
+namespace config {
+
+static constexpr auto vertex_shader_file_path          = "@VERT_SHADER_FILE_PATH@";    
+static constexpr auto fragment_shader_file_path        = "@FRAG_SHADER_FILE_PATH@";   
+static constexpr auto grid_vertex_shader_file_path     = "@GRID_VERTEX_SHADER_FILE_PATH@";   
+static constexpr auto text_vertex_shader_file_path     = "@TEXT_VERTEX_SHADER_FILE_PATH@";   
+static constexpr auto text_fragment_shader_file_path   = "@TEXT_FRAGMENT_SHADER_FILE_PATH@";  
+  
+static constexpr auto arial_font_texture_file_path     = "@ARIAL_FONT_TEXTURE_FILE_PATH@";
+static constexpr auto arial_font_coordinates_file_path = "@ARIAL_FONT_COORDINATES_FILE_PATH@";
+
+}
+}
