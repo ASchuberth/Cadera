@@ -1,4 +1,4 @@
-#include "Camera.hpp"
+#include "camera.hpp"
 #include "pch.hpp"
 
 namespace CADERA_APP_NAMESPACE {

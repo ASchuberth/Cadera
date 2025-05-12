@@ -28,8 +28,9 @@ private:
   int modelIdCounter;
 
 public:
-  // Restructure
+  // TODO: Restructure
   command::SketchAddPointCommand sketchAddPointCmd;
+  command::CameraZoomCommand cameraZoomCmd;
   //-------------
 
   CADRender Render;
@@ -42,8 +43,6 @@ public:
   ~Cadera();
 
   void SketchEvents();
-
-  void updateSelectionPoints(std::vector<int> ids);
 
   void run();
 

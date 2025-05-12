@@ -19,8 +19,18 @@ find_package(GTest REQUIRED)
 
 
 # Test_Camera
-add_executable(Test_Cadera_Sketch test_sketch.cpp)
+# add_executable(Test_Cadera_Camera test_camera.cpp)
+# target_include_directories(Test_Cadera_Camera PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
+# target_link_libraries(Test_Cadera_Camera INTERFACE pch_interface)
+
+# target_include_directories(Test_Cadera_Camera PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+# target_link_libraries(Test_Cadera_Camera PRIVATE ${GTEST_BOTH_LIBRARIES})
+
+
+
+# Test_Sketch
+add_executable(Test_Cadera_Sketch test_sketch.cpp) 
 target_include_directories(Test_Cadera_Sketch PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 
@@ -34,6 +44,7 @@ target_link_libraries(Test_Cadera_Sketch PRIVATE ${GTEST_BOTH_LIBRARIES})
 # Test_Text
 add_executable(Test_Cadera_Text test_text.cpp)
 target_include_directories(Test_Cadera_Text PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
 target_link_libraries(Test_Cadera_Text PRIVATE textlib)
 target_link_libraries(Test_Cadera_Text INTERFACE pch_interface)
 

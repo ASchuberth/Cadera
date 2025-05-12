@@ -1,6 +1,6 @@
 #pragma once
-#include "Model.hpp"
-#include "Point.hpp"
+#include "model.hpp"
+#include "point.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {

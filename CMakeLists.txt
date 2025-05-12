@@ -15,10 +15,10 @@ enable_testing()
 #=========================================
 # Targets
 #=========================================
-add_executable(CaderaApp    src/Cadera.cpp
-                            src/Selection.cpp
+add_executable(CaderaApp    src/cadera.cpp
+                            src/selection.cpp
                             src/callbacks.cpp
-                            src/Main.cpp  
+                            src/main.cpp  
 )
 
 

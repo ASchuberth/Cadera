@@ -1,4 +1,4 @@
-#include "TextRender.hpp"
+#include "textrender.hpp"
 #include "pch.hpp"
 
 void coutVec3(glm::vec3 v) {
@@ -88,7 +88,7 @@ void TextRender::addText(std::vector<Text> Ts) {
 
 void TextRender::clearTexts() { mTexts.clear(); }
 
-std::vector<Vertex> TextRender::generateQuads() {
+std::vector<Vertex> TextRender::generateQuads(const glm::vec3& bgColor) {
 
   numChars = 0;
 
@@ -138,10 +138,10 @@ std::vector<Vertex> TextRender::generateQuads() {
       p3 = p2 + height;
 
       // Generate Vertices
-      Vertex V1 = {p0, T.second.textColor, T.second.backgroundColor, A};
-      Vertex V2 = {p1, T.second.textColor, T.second.backgroundColor, B};
-      Vertex V3 = {p2, T.second.textColor, T.second.backgroundColor, C};
-      Vertex V4 = {p3, T.second.textColor, T.second.backgroundColor, D};
+      Vertex V1 = {p0, T.second.textColor, bgColor, A};
+      Vertex V2 = {p1, T.second.textColor, bgColor, B};
+      Vertex V3 = {p2, T.second.textColor, bgColor, C};
+      Vertex V4 = {p3, T.second.textColor, bgColor, D};
 
       vertices.push_back(V1);
       vertices.push_back(V2);

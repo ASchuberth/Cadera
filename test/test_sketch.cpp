@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <sketch/Point.hpp>
+#include <sketch/point.hpp>
 
 // @brief Test if id of Point without an input id is -1
 TEST(Sketch, Point_Id_Basic) {

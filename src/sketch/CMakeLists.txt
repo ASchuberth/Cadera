@@ -5,12 +5,12 @@ cmake_minimum_required(VERSION 3.5)
 
 
 add_library(sketchlib ${CMAKE_CURRENT_LIST_DIR}/Relation.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/Feature.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/Sketch.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/Sketcher.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/SketchSolver.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/Point.cpp
-                             ${CMAKE_CURRENT_LIST_DIR}/Model.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/feature.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/sketch.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/sketcher.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/sketchsolver.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/point.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/model.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/grid.cpp
                              )
 

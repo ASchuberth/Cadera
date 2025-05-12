@@ -1,4 +1,4 @@
-#include "Cadera.hpp"
+#include "cadera.hpp"
 #include "pch.hpp"
 
 namespace CADERA_APP_NAMESPACE {
@@ -75,7 +75,7 @@ void Cadera::SketchEvents() {
 
 void Cadera::run() {
 
-  Render.setBGColor(glm::vec4(0.9f, 0.9f, 0.9f, 0.1f));
+  Render.setBGColor(glm::vec4(0.3f, 0.3f, 0.3f, 0.1f));
 
   Render.Cam.flags.set(cam::ortho);
   Render.setup();
@@ -86,11 +86,18 @@ void Cadera::run() {
 
   Render.SktSolver.setActiveSketch(&Sketch);
 
+
+  // Mouse Commands
+  // TODO: Determine better way to handle commands
   sketchAddPointCmd.setSketch(&Sketch);
   sketchAddPointCmd.setSelector(&Render.Sel);
   sketchAddPointCmd.setCamera(&Render.Cam);
+
+  cameraZoomCmd.setCamera(&Render.Cam);
   
+  Render.mouse.setScrollMouseSlot(&cameraZoomCmd);
   Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
+
 
   mainLoop();
 }

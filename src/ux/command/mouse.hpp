@@ -1,5 +1,5 @@
 #pragma once
-#include "sketchcommands.hpp"
+#include "cameracommands.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -16,6 +16,7 @@ public:
     void setLeftMouseSlot(Command* leftMouse);
 
     void rightMouseClick();
+    void scroll(double yOffset);
     void leftMouseClick();
 
 

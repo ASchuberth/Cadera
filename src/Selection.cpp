@@ -1,4 +1,4 @@
-#include "Selection.hpp"
+#include "selection.hpp"
 #include "pch.hpp"
 
 namespace CADERA_APP_NAMESPACE {
@@ -44,9 +44,9 @@ glm::vec2 normalizeToVulkanCoords(glm::vec2 screenCoords, uint32_t surfaceWidth,
                                   uint32_t surfaceHeight) {
   glm::vec2 normCoords;
 
-  normCoords.x = 2.0f * screenCoords.x / static_cast<float>(surfaceWidth) - 1.0;
+  normCoords.x = 2.0f * screenCoords.x / static_cast<float>(surfaceWidth) - 1.0f;
   normCoords.y =
-      2.0f * screenCoords.y / static_cast<float>(surfaceHeight) - 1.0;
+      2.0f * screenCoords.y / static_cast<float>(surfaceHeight) - 1.0f;
 
   return normCoords;
 }

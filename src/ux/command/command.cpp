@@ -9,6 +9,8 @@ Command::~Command() {}
 
 void Command::execute() { std::cout << "Command Executed!" << std::endl; }
 
+void Command::execute(double d) {};
+
 
 } // namespace action
 } // namespace CADERA_APP_NAMESPACE

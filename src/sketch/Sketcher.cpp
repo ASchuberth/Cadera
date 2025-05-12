@@ -1,4 +1,4 @@
-#include "Sketcher.hpp"
+#include "sketcher.hpp"
 #include "pch.hpp"
 
 namespace CADERA_APP_NAMESPACE {

@@ -7,7 +7,10 @@ namespace command {
 
 
 
-SketchAddPointCommand::SketchAddPointCommand() : mSketch{nullptr}, mSelector{nullptr} {}
+SketchAddPointCommand::SketchAddPointCommand() : mSketch{nullptr}, 
+                                                 mSelector{nullptr},
+                                                 mCamera{nullptr}
+ {}
 
 void SketchAddPointCommand::setSketch(sketch::Sketch *S) {
 

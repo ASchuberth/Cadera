@@ -1,5 +1,5 @@
 #pragma once
-#include "Sketcher.hpp"
+#include "sketcher.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace sketch {

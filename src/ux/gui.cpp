@@ -206,6 +206,14 @@ void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
   ImGui::InputInt("Grid Size", &Sketch.mGrid.size);
   ImGui::InputFloat("Grid Spacing", &Sketch.mGrid.spacing);
 
+  // Prevent too large of a grid from freezing program
+  if (Sketch.mGrid.size > 10000)
+                Sketch.mGrid.size = 10000;
+
+  // Limit size of grid to protect from undefined behavior
+  if (Sketch.mGrid.spacing > 10000)
+              Sketch.mGrid.spacing = 10000;
+
   if (ImGui::Button("OK")) {
     Render.flags.set(render_update_sketch);
     flags.reset(gui_sketch_grid_menu);

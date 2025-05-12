@@ -18,6 +18,8 @@ public:
   ~Command();
 
   virtual void execute();
+
+  virtual void execute(double);
 };
 } // namespace action
 } // namespace CADERA_APP_NAMESPACE

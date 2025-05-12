@@ -1,4 +1,4 @@
-#include "CADRender.hpp"
+#include "cadrender.hpp"
 #include "pch.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -48,7 +48,7 @@ void CADRender::setup() {
   createSyncObjects();
 }
 
-void CADRender::setBGColor(glm::vec4 color) { bgColor = color; }
+void CADRender::setBGColor(glm::vec4 color) { mRenderColors.bgColor = color; }
 
 void CADRender::createWindow() {
   glfwInit();
@@ -1860,7 +1860,7 @@ void CADRender::renderSketchNotes(Model &S) {
     TxtRend.addText(T);
   }
 
-  std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads();
+  std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
   std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
 
   if (!txtVertices.empty()) {

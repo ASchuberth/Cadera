@@ -1,5 +1,5 @@
 #pragma once
-#include "sketch/SketchSolver.hpp"
+#include "sketch/sketchsolver.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace sel {

@@ -1,10 +1,25 @@
 #pragma once
 
 #include "ux/command/mouse.hpp"
-#include "RenderUtil.hpp"
 #include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {
+
+struct Vertex {
+  glm::vec3 pos;
+  glm::vec3 col;
+};
+
+enum class BufferName {
+
+  sketch_grid_line  = 0,
+  sketch_grid_axii  = 1,
+  sketch_points     = 2,
+  selection_points  = 3,
+  text_vertices     = 4,
+  text_indices      = 5,
+  sketch_point_tool = 6,
+};
 
 struct SwapChainSupportDetails {
   vk::SurfaceCapabilitiesKHR capabilities;
@@ -161,7 +176,6 @@ public:
   size_t mCurrentFrame = 0;
 
   // Options
-  glm::vec4 bgColor;
 
   vk::DescriptorSetLayout mDescriptorSetLayout;
 

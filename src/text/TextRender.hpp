@@ -7,7 +7,6 @@ struct Text {
   std::string text;
   float textSize = 1.0f;
   glm::vec3 textColor;
-  glm::vec3 backgroundColor;
   glm::vec3 cursorPos;
   glm::vec3 cursorDirX;
   glm::vec3 cursorDirY;
@@ -47,7 +46,7 @@ public:
   void addText(std::vector<Text> Ts);
   void clearTexts();
 
-  std::vector<Vertex> generateQuads();
+  std::vector<Vertex> generateQuads(const glm::vec3& bgColor);
   std::vector<uint32_t> generateIndices();
 
 private:

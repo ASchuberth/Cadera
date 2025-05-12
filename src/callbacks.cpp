@@ -1,5 +1,5 @@
 #include "callbacks.hpp"
-#include "Cadera.hpp"
+#include "cadera.hpp"
 #include "pch.hpp"
 
 void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action,
@@ -8,10 +8,6 @@ void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action,
 void sketch_select_addPoint(cad::Cadera *app);
 
 void sketch_select_removePoint(cad::Cadera *app);
-
-void sketch_add_point(cad::Cadera *app);
-
-void sketch_move_point(cad::Cadera *app);
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
                            int mods) {
@@ -53,8 +49,9 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
   auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
       glfwGetWindowUserPointer(window));
 
-  if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-    app->Render.Cam.zoom(static_cast<float>(yoffset));
+  if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
+    app->Render.mouse.scroll(yoffset);
+  }
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height) {
@@ -94,8 +91,12 @@ void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action,
                            int &mods) {
 
   if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-    if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active))
-      sketch_add_point(app);
+    if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
+      
+      app->Render.mouse.leftMouseClick();
+
+      app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
+    }
     else {
 
       sketch_select_addPoint(app);
@@ -145,20 +146,4 @@ void sketch_select_removePoint(cad::Cadera *app) {
   if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
     app->Render.flags.set(cad::render_update_sketch);
   }
-}
-
-void sketch_add_point(cad::Cadera *app) {
-
-  // app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-  //                        app->Render.Cam.cameraVec, app->Render.Cam.pos,
-  //                        app->Render.Cam.cross,
-  //                        app->Render.Cam.flags.test(cad::cam::ortho));
-
-  // if (!app->Render.Sel.existingPoint(app->Render.Sel.point))
-  //   app->Sketch.add(app->Render.Sel.point);
-
-  
-  app->Render.mouse.leftMouseClick();
-
-  app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
 }

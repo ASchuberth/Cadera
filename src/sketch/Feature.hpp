@@ -1,5 +1,5 @@
 #pragma once
-#include "Relation.hpp"
+#include "relation.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 

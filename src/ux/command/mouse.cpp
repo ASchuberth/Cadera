@@ -28,22 +28,21 @@ void Mouse::setLeftMouseSlot(Command *leftMouse) {
 }
 
 void Mouse::rightMouseClick() {
-    if (mRightMouseSlot) {
-        std::cout << "Right Mouse Click!\t";
+    if (mRightMouseSlot) 
         mRightMouseSlot->execute();
-      }
+      
 }
 
+void Mouse::scroll(double yOffset) {
+    if (mScrollMouseSlot)
+        mScrollMouseSlot->execute(yOffset);
+}
+
+
 void Mouse::leftMouseClick() {
-    if (mLeftMouseSlot) {
-
-#ifdef CADERA_DEBUG
-        std::cout << "Left Mouse Click!\t";
-#endif
+    if (mLeftMouseSlot) 
         mLeftMouseSlot->execute();
-      }
-
-
+      
 }
 
 } // namespace command

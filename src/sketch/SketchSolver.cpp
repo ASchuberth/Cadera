@@ -1,4 +1,4 @@
-#include "SketchSolver.hpp"
+#include "sketchsolver.hpp"
 #include "pch.hpp"
 
 void CADERA_APP_NAMESPACE::sketch::SketchSolver::setActiveSketch(Sketch *S) {
