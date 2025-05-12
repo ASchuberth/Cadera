@@ -30,6 +30,7 @@ private:
 public:
   // TODO: Restructure
   command::SketchAddPointCommand sketchAddPointCmd;
+  command::SketchDisableToolsCommand sketchDisableToolsCmd;
   command::CameraZoomCommand cameraZoomCmd;
   //-------------
 

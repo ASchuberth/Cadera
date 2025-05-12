@@ -12,6 +12,7 @@ SketchAddPointCommand::SketchAddPointCommand() : mSketch{nullptr},
                                                  mCamera{nullptr}
  {}
 
+
 void SketchAddPointCommand::setSketch(sketch::Sketch *S) {
 
     mSketch = S;
@@ -40,6 +41,17 @@ void SketchAddPointCommand::execute() {
     }
 }
 
+SketchDisableToolsCommand::SketchDisableToolsCommand() : mSketch{nullptr}  {}
+
+void SketchDisableToolsCommand::setSketch(sketch::Sketch *S) {
+    mSketch = S;
+}
+
+void SketchDisableToolsCommand::execute() {
+    if (mSketch) {
+        mSketch->deactivateTools();
+    }
+}
 
 }
 }

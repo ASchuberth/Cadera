@@ -25,5 +25,20 @@ private:
 
 };
 
+class SketchDisableToolsCommand : public Command { 
+public:
+
+    SketchDisableToolsCommand();
+
+    void setSketch(sketch::Sketch* S);
+
+    void execute() override;
+
+private:
+
+    sketch::Sketch* mSketch;
+
+};
+
 }
 }

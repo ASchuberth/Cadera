@@ -69,7 +69,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
       glfwGetWindowUserPointer(window));
 
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-    app->Sketch.deactivateTools();
+    app->Render.keyboard.escapePress();
   }
 
   if (key == GLFW_KEY_DELETE && action == GLFW_PRESS) {

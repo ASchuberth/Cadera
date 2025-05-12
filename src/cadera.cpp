@@ -87,17 +87,24 @@ void Cadera::run() {
   Render.SktSolver.setActiveSketch(&Sketch);
 
 
-  // Mouse Commands
+  //Keyboard and Mouse Commands
   // TODO: Determine better way to handle commands
   sketchAddPointCmd.setSketch(&Sketch);
   sketchAddPointCmd.setSelector(&Render.Sel);
   sketchAddPointCmd.setCamera(&Render.Cam);
 
+  sketchDisableToolsCmd.setSketch(&Sketch);
+
+
   cameraZoomCmd.setCamera(&Render.Cam);
+
+
   
   Render.mouse.setScrollMouseSlot(&cameraZoomCmd);
   Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
 
+  Render.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
+  
 
   mainLoop();
 }
