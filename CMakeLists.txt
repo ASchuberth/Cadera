@@ -34,8 +34,8 @@ target_compile_definitions(CaderaApp PUBLIC)
 #=========================================
 
 add_library(pch_interface INTERFACE)
-target_precompile_headers(pch_interface INTERFACE src/pch.hpp) # pch.hpp is the precompiled header
-target_include_directories(pch_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/) # Include directory for pch.h
+target_precompile_headers(pch_interface INTERFACE src/pch.hpp) 
+target_include_directories(pch_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/) 
 
 
 
