@@ -5,6 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE 
 )
 
 
@@ -14,49 +15,44 @@ FetchContent_MakeAvailable(googletest)
 
 
 include(CTest)
-
 find_package(GTest REQUIRED)
 
-add_executable(GTest_Cadera test_sketch.cpp
-                            test_camera.cpp
-)
+
+# Test_Camera
+# add_executable(Test_Cadera_Camera test_camera.cpp)
+# target_include_directories(Test_Cadera_Camera PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+# target_link_libraries(Test_Cadera_Camera INTERFACE pch_interface)
+
+# target_include_directories(Test_Cadera_Camera PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+# target_link_libraries(Test_Cadera_Camera PRIVATE ${GTEST_BOTH_LIBRARIES})
 
 
 
-target_precompile_headers(GTest_Cadera PRIVATE pch.hpp)
-target_include_directories(GTest_Cadera PRIVATE ${CMAKE_SOURCE_DIR}/src)
-
-target_sources(GTest_Cadera PRIVATE ../src/sketch/Relation.cpp
-                                    ../src/sketch/Feature.cpp
-                                    ../src/sketch/Point.cpp
-                                    ../src/sketch/Sketcher.cpp
-                                    ../src/sketch/Sketch.cpp
-                                    ../src/sketch/SketchSolver.cpp
-                                    ../src/render/grid.cpp
-                                    ../src/render/RenderUtil.cpp
-                                    ../src/render/CADRender.cpp
-                                    ../src/render/TextRender.cpp
-                                    ../src/render/Camera.cpp
-                                    ../src/Selection.cpp
-                                    ../src/Model.cpp
-                                    ../src/callbacks.cpp
-                                    ../src/Cadera.cpp
-                                    ../src/ux/gui.cpp
-                                    ../src/ux/Nodes.cpp
-                                    # ../src/ux/imnodes/imnodes.cpp
-                                    )
+# Test_Sketch
+add_executable(Test_Cadera_Sketch test_sketch.cpp) 
+target_include_directories(Test_Cadera_Sketch PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 
-target_include_directories( GTest_Cadera PRIVATE ${GTEST_INCLUDE_DIRS} )                               
-target_link_libraries(GTest_Cadera PRIVATE ${GTEST_BOTH_LIBRARIES})
-target_link_libraries(GTest_Cadera PRIVATE glm::glm)
-find_package(Vulkan REQUIRED)
-target_link_libraries(GTest_Cadera PRIVATE Vulkan::Vulkan)
-target_link_libraries(GTest_Cadera PRIVATE glfw)
-target_include_directories(GTest_Cadera PRIVATE ${Stb_INCLUDE_DIR})
-find_package(imgui CONFIG REQUIRED)
-target_link_libraries(GTest_Cadera PRIVATE imgui::imgui)
+target_link_libraries(Test_Cadera_Sketch PRIVATE sketchlib)
+target_link_libraries(Test_Cadera_Sketch INTERFACE pch_interface)
+
+target_include_directories(Test_Cadera_Sketch PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+target_link_libraries(Test_Cadera_Sketch PRIVATE ${GTEST_BOTH_LIBRARIES})
+
+
+# Test_Text
+add_executable(Test_Cadera_Text test_text.cpp)
+target_include_directories(Test_Cadera_Text PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+target_link_libraries(Test_Cadera_Text PRIVATE textlib)
+target_link_libraries(Test_Cadera_Text INTERFACE pch_interface)
+
+target_include_directories(Test_Cadera_Text PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+target_link_libraries(Test_Cadera_Text PRIVATE ${GTEST_BOTH_LIBRARIES})
+
 
 
 include(GoogleTest)
-gtest_discover_tests(GTest_Cadera)
+gtest_discover_tests(Test_Cadera_Sketch)
+gtest_discover_tests(Test_Cadera_Text)
