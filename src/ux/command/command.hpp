@@ -1,6 +1,6 @@
 #pragma once
 
-#include "render/Camera.hpp"
+#include "render/camera.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 

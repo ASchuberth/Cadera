@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 
 
 
-add_library(sketchlib ${CMAKE_CURRENT_LIST_DIR}/Relation.cpp
+add_library(sketchlib ${CMAKE_CURRENT_LIST_DIR}/relation.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/feature.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/sketch.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/sketcher.cpp
