@@ -35,7 +35,10 @@ public:
   command::SketchDeselectPointCommand sketchDeselectPointCmd;
   command::SketchDisableToolsCommand sketchDisableToolsCmd;
   command::SketchDeleteCommand sketchDeleteCmd;
+
   command::CameraZoomCommand cameraZoomCmd;
+  command::CameraPanCommand cameraPanCmd;
+  command::CameraUnsetPanCommand cameraUnsetPanCmd;
   //-------------
 
   CADRender Render;

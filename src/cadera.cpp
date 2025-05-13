@@ -34,30 +34,6 @@ void Cadera::SketchEvents() {
     Render.mouse.setLeftMouseReleaseSlot(&sketchDeselectPointCmd);
   }
 
-  // if (Sketch.flags.test(sketch::skt_move_points)) {
-
-  //   Render.Sel.select(Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-  //                     Render.Cam.cameraVec, Render.Cam.pos, Render.Cam.cross,
-  //                     Render.Cam.flags.test(cad::cam::ortho));
-
-  //   Sketch.movePoints(Render.Sel.selectedPoints, Render.Sel.point,
-  //                     Render.Sel.flags.test(cad::sel::select_first_click));
-
-  //   std::vector<int> ids = Render.Sel.getSelectedPointIds();
-
-  //   std::map<int, Point> newPoints;
-
-  //   for (const auto &id : ids) {
-  //     newPoints[id] = Sketch.Points[id];
-  //   }
-
-  //   Render.Sel.update(newPoints);
-
-  //   Render.Sel.flags.reset(cad::sel::select_first_click);
-
-  //   Sketch.notify();
-  // }
-
 }
 
 void Cadera::run() {
@@ -97,10 +73,15 @@ void Cadera::run() {
 
   cameraZoomCmd.setCamera(&Render.Cam);
 
+  cameraPanCmd.setCamera(&Render.Cam);
 
-  
+  cameraUnsetPanCmd.setCamera(&Render.Cam);
+
+
   Render.mouse.setScrollMouseSlot(&cameraZoomCmd);
   Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
+  Render.mouse.setMiddleMouseSlot(&cameraPanCmd);
+  Render.mouse.setMiddleMouseReleaseSlot(&cameraUnsetPanCmd);
 
   Render.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
   Render.keyboard.setDeleteSlot(&sketchDeleteCmd);

@@ -20,5 +20,33 @@ private:
 
 };
 
+class CameraPanCommand : public Command { 
+public:
+
+    CameraPanCommand();
+
+    void setCamera(cam::Camera* cam);
+
+    void execute() override;
+
+private:
+    cam::Camera* mCamera;
+
+};
+
+class CameraUnsetPanCommand : public Command { 
+public:
+
+    CameraUnsetPanCommand();
+
+    void setCamera(cam::Camera* cam);
+
+    void execute() override;
+
+private:
+    cam::Camera* mCamera;
+
+};
+
 }
 }

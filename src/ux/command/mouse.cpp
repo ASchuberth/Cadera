@@ -8,8 +8,11 @@ namespace command {
 Mouse::Mouse() : 
     mRightMouseSlot{nullptr}, 
     mMiddleMouseSlot{nullptr},
+    mMiddleMouseReleaseSlot{nullptr},
     mScrollMouseSlot{nullptr}, 
-    mLeftMouseSlot{nullptr} {}
+    mLeftMouseSlot{nullptr},
+    mLeftMouseHoldSlot{nullptr},
+    mLeftMouseReleaseSlot{nullptr} {}
 
 void Mouse::setRightMouseSlot(Command *rightMouse) {
     mRightMouseSlot = rightMouse;
@@ -17,6 +20,11 @@ void Mouse::setRightMouseSlot(Command *rightMouse) {
 
 void Mouse::setMiddleMouseSlot(Command *middleMouse) {
     mMiddleMouseSlot = middleMouse;
+}
+
+void Mouse::setMiddleMouseReleaseSlot(Command * middleMouseRelease)
+{
+    mMiddleMouseReleaseSlot = middleMouseRelease;
 }
 
 void Mouse::setScrollMouseSlot(Command *scrollMouse) {
@@ -40,6 +48,20 @@ void Mouse::rightMouseClick() {
     if (mRightMouseSlot) 
         mRightMouseSlot->execute();
       
+}
+
+void Mouse::middleMouseClick()
+{
+    if (mMiddleMouseSlot) {
+        mMiddleMouseSlot->execute();
+    }
+}
+
+void Mouse::middleMouseRelease()
+{
+     if (mMiddleMouseReleaseSlot) {
+        mMiddleMouseReleaseSlot->execute();
+    }
 }
 
 void Mouse::scroll(double yOffset) {
