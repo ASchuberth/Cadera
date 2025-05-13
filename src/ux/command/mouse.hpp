@@ -14,10 +14,14 @@ public:
     void setMiddleMouseSlot(Command* middleMouse);
     void setScrollMouseSlot(Command* scrollMouse);
     void setLeftMouseSlot(Command* leftMouse);
+    void setLeftMouseHoldSlot(Command* leftMouseHold);
+    void setLeftMouseReleaseSlot(Command* leftMouseRelease);
 
     void rightMouseClick();
     void scroll(double yOffset);
     void leftMouseClick();
+    void leftMouseHold();
+    void leftMouseRelease();
 
 
 private:
@@ -26,6 +30,8 @@ private:
     Command* mMiddleMouseSlot;
     Command* mScrollMouseSlot;
     Command* mLeftMouseSlot;
+    Command* mLeftMouseHoldSlot;
+    Command* mLeftMouseReleaseSlot;
 
 };
 

@@ -1491,7 +1491,7 @@ void CADRender::copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer,
   endSingleTimeCommands(commandBuffer);
 }
 
-void CADRender::deleteBuffer(BufferName id) {
+void CADRender::deleteBuffer(int id) {
 
   mBuffers[id].isEmpty = true;
   mDevice.destroyBuffer(mBuffers[id].mBuffer);
@@ -1536,59 +1536,59 @@ void CADRender::createCommandBuffers() {
                                           &mDescriptorSets[i], 0, nullptr);
 
     // Selection Points
-    if (!mBuffers[BufferName::selection_points].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      Pipelines.SketchPoint);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[BufferName::selection_points].mBuffer, offsets);
-      mCommandBuffers[i].draw(mBuffers[BufferName::selection_points].mPointSize,
-                              1, 0, 0);
-    }
+    // if (!mBuffers[BufferName::selection_points].isEmpty) {
+    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+    //                                   Pipelines.SketchPoint);
+    //   mCommandBuffers[i].bindVertexBuffers(
+    //       0, 1, &mBuffers[BufferName::selection_points].mBuffer, offsets);
+    //   mCommandBuffers[i].draw(mBuffers[BufferName::selection_points].mPointSize,
+    //                           1, 0, 0);
+    // }
 
     // Sketch Points
-    if (!mBuffers[BufferName::sketch_points].isEmpty) {
+    if (!mBuffers[0].isEmpty) {
       mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
                                       Pipelines.SketchPoint);
       mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[BufferName::sketch_points].mBuffer, offsets);
+          0, 1, &mBuffers[0].mBuffer, offsets);
       mCommandBuffers[i].draw(
-          mBuffers[BufferName::sketch_points].mPointSize + 2, 1, 0, 0);
+          mBuffers[0].mPointSize + 2, 1, 0, 0);
     }
 
     // Sketch Tools
-    if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      Pipelines.SketchPoint);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[BufferName::sketch_point_tool].mBuffer, offsets);
-      mCommandBuffers[i].draw(
-          mBuffers[BufferName::sketch_point_tool].mPointSize, 1, 0, 0);
-    }
+    // if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
+    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+    //                                   Pipelines.SketchPoint);
+    //   mCommandBuffers[i].bindVertexBuffers(
+    //       0, 1, &mBuffers[BufferName::sketch_point_tool].mBuffer, offsets);
+    //   mCommandBuffers[i].draw(
+    //       mBuffers[BufferName::sketch_point_tool].mPointSize, 1, 0, 0);
+    // }
 
     // Grid
-    if (!mBuffers[BufferName::sketch_grid_line].isEmpty) {
+    if (!mBuffers[1].isEmpty) {
       mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
                                       Pipelines.SketchGrid);
       mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[BufferName::sketch_grid_line].mBuffer, offsets);
+          0, 1, &mBuffers[1].mBuffer, offsets);
       mCommandBuffers[i].bindVertexBuffers(
-          1, 1, &mBuffers[BufferName::sketch_grid_axii].mBuffer, offsets);
+          1, 1, &mBuffers[2].mBuffer, offsets);
       mCommandBuffers[i].draw(
-          2, mBuffers[BufferName::sketch_grid_axii].mPointSize, 0, 0);
+          2, mBuffers[2].mPointSize, 0, 0);
     }
 
     // Text
-    if (!mBuffers[BufferName::text_vertices].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      mTextPipeline);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[BufferName::text_vertices].mBuffer, offsets);
-      mCommandBuffers[i].bindIndexBuffer(
-          mBuffers[BufferName::text_indices].mBuffer, 0,
-          vk::IndexType::eUint32);
-      mCommandBuffers[i].drawIndexed(
-          mBuffers[BufferName::text_indices].mPointSize, 1, 0, 0, 0);
-    }
+    // if (!mBuffers[BufferName::text_vertices].isEmpty) {
+    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+    //                                   mTextPipeline);
+    //   mCommandBuffers[i].bindVertexBuffers(
+    //       0, 1, &mBuffers[BufferName::text_vertices].mBuffer, offsets);
+    //   mCommandBuffers[i].bindIndexBuffer(
+    //       mBuffers[BufferName::text_indices].mBuffer, 0,
+    //       vk::IndexType::eUint32);
+    //   mCommandBuffers[i].drawIndexed(
+    //       mBuffers[BufferName::text_indices].mPointSize, 1, 0, 0, 0);
+    // }
 
     ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -1805,13 +1805,62 @@ void CADRender::runCamera() {
   Cam.update();
 }
 
+void CADRender::onNotify(int id, const RenderItems& renderables) {
+
+  // Create Sketch Points buffers
+  std::vector<Vertex> pointVertices;
+
+  for (const auto& point : renderables.points) {
+    pointVertices.push_back({point, {mRenderColors.sketchPointColor.x, 
+                                mRenderColors.sketchPointColor.y, 
+                                mRenderColors.sketchPointColor.z}});
+  }
+
+  
+  if (!pointVertices.empty()) {
+    updateBuffer(id, pointVertices,
+                 vk::BufferUsageFlagBits::eVertexBuffer);
+  } else if (!mBuffers[id].isEmpty) {
+    deleteBuffer(id);
+  }
+
+  // Create Grid buffers
+
+
+  std::vector<Vertex> gridVertices;
+  
+  std::vector<GridRotationAxis> axii;
+  std::vector<glm::vec3> line;
+  
+  // Convert gridLine to vector of Vertex
+  for (const auto& point : renderables.gridLine) {
+    gridVertices.push_back({point, mRenderColors.sketchGridColor});
+  }
+
+  axii = renderables.gridAxii;
+
+  if (!axii.empty() && !gridVertices.empty()) {
+    updateBuffer(1, gridVertices,
+                  vk::BufferUsageFlagBits::eVertexBuffer);
+    updateBuffer(2, axii,
+                  vk::BufferUsageFlagBits::eVertexBuffer);
+  } else {
+    deleteBuffer(1);
+    deleteBuffer(2);
+  }
+
+
+}
+
 void CADRender::render(Model &M) {
 
-  if (M.getType() == cad_sketch) {
-    renderSketchGrid(M);
-    renderSketchPoints(M);
-    renderSketchNotes(M);
-  }
+  // if (M.getType() == cad_sketch) {
+  //   renderSketchGrid(M);
+  //   renderSketchPoints(M);
+  //   renderSketchNotes(M);
+  // }
+
+
 
   flags.reset(render_update_sketch);
 }
@@ -1833,15 +1882,15 @@ void CADRender::renderSketchGrid(Model &S) {
     Vertices.push_back(V);
   }
 
-  if (!axii.empty() && !Vertices.empty()) {
-    updateBuffer(BufferName::sketch_grid_line, Vertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-    updateBuffer(BufferName::sketch_grid_axii, axii,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-  } else {
-    deleteBuffer(BufferName::sketch_grid_line);
-    deleteBuffer(BufferName::sketch_grid_axii);
-  }
+  // if (!axii.empty() && !Vertices.empty()) {
+  //   updateBuffer(BufferName::sketch_grid_line, Vertices,
+  //                vk::BufferUsageFlagBits::eVertexBuffer);
+  //   updateBuffer(BufferName::sketch_grid_axii, axii,
+  //                vk::BufferUsageFlagBits::eVertexBuffer);
+  // } else {
+  //   deleteBuffer(BufferName::sketch_grid_line);
+  //   deleteBuffer(BufferName::sketch_grid_axii);
+  // }
 }
 
 void CADRender::renderSketchNotes(Model &S) {
@@ -1863,15 +1912,15 @@ void CADRender::renderSketchNotes(Model &S) {
   std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
   std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
 
-  if (!txtVertices.empty()) {
-    updateBuffer(BufferName::text_vertices, txtVertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-    updateBuffer(BufferName::text_indices, txtIndices,
-                 vk::BufferUsageFlagBits::eIndexBuffer);
-  } else if (!mBuffers[BufferName::text_vertices].isEmpty) {
-    deleteBuffer(BufferName::text_vertices);
-    deleteBuffer(BufferName::text_indices);
-  }
+  // if (!txtVertices.empty()) {
+  //   updateBuffer(BufferName::text_vertices, txtVertices,
+  //                vk::BufferUsageFlagBits::eVertexBuffer);
+  //   updateBuffer(BufferName::text_indices, txtIndices,
+  //                vk::BufferUsageFlagBits::eIndexBuffer);
+  // } else if (!mBuffers[BufferName::text_vertices].isEmpty) {
+  //   deleteBuffer(BufferName::text_vertices);
+  //   deleteBuffer(BufferName::text_indices);
+  // }
 }
 
 void CADRender::renderSketchPoints(Model &S) {
@@ -1892,16 +1941,18 @@ void CADRender::renderSketchPoints(Model &S) {
   if (!pointVertices.empty() && !pointColors.empty()) {
     for (size_t i = 0; i < pointVertices.size(); i++) {
 
-      Vertices.push_back({pointVertices[i], pointColors[i]});
+      Vertices.push_back({pointVertices[i], {mRenderColors.sketchPointColor.x, 
+                                             mRenderColors.sketchPointColor.y, 
+                                             mRenderColors.sketchPointColor.z}});
     }
   }
 
-  if (!Vertices.empty()) {
-    updateBuffer(BufferName::sketch_points, Vertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-  } else if (!mBuffers[BufferName::sketch_points].isEmpty) {
-    deleteBuffer(BufferName::sketch_points);
-  }
+  // if (!Vertices.empty()) {
+  //   updateBuffer(BufferName::sketch_points, Vertices,
+  //                vk::BufferUsageFlagBits::eVertexBuffer);
+  // } else if (!mBuffers[BufferName::sketch_points].isEmpty) {
+  //   deleteBuffer(BufferName::sketch_points);
+  // }
 }
 
 void CADRender::renderSketchPointTool() {
@@ -1931,12 +1982,12 @@ void CADRender::renderSketchPointTool() {
     Vertices.push_back({point, {1.0f, 1.0f, 1.0f}});
   }
 
-  if (!Vertices.empty()) {
-    updateBuffer(BufferName::sketch_point_tool, Vertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-  } else if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
-    deleteBuffer(BufferName::sketch_point_tool);
-  }
+  // if (!Vertices.empty()) {
+  //   updateBuffer(BufferName::sketch_point_tool, Vertices,
+  //                vk::BufferUsageFlagBits::eVertexBuffer);
+  // } else if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
+  //   deleteBuffer(BufferName::sketch_point_tool);
+  // }
 }
 
 } // namespace CADERA_APP_NAMESPACE

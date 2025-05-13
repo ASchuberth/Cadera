@@ -62,7 +62,7 @@ struct RendorColors {
 };
 
 
-class CADRender {
+class CADRender : public Observer{
 
 private:
   std::vector<const char *> validationLayers = {
@@ -162,7 +162,7 @@ public:
   vk::DescriptorPool mDescriptorPool;
   std::vector<vk::DescriptorSet> mDescriptorSets;
 
-  std::map<BufferName, Buffer> mBuffers;
+  std::map<int, Buffer> mBuffers;
 
   // Textures
   vk::Image mTextureImage;
@@ -337,7 +337,7 @@ public:
   void copyBuffer(vk::Buffer srcBuffer, vk::Buffer dstBuffer,
                   vk::DeviceSize size);
 
-  void deleteBuffer(BufferName id);
+  void deleteBuffer(int id);
 
   void createCommandBuffers();
 
@@ -346,7 +346,7 @@ public:
   void drawFrame();
 
   template <class T>
-  inline void createDeviceBuffer(BufferName id, std::vector<T> const &points,
+  inline void createDeviceBuffer(int id, std::vector<T> const &points,
                                  vk::BufferUsageFlagBits const &flag) {
 
     vk::Buffer stagingBuffer;
@@ -383,7 +383,7 @@ public:
   };
 
   template <class T>
-  inline void updateBuffer(BufferName id, std::vector<T> const &points,
+  inline void updateBuffer(int id, std::vector<T> const &points,
                            vk::BufferUsageFlagBits const &flag) {
     if (mBuffers[id].isEmpty) {
       createDeviceBuffer(id, points, flag);
@@ -403,6 +403,8 @@ public:
   void destroy();
 
   void runCamera();
+
+  void onNotify(int id, const RenderItems& renderables) override;
 
   void render(Model &M);
 

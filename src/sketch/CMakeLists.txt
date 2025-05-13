@@ -12,6 +12,8 @@ add_library(sketchlib ${CMAKE_CURRENT_LIST_DIR}/relation.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/point.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/model.cpp
                              ${CMAKE_CURRENT_LIST_DIR}/grid.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/observer.cpp
+                             ${CMAKE_CURRENT_LIST_DIR}/subject.cpp
                              )
 
 target_include_directories(sketchlib PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)

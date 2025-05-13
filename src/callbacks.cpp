@@ -2,13 +2,6 @@
 #include "cadera.hpp"
 #include "pch.hpp"
 
-void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action,
-                           int &mods);
-
-void sketch_select_addPoint(cad::Cadera *app);
-
-void sketch_select_removePoint(cad::Cadera *app);
-
 void mouse_button_callback(GLFWwindow *window, int button, int action,
                            int mods) {
 
@@ -20,10 +13,15 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   // (2) ONLY forward mouse data to your underlying app/game.
   if (!io.WantCaptureMouse) {
 
-    if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_active)) {
-
-      sketch_mode_callbacks(app, button, action, mods);
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+  
+      app->Render.mouse.leftMouseClick();
+   
+    } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+  
+      app->Render.mouse.leftMouseRelease();
     }
+    
 
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 
@@ -73,7 +71,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
   }
 
   if (key == GLFW_KEY_DELETE && action == GLFW_PRESS) {
-    app->flags.set(CADERA_APP_NAMESPACE::cadera_delete);
+   
+    app->Render.keyboard.deletePress();
+
   }
 
   if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS) {
@@ -85,65 +85,18 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
   }
 }
 
-void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {}
+void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
 
-void sketch_mode_callbacks(cad::Cadera *app, int &button, int &action,
-                           int &mods) {
-
-  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-    if (app->Sketch.flags.test(CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
-      
-      app->Render.mouse.leftMouseClick();
-
-      app->Render.flags.set(CADERA_APP_NAMESPACE::render_update_sketch);
-    }
-    else {
-
-      sketch_select_addPoint(app);
-      app->Sketch.flags.set(cad::sketch::skt_move_points);
-    }
-
-  } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-
-    if (!app->Sketch.flags.test(
-            CADERA_APP_NAMESPACE::sketch::skt_tool_active)) {
-
-      if (!app->Sketch.flags.test(cad::sketch::skt_points_have_moved))
-        sketch_select_removePoint(app);
-
-      app->Render.Sel.flags.set(cad::sel::select_first_click);
-      app->Sketch.flags.reset(cad::sketch::skt_move_points);
-      app->Sketch.flags.reset(cad::sketch::skt_points_have_moved);
-    }
+  // Only run when left mouse button is being held
+  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) 
+  {
+     return;
   }
+
+  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+    glfwGetWindowUserPointer(window));
+
+    app->Render.mouse.leftMouseHold();
+
 }
 
-void sketch_select_addPoint(cad::Cadera *app) {
-
-  app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-                         app->Render.Cam.cameraVec, app->Render.Cam.pos,
-                         app->Render.Cam.cross,
-                         app->Render.Cam.flags.test(cad::cam::ortho));
-
-  int id = app->Render.Sel.add(app->Render.Sel.point, app->Sketch.Points,
-                               app->Render.Cam.camDistance);
-
-  if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
-    app->Render.flags.set(cad::render_update_sketch);
-  }
-}
-
-void sketch_select_removePoint(cad::Cadera *app) {
-
-  app->Render.Sel.select(app->Render.Cam.mouseRay, glm::vec3(0.0f, 0.0f, 0.0f),
-                         app->Render.Cam.cameraVec, app->Render.Cam.pos,
-                         app->Render.Cam.cross,
-                         app->Render.Cam.flags.test(cad::cam::ortho));
-
-  int id = app->Render.Sel.remove(app->Render.Sel.point, app->Sketch.Points,
-                                  app->Render.Cam.camDistance);
-
-  if (id >= 0 || app->Render.Sel.selectedPoints.empty()) {
-    app->Render.flags.set(cad::render_update_sketch);
-  }
-}

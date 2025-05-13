@@ -3,7 +3,7 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-Model::Model() {}
+Model::Model() : mId{0} {}
 
 Model::Model(int id) { mId = id; }
 
@@ -14,6 +14,14 @@ int Model::getId() { return mId; }
 void Model::setType(ModelType type) { mType = type; }
 
 ModelType Model::getType() { return mType; }
+
+void Model::notify() {
+
+  for (const auto& observer : observers) {
+    std::cout << "Model notifies." << std::endl;
+    observer->onNotify(mId, mRenderItems);
+  }
+}
 
 std::vector<glm::vec3> Model::getGridLine() { return std::vector<glm::vec3>(); }
 

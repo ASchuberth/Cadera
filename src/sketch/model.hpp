@@ -1,15 +1,11 @@
 #pragma once
-#include "textrender.hpp"
-#include "grid.hpp"
+#include "subject.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
 enum ModelType { cad_sketch, cad_layout, cad_part, cad_assembly, cad_drawing };
 
-class Model {
-
-  int mId;
-  ModelType mType;
+class Model : public Subject {
 
 public:
   Model();
@@ -25,6 +21,8 @@ public:
 
   std::map<int, txt::Text> Notes;
 
+  void notify() override;
+
   virtual std::vector<glm::vec3> getGridLine();
   virtual std::vector<GridRotationAxis> getGridAxii();
 
@@ -32,6 +30,15 @@ public:
 
   virtual std::vector<glm::vec3> getVertices();
   virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3> &colors);
+
+protected:
+  RenderItems mRenderItems;
+
+private:
+  int mId;
+  ModelType mType;
+  
+
 };
 
 } // namespace CADERA_APP_NAMESPACE

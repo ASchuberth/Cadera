@@ -94,9 +94,10 @@ void startMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
       Sketch.flags.set(sketch::skt_active);
       Sketch.setType(cad_sketch);
       Sketch.setCameraDistance(&Render.Cam.camDistance);
+      Sketch.addRender(&Render);
       Sel.setActiveSketch(&Sketch);
 
-      Render.flags.set(render_update_sketch);
+      Sketch.notify();
 
       flags.reset(gui_start_menu);
     }

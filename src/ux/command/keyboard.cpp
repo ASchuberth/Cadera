@@ -39,6 +39,9 @@ void Keyboard::lCtrlPress()
 }
 void Keyboard::deletePress()
 {
+    if (mDeleteSlot) {
+        mDeleteSlot->execute();
+    }
 }
 
 } // namespace command

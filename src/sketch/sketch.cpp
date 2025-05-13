@@ -218,6 +218,25 @@ void Sketch::deletion(std::vector<int> ids) {
   }
 }
 
+void Sketch::notify() {
+
+  mRenderItems.points.clear();
+
+  for (const auto& point : Points) {
+    mRenderItems.points.push_back(point.second.pos);
+  }
+
+  mRenderItems.gridAxii = mGrid.createGridInstanceAxii();
+  mRenderItems.gridLine = mGrid.line;
+
+  for (const auto& observer : observers) {
+    observer->onNotify(getId(), mRenderItems);
+  }
+
+
+
+}
+
 std::vector<glm::vec3> Sketch::getGridLine() { return mGrid.line; }
 
 std::vector<GridRotationAxis> Sketch::getGridAxii() {

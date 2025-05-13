@@ -27,6 +27,15 @@ void Mouse::setLeftMouseSlot(Command *leftMouse) {
     mLeftMouseSlot = leftMouse;
 }
 
+void Mouse::setLeftMouseHoldSlot(Command * leftMouseHold)
+{
+    mLeftMouseHoldSlot = leftMouseHold;
+}
+
+void Mouse::setLeftMouseReleaseSlot(Command *leftMouseRelease) {
+    mLeftMouseReleaseSlot = leftMouseRelease;
+}
+
 void Mouse::rightMouseClick() {
     if (mRightMouseSlot) 
         mRightMouseSlot->execute();
@@ -43,6 +52,18 @@ void Mouse::leftMouseClick() {
     if (mLeftMouseSlot) 
         mLeftMouseSlot->execute();
       
+}
+
+void Mouse::leftMouseHold() {
+    if (mLeftMouseHoldSlot) {
+        mLeftMouseHoldSlot->execute();
+    }
+}
+
+void Mouse::leftMouseRelease() {
+    if (mLeftMouseReleaseSlot) {
+        mLeftMouseReleaseSlot->execute();
+    }
 }
 
 } // namespace command

@@ -78,6 +78,8 @@ public:
 
   void deletion(std::vector<int> ids);
 
+  void notify() override;
+
   std::vector<glm::vec3> getGridLine();
 
   std::vector<GridRotationAxis> getGridAxii();
