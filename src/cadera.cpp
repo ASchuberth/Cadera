@@ -66,6 +66,9 @@ void Cadera::run() {
   sketchDeselectPointCmd.setSelector(&Render.Sel);
   sketchDeselectPointCmd.setCamera(&Render.Cam);
 
+  sketchSelectSetCtrlCmd.setSelector(&Render.Sel);
+  sketchSelectUnsetCtrlCmd.setSelector(&Render.Sel);
+
   sketchDisableToolsCmd.setSketch(&Sketch);
   sketchDeleteCmd.setSketch(&Sketch);
   sketchDeleteCmd.setSelector(&Render.Sel);
@@ -77,6 +80,8 @@ void Cadera::run() {
 
   cameraUnsetPanCmd.setCamera(&Render.Cam);
 
+  renderFramebufferResizeCmd.setRender(&Render);
+
 
   input.mouse.setScrollMouseSlot(&cameraZoomCmd);
   input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
@@ -85,7 +90,10 @@ void Cadera::run() {
 
   input.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
   input.keyboard.setDeleteSlot(&sketchDeleteCmd);
+  input.keyboard.setLCtrlSlot(&sketchSelectSetCtrlCmd);
+  input.keyboard.setLCtrlReleaseSlot(&sketchSelectUnsetCtrlCmd);
   
+  input.setFramebufferResizeSlot(&renderFramebufferResizeCmd);
 
   mainLoop();
 }

@@ -82,6 +82,34 @@ class SketchDeselectPointCommand : public Command {
     
 };
 
+class SketchSelectSetCtrlCommand : public Command {
+public:
+
+    SketchSelectSetCtrlCommand();
+
+    void setSelector(sel::Selector* sel);
+    void execute() override;
+
+private:
+
+    sel::Selector* mSelector;
+
+};
+
+class SketchSelectUnsetCtrlCommand : public Command {
+public:
+
+    SketchSelectUnsetCtrlCommand();
+
+    void setSelector(sel::Selector* sel);
+    void execute() override;
+
+private:
+
+    sel::Selector* mSelector;
+
+};
+
 class SketchDisableToolsCommand : public Command { 
 public:
 

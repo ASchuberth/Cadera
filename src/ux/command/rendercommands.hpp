@@ -1,5 +1,5 @@
 #pragma once
-#include "sketchcommands.hpp"
+#include "cameracommands.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -11,12 +11,12 @@ public:
 
     RenderFramebufferResizeCommand();
 
-    void setCamera(cam::Camera* cam);
+    void setRender(CADRender* render);
 
-    void execute(double) override;
+    void execute() override;
 
 private:
-    cam::Camera* mCamera;
+    CADRender* mRender;
 
 };
 

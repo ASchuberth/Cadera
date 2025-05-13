@@ -15,6 +15,7 @@ SketchAddPointCommand::SketchAddPointCommand() : mSketch{nullptr},
 
 void SketchAddPointCommand::setSketch(sketch::Sketch *S) { mSketch = S; }
 
+
 void SketchAddPointCommand::setSelector(sel::Selector *sel) {
     mSelector = sel;
 }
@@ -172,6 +173,41 @@ void SketchDeselectPointCommand::execute() {
 }
 //-----------------------------------------------------------------------------
 
+// Sketch Select Set Ctrl Command
+//-----------------------------------------------------------------------------
+SketchSelectSetCtrlCommand::SketchSelectSetCtrlCommand() : mSelector{nullptr}
+{
+}
+
+void SketchSelectSetCtrlCommand::setSelector(sel::Selector *sel) {
+    mSelector = sel;
+}
+
+void SketchSelectSetCtrlCommand::execute() {
+    if (mSelector)
+        mSelector->flags.set(sel::select_isCTRL);
+}
+
+
+//-----------------------------------------------------------------------------
+
+// Sketch Select Unset Ctrl Command
+//-----------------------------------------------------------------------------
+SketchSelectUnsetCtrlCommand::SketchSelectUnsetCtrlCommand() : mSelector{nullptr}
+{
+}
+
+void SketchSelectUnsetCtrlCommand::setSelector(sel::Selector *sel) {
+    mSelector = sel;
+}
+
+void SketchSelectUnsetCtrlCommand::execute() {
+    if (mSelector)
+        mSelector->flags.reset(sel::select_isCTRL);
+}
+
+
+//-----------------------------------------------------------------------------
 
 // Sketch Disable Tools Command
 //-----------------------------------------------------------------------------

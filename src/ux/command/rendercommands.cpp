@@ -1,24 +1,27 @@
 #include "rendercommands.hpp"
 #include "pch.hpp"
 
+
 namespace CADERA_APP_NAMESPACE {
 
 namespace command {
 
 
-// Camera Zoom Command
+// Render Framebuffer Resize Command
 //-----------------------------------------------------------------------------
-RenderFramebufferResizeCommand::RenderFramebufferResizeCommand() : mCamera{nullptr} {}
+RenderFramebufferResizeCommand::RenderFramebufferResizeCommand() : mRender{nullptr} {}
 
-
-void RenderFramebufferResizeCommand::setRender(cam::Camera *cam) {
-    mRender = cam;
+void RenderFramebufferResizeCommand::setRender(CADRender * render) {
+    mRender = render;
 }
 
-void RenderFramebufferResizeCommand::execute(double yoffset) {
-    if (mCamera) {
 
-        mCamera->zoom(static_cast<float>(yoffset));
+
+
+void RenderFramebufferResizeCommand::execute() {
+    if (mRender) {
+
+        mRender->frameBufferResized = true;;
 
     }
 }

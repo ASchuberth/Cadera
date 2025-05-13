@@ -12,11 +12,13 @@ public:
 
     void setEscapeSlot(Command* escape);
     void setLCtrlSlot(Command* lCtrl);
+    void setLCtrlReleaseSlot(Command* lCtrl);
     void setDeleteSlot(Command* del);
 
 
     void escapePress();
     void lCtrlPress();
+    void lCtrlRelease();
     void deletePress();
 
 
@@ -24,6 +26,7 @@ private:
 
     Command* mEscapeSlot;
     Command* mLCtrlSlot;
+    Command* mLCtrlReleaseSlot;
     Command* mDeleteSlot;
 
 

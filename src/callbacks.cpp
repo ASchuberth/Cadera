@@ -56,7 +56,8 @@ void framebuffer_resize_callback(GLFWwindow *window, int width, int height) {
   auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
       glfwGetWindowUserPointer(window));
 
-  //input->Render.frameBufferResized = true;
+  input->framebufferResized();
+
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
@@ -76,11 +77,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
   }
 
   if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS) {
-    //input->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::select_isCTRL);
+    input->keyboard.lCtrlPress();
   }
 
   if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE) {
-    //input->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::select_isCTRL);
+    input->keyboard.lCtrlRelease();
   }
 }
 

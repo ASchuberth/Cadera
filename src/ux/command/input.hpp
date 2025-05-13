@@ -8,8 +8,18 @@ namespace command {
 class Input {
 public:
 
- Keyboard keyboard;
- Mouse mouse;   
+    Input();
+
+    void setFramebufferResizeSlot(Command* framebufferResizeCmd);
+    
+    void framebufferResized();
+    
+    Keyboard keyboard;
+    Mouse mouse;   
+
+private:
+
+    Command* mFramebufferResizeSlot;
 
 };
 

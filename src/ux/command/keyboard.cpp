@@ -9,6 +9,7 @@ namespace command {
 Keyboard::Keyboard() : 
     mEscapeSlot{nullptr}, 
     mLCtrlSlot{nullptr},
+    mLCtrlReleaseSlot{nullptr},
     mDeleteSlot{nullptr} {}
 
 
@@ -20,6 +21,11 @@ void Keyboard::setEscapeSlot(Command * escape)
 void Keyboard::setLCtrlSlot(Command * lCtrl)
 {
     mLCtrlSlot = lCtrl;
+}
+
+void Keyboard::setLCtrlReleaseSlot(Command * lCtrl)
+{
+    mLCtrlReleaseSlot = lCtrl;
 }
 
 void Keyboard::setDeleteSlot(Command * del)
@@ -36,6 +42,15 @@ void Keyboard::escapePress()
 
 void Keyboard::lCtrlPress()
 {
+     if (mLCtrlSlot) {
+        mLCtrlSlot->execute();
+    }
+}
+void Keyboard::lCtrlRelease()
+{
+    if (mLCtrlReleaseSlot) {
+        mLCtrlReleaseSlot->execute();
+    }
 }
 void Keyboard::deletePress()
 {

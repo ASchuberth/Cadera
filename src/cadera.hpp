@@ -1,5 +1,6 @@
 #pragma once
 #include "ux/gui.hpp"
+#include "ux/command/rendercommands.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -32,6 +33,8 @@ public:
   command::SketchAddPointCommand sketchAddPointCmd;
   command::SketchMovePointCommand sketchMovePointCmd;
   command::SketchSelectPointCommand sketchSelectPointCmd;
+  command::SketchSelectSetCtrlCommand sketchSelectSetCtrlCmd;
+  command::SketchSelectUnsetCtrlCommand sketchSelectUnsetCtrlCmd;
   command::SketchDeselectPointCommand sketchDeselectPointCmd;
   command::SketchDisableToolsCommand sketchDisableToolsCmd;
   command::SketchDeleteCommand sketchDeleteCmd;
@@ -39,6 +42,9 @@ public:
   command::CameraZoomCommand cameraZoomCmd;
   command::CameraPanCommand cameraPanCmd;
   command::CameraUnsetPanCommand cameraUnsetPanCmd;
+
+  command::RenderFramebufferResizeCommand renderFramebufferResizeCmd;
+
 
   command::Input input;
   //-------------
