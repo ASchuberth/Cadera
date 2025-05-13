@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ux/command/keyboard.hpp"
+#include "camera.hpp"
 #include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {
@@ -95,10 +95,6 @@ private:
   
 
 public:
-  // Restructure
-
-  command::Mouse mouse;
-  command::Keyboard keyboard;
 
   // GLFW
   GLFWwindow *mMainWindow;

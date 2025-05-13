@@ -5,7 +5,7 @@ namespace CADERA_APP_NAMESPACE {
 
 void Cadera::initCallbacks() {
 
-  glfwSetWindowUserPointer(Render.mMainWindow, this);
+  glfwSetWindowUserPointer(Render.mMainWindow, &this->input);
 
   glfwSetMouseButtonCallback(Render.mMainWindow, mouse_button_callback);
   glfwSetScrollCallback(Render.mMainWindow, scroll_callback);
@@ -25,13 +25,13 @@ Cadera::~Cadera() { Render.destroy(); }
 void Cadera::SketchEvents() {
 
   if (Sketch.flags.test(sketch::skt_tool_active)) {
-    Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
-    Render.mouse.setLeftMouseHoldSlot(nullptr);
-    Render.mouse.setLeftMouseReleaseSlot(nullptr);
+    input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
+    input.mouse.setLeftMouseHoldSlot(nullptr);
+    input.mouse.setLeftMouseReleaseSlot(nullptr);
   } else {
-    Render.mouse.setLeftMouseSlot(&sketchSelectPointCmd);
-    Render.mouse.setLeftMouseHoldSlot(&sketchMovePointCmd);
-    Render.mouse.setLeftMouseReleaseSlot(&sketchDeselectPointCmd);
+    input.mouse.setLeftMouseSlot(&sketchSelectPointCmd);
+    input.mouse.setLeftMouseHoldSlot(&sketchMovePointCmd);
+    input.mouse.setLeftMouseReleaseSlot(&sketchDeselectPointCmd);
   }
 
 }
@@ -78,13 +78,13 @@ void Cadera::run() {
   cameraUnsetPanCmd.setCamera(&Render.Cam);
 
 
-  Render.mouse.setScrollMouseSlot(&cameraZoomCmd);
-  Render.mouse.setLeftMouseSlot(&sketchAddPointCmd);
-  Render.mouse.setMiddleMouseSlot(&cameraPanCmd);
-  Render.mouse.setMiddleMouseReleaseSlot(&cameraUnsetPanCmd);
+  input.mouse.setScrollMouseSlot(&cameraZoomCmd);
+  input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
+  input.mouse.setMiddleMouseSlot(&cameraPanCmd);
+  input.mouse.setMiddleMouseReleaseSlot(&cameraUnsetPanCmd);
 
-  Render.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
-  Render.keyboard.setDeleteSlot(&sketchDeleteCmd);
+  input.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
+  input.keyboard.setDeleteSlot(&sketchDeleteCmd);
   
 
   mainLoop();

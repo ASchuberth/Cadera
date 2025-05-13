@@ -5,7 +5,7 @@
 void mouse_button_callback(GLFWwindow *window, int button, int action,
                            int mods) {
 
-  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+  auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
       glfwGetWindowUserPointer(window));
 
   ImGuiIO &io = ImGui::GetIO();
@@ -15,22 +15,22 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
 
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
   
-      app->Render.mouse.leftMouseClick();
+      input->mouse.leftMouseClick();
    
     } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
   
-      app->Render.mouse.leftMouseRelease();
+      input->mouse.leftMouseRelease();
     }
     
 
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 
-      app->Render.mouse.middleMouseClick();
+      input->mouse.middleMouseClick();
     }
 
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
 
-      app->Render.mouse.middleMouseRelease();
+      input->mouse.middleMouseRelease();
     }
   }
 
@@ -43,44 +43,44 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
 
-  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+  auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
       glfwGetWindowUserPointer(window));
 
   if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) {
-    app->Render.mouse.scroll(yoffset);
+    input->mouse.scroll(yoffset);
   }
 }
 
 void framebuffer_resize_callback(GLFWwindow *window, int width, int height) {
 
-  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+  auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
       glfwGetWindowUserPointer(window));
 
-  app->Render.frameBufferResized = true;
+  //input->Render.frameBufferResized = true;
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods) {
 
-  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+  auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
       glfwGetWindowUserPointer(window));
 
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-    app->Render.keyboard.escapePress();
+    input->keyboard.escapePress();
   }
 
   if (key == GLFW_KEY_DELETE && action == GLFW_PRESS) {
    
-    app->Render.keyboard.deletePress();
+    input->keyboard.deletePress();
 
   }
 
   if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS) {
-    app->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::select_isCTRL);
+    //input->Render.Sel.flags.set(CADERA_APP_NAMESPACE::sel::select_isCTRL);
   }
 
   if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE) {
-    app->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::select_isCTRL);
+    //input->Render.Sel.flags.reset(CADERA_APP_NAMESPACE::sel::select_isCTRL);
   }
 }
 
@@ -92,10 +92,10 @@ void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
      return;
   }
 
-  auto app = reinterpret_cast<CADERA_APP_NAMESPACE::Cadera *>(
+  auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
     glfwGetWindowUserPointer(window));
 
-    app->Render.mouse.leftMouseHold();
+    input->mouse.leftMouseHold();
 
 }
 

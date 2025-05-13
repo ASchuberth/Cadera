@@ -39,6 +39,8 @@ public:
   command::CameraZoomCommand cameraZoomCmd;
   command::CameraPanCommand cameraPanCmd;
   command::CameraUnsetPanCommand cameraUnsetPanCmd;
+
+  command::Input input;
   //-------------
 
   CADRender Render;
