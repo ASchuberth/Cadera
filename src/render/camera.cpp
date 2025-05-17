@@ -63,7 +63,7 @@ void Camera::zoom(float yoffset) {
     }
   } else {
 
-    glm::vec3 normalPos = {0.0f, pos.y, pos.z};
+    // glm::vec3 normalPos = {0.0f, pos.y, pos.z};
 
     if (yoffset > 0) {
       pos -= 1.0f * glm::normalize(cameraVec);

@@ -323,13 +323,13 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
     ImGui::Text("Selection Flags");
     ImGui::Text("First Click: %d",
-                Render.Sel.flags.test(sel::select_first_click));
+                Sel.flags.test(sel::select_first_click));
     ImGui::Text("Single Point: %d",
-                Render.Sel.flags.test(sel::select_single_point));
+                Sel.flags.test(sel::select_single_point));
     ImGui::Text("Double Point: %d",
-                Render.Sel.flags.test(sel::select_double_point));
+                Sel.flags.test(sel::select_double_point));
     ImGui::Text("Multi Point: %d",
-                Render.Sel.flags.test(sel::select_multi_point));
+                Sel.flags.test(sel::select_multi_point));
 
     ImGui::NewLine();
 

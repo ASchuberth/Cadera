@@ -1,7 +1,7 @@
 #pragma once
 
 #include "camera.hpp"
-#include "callbacks.hpp"
+
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -181,8 +181,6 @@ public:
   ubo u;
 
   cam::Camera Cam;
-
-  sel::Selector Sel;
 
   sketch::SketchSolver SktSolver;
 
@@ -402,14 +400,6 @@ public:
 
   void onNotify(int id, const RenderItems& renderables) override;
 
-  void render(Model &M);
-
-  void renderSketchGrid(Model &S);
-
   void renderSketchNotes(Model &S);
-
-  void renderSketchPoints(Model &S);
-
-  void renderSketchPointTool();
 };
 } // namespace CADERA_APP_NAMESPACE

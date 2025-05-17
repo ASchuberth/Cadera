@@ -5,14 +5,14 @@ namespace CADERA_APP_NAMESPACE {
 
 void Cadera::initCallbacks() {
 
-  glfwSetWindowUserPointer(Render.mMainWindow, &this->input);
+  glfwSetWindowUserPointer(mRender.mMainWindow, &this->input);
 
-  glfwSetMouseButtonCallback(Render.mMainWindow, mouse_button_callback);
-  glfwSetScrollCallback(Render.mMainWindow, scroll_callback);
-  glfwSetFramebufferSizeCallback(Render.mMainWindow,
+  glfwSetMouseButtonCallback(mRender.mMainWindow, mouse_button_callback);
+  glfwSetScrollCallback(mRender.mMainWindow, scroll_callback);
+  glfwSetFramebufferSizeCallback(mRender.mMainWindow,
                                  framebuffer_resize_callback);
-  glfwSetCursorPosCallback(Render.mMainWindow, cursor_position_callback);
-  glfwSetKeyCallback(Render.mMainWindow, key_callback);
+  glfwSetCursorPosCallback(mRender.mMainWindow, cursor_position_callback);
+  glfwSetKeyCallback(mRender.mMainWindow, key_callback);
 }
 
 Cadera::Cadera() {
@@ -20,11 +20,11 @@ Cadera::Cadera() {
   // Sketch.setType(cad_sketch);
 }
 
-Cadera::~Cadera() { Render.destroy(); }
+Cadera::~Cadera() { mRender.destroy(); }
 
 void Cadera::SketchEvents() {
 
-  if (Sketch.flags.test(sketch::skt_tool_active)) {
+  if (mSketch.flags.test(sketch::skt_tool_active)) {
     input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
     input.mouse.setLeftMouseHoldSlot(nullptr);
     input.mouse.setLeftMouseReleaseSlot(nullptr);
@@ -38,49 +38,47 @@ void Cadera::SketchEvents() {
 
 void Cadera::run() {
 
-  Render.setBGColor(glm::vec4(0.3f, 0.3f, 0.3f, 0.1f));
+  mRender.setBGColor(glm::vec4(0.3f, 0.3f, 0.3f, 0.1f));
 
-  Render.Cam.flags.set(cam::ortho);
-  Render.setup();
+  mRender.Cam.flags.set(cam::ortho);
+  mRender.setup();
 
   initCallbacks();
 
-  Render.initImgui();
+  mRender.initImgui();
 
 
   //Keyboard and Mouse Commands
   // TODO: Determine better way to handle commands
-  sketchAddPointCmd.setSketch(&Sketch);
-  sketchAddPointCmd.setSelector(&Render.Sel);
-  sketchAddPointCmd.setCamera(&Render.Cam);
+  sketchAddPointCmd.setSketch(&mSketch);
+  sketchAddPointCmd.setSelector(&mSelector);
+  sketchAddPointCmd.setCamera(&mRender.Cam);
 
-  sketchMovePointCmd.setSketch(&Sketch);
-  sketchMovePointCmd.setSelector(&Render.Sel);
-  sketchMovePointCmd.setCamera(&Render.Cam);
+  sketchMovePointCmd.setSketch(&mSketch);
+  sketchMovePointCmd.setSelector(&mSelector);
+  sketchMovePointCmd.setCamera(&mRender.Cam);
 
-  sketchSelectPointCmd.setSketch(&Sketch);
-  sketchSelectPointCmd.setSelector(&Render.Sel);
-  sketchSelectPointCmd.setCamera(&Render.Cam);
+  sketchSelectPointCmd.setSketch(&mSketch);
+  sketchSelectPointCmd.setSelector(&mSelector);
+  sketchSelectPointCmd.setCamera(&mRender.Cam);
 
-  sketchDeselectPointCmd.setSketch(&Sketch);
-  sketchDeselectPointCmd.setSelector(&Render.Sel);
-  sketchDeselectPointCmd.setCamera(&Render.Cam);
+  sketchDeselectPointCmd.setSketch(&mSketch);
+  sketchDeselectPointCmd.setSelector(&mSelector);
+  sketchDeselectPointCmd.setCamera(&mRender.Cam);
 
-  sketchSelectSetCtrlCmd.setSelector(&Render.Sel);
-  sketchSelectUnsetCtrlCmd.setSelector(&Render.Sel);
+  sketchSelectSetCtrlCmd.setSelector(&mSelector);
+  sketchSelectUnsetCtrlCmd.setSelector(&mSelector);
 
-  sketchDisableToolsCmd.setSketch(&Sketch);
-  sketchDeleteCmd.setSketch(&Sketch);
-  sketchDeleteCmd.setSelector(&Render.Sel);
+  sketchDisableToolsCmd.setSketch(&mSketch);
+  sketchDeleteCmd.setSketch(&mSketch);
+  sketchDeleteCmd.setSelector(&mSelector);
 
 
-  cameraZoomCmd.setCamera(&Render.Cam);
+  cameraZoomCmd.setCamera(&mRender.Cam);
+  cameraPanCmd.setCamera(&mRender.Cam);
+  cameraUnsetPanCmd.setCamera(&mRender.Cam);
 
-  cameraPanCmd.setCamera(&Render.Cam);
-
-  cameraUnsetPanCmd.setCamera(&Render.Cam);
-
-  renderFramebufferResizeCmd.setRender(&Render);
+  renderFramebufferResizeCmd.setRender(&mRender);
 
 
   input.mouse.setScrollMouseSlot(&cameraZoomCmd);
@@ -105,17 +103,17 @@ void Cadera::run() {
  */
 void Cadera::mainLoop() {
 
-  while (!glfwWindowShouldClose(Render.mMainWindow)) {
+  while (!glfwWindowShouldClose(mRender.mMainWindow)) {
 
     glfwPollEvents();
 
-    gui::imguiRun(Sketch, Render, Render.Sel);
+    gui::imguiRun(mSketch, mRender, mSelector);
 
     SketchEvents();
 
-    Render.createCommandBuffers();
-    Render.drawFrame();
-    Render.runCamera();
+    mRender.createCommandBuffers();
+    mRender.drawFrame();
+    mRender.runCamera();
 
     glfwWaitEvents();
   }

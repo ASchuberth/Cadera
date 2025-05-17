@@ -1852,47 +1852,6 @@ void CADRender::onNotify(int id, const RenderItems& renderables) {
 
 }
 
-void CADRender::render(Model &M) {
-
-  // if (M.getType() == cad_sketch) {
-  //   renderSketchGrid(M);
-  //   renderSketchPoints(M);
-  //   renderSketchNotes(M);
-  // }
-
-
-
-  flags.reset(render_update_sketch);
-}
-
-void CADRender::renderSketchGrid(Model &S) {
-
-  std::vector<GridRotationAxis> axii;
-  std::vector<glm::vec3> line;
-
-  std::vector<Vertex> Vertices;
-
-  axii = S.getGridAxii();
-  line = S.getGridLine();
-
-  // Convert vector of glm::vec3 to vector of Vertex
-  for (const auto &point : line) {
-
-    Vertex V = {point, {0.0f, 0.0f, 0.0f}};
-    Vertices.push_back(V);
-  }
-
-  // if (!axii.empty() && !Vertices.empty()) {
-  //   updateBuffer(BufferName::sketch_grid_line, Vertices,
-  //                vk::BufferUsageFlagBits::eVertexBuffer);
-  //   updateBuffer(BufferName::sketch_grid_axii, axii,
-  //                vk::BufferUsageFlagBits::eVertexBuffer);
-  // } else {
-  //   deleteBuffer(BufferName::sketch_grid_line);
-  //   deleteBuffer(BufferName::sketch_grid_axii);
-  // }
-}
-
 void CADRender::renderSketchNotes(Model &S) {
 
   TxtRend.clearTexts();
@@ -1923,71 +1882,6 @@ void CADRender::renderSketchNotes(Model &S) {
   // }
 }
 
-void CADRender::renderSketchPoints(Model &S) {
 
-  std::vector<glm::vec3> pointColors;
-  std::vector<glm::vec3> pointVertices = S.getVertices(pointColors);
-  std::vector<glm::vec3> selPointVertices = Sel.getVertices();
-
-  std::vector<Vertex> Vertices;
-
-  if (!selPointVertices.empty()) {
-    for (const auto &v : selPointVertices) {
-
-      Vertices.push_back({v, {mRenderColors.selPointColor.x, mRenderColors.selPointColor.y, mRenderColors.selPointColor.z}});
-    }
-  }
-
-  if (!pointVertices.empty() && !pointColors.empty()) {
-    for (size_t i = 0; i < pointVertices.size(); i++) {
-
-      Vertices.push_back({pointVertices[i], {mRenderColors.sketchPointColor.x, 
-                                             mRenderColors.sketchPointColor.y, 
-                                             mRenderColors.sketchPointColor.z}});
-    }
-  }
-
-  // if (!Vertices.empty()) {
-  //   updateBuffer(BufferName::sketch_points, Vertices,
-  //                vk::BufferUsageFlagBits::eVertexBuffer);
-  // } else if (!mBuffers[BufferName::sketch_points].isEmpty) {
-  //   deleteBuffer(BufferName::sketch_points);
-  // }
-}
-
-void CADRender::renderSketchPointTool() {
-
-  glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
-  std::vector<glm::vec3> pointToolPoint;
-  std::vector<Vertex> Vertices;
-
-  glm::vec3 point;
-
-  if (Cam.flags.test(cam::ortho)) {
-    glm::vec3 up = glm::cross(Cam.cross, Cam.cameraVec);
-
-    glm::vec3 x = Cam.mouseRay.x * Cam.cross;
-    glm::vec3 y = Cam.mouseRay.y * up;
-
-    glm::vec3 posOnPlane = origin + (up + Cam.cross) * Cam.pos;
-    point = posOnPlane + x + y;
-  } else {
-    point = sel::calcPOnPlane(Cam.mouseRay, origin, Cam.cameraVec, Cam.pos);
-  }
-
-  pointToolPoint.push_back(point);
-
-  if (!pointToolPoint.empty()) {
-
-    Vertices.push_back({point, {1.0f, 1.0f, 1.0f}});
-  }
-
-  // if (!Vertices.empty()) {
-  //   updateBuffer(BufferName::sketch_point_tool, Vertices,
-  //                vk::BufferUsageFlagBits::eVertexBuffer);
-  // } else if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
-  //   deleteBuffer(BufferName::sketch_point_tool);
-  // }
-}
 
 } // namespace CADERA_APP_NAMESPACE

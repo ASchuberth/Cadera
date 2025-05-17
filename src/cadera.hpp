@@ -1,6 +1,7 @@
 #pragma once
 #include "ux/gui.hpp"
 #include "ux/command/rendercommands.hpp"
+#include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 
@@ -28,6 +29,11 @@ private:
 
   int modelIdCounter;
 
+  sel::Selector mSelector;
+  CADRender mRender;
+
+  sketch::Sketch mSketch;
+
 public:
   // TODO: Restructure
   command::SketchAddPointCommand sketchAddPointCmd;
@@ -49,8 +55,9 @@ public:
   command::Input input;
   //-------------
 
-  CADRender Render;
-  sketch::Sketch Sketch;
+  
+  
+  
 
   std::bitset<cadera_num_flags> flags;
 
