@@ -109,5 +109,12 @@ add_subdirectory(test)
 #=========================================
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-install(TARGETS CaderaApp RUNTIME DESTINATION bin)
+install(TARGETS CaderaApp 
+            RUNTIME 
+                DESTINATION bin)
+
+if(WIN32)
+    include(InstallRequiredSystemLibraries)
+endif(WIN32)
+
 include(CPack)
