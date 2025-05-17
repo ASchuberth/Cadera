@@ -4,13 +4,13 @@ namespace CADERA_APP_NAMESPACE {
 namespace txt {
 
 struct Text {
-  std::string text;
-  float textSize = 1.0f;
-  glm::vec3 textColor;
-  glm::vec3 cursorPos;
-  glm::vec3 cursorDirX;
-  glm::vec3 cursorDirY;
-  glm::vec2 offset = {0.0f, 0.0f};
+  std::string text{};
+  float textSize{1.0f};
+  glm::vec3 textColor{};
+  glm::vec3 cursorPos{};
+  glm::vec3 cursorDirX{};
+  glm::vec3 cursorDirY{};
+  glm::vec2 offset{};
 };
 
 struct Vertex {
@@ -39,7 +39,7 @@ public:
 
   void loadFont(std::string filePath);
 
-  void setCursorPos(glm::vec3 pos);
+  
   void setPlane(glm::vec3 xDir, glm::vec3 yDir);
 
   void addText(Text T);
@@ -63,6 +63,8 @@ private:
 
   int numChars;
   int textCounter;
+  
+  void setCursorPos(glm::vec3 pos);
 };
 } // namespace txt
 } // namespace CADERA_APP_NAMESPACE
