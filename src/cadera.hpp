@@ -1,6 +1,5 @@
 #pragma once
 #include "ux/gui.hpp"
-#include "ux/command/rendercommands.hpp"
 #include "callbacks.hpp"
 
 namespace CADERA_APP_NAMESPACE {

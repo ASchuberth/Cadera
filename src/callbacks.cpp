@@ -93,10 +93,14 @@ void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
      return;
   }
 
+  ImGuiIO &io = ImGui::GetIO();
+  
   auto input = reinterpret_cast<CADERA_APP_NAMESPACE::command::Input *>(
     glfwGetWindowUserPointer(window));
 
+  if (!io.WantCaptureMouse) {
     input->mouse.leftMouseHold();
+  }
 
 }
 

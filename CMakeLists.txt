@@ -7,7 +7,7 @@ project(Cadera VERSION 0.1.2)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra") 
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra") 
 
 
 enable_testing()
@@ -16,7 +16,6 @@ enable_testing()
 # Targets
 #=========================================
 add_executable(CaderaApp    src/cadera.cpp
-                            src/selection.cpp
                             src/callbacks.cpp
                             src/main.cpp  
 )
@@ -51,8 +50,6 @@ add_subdirectory(src/ux)
 # Libraries
 #=========================================
 
-
-
 find_package(Vulkan REQUIRED)
 target_link_libraries(pch_interface INTERFACE Vulkan::Vulkan)
 
@@ -68,8 +65,8 @@ target_link_libraries(pch_interface INTERFACE glm::glm)
 find_package(Stb REQUIRED)
 target_include_directories(pch_interface INTERFACE ${Stb_INCLUDE_DIR})
 
-target_link_libraries(CaderaApp PRIVATE sketchlib)
-target_link_libraries(CaderaApp PRIVATE textlib)
+# Cadera Project Libraries
+target_link_libraries(CaderaApp PRIVATE renderlib)
 
 # Precompiled Headers
 target_link_libraries(CaderaApp PUBLIC pch_interface)
