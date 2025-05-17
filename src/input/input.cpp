@@ -15,7 +15,13 @@ void Input::setFramebufferResizeSlot(Command* framebufferResizeCmd) {
 
 void Input::framebufferResized()
 {
-    mFramebufferResizeSlot->execute();
+
+    if (mFramebufferResizeSlot) {
+        mFramebufferResizeSlot->execute();
+    }
+    else {
+        throw std::runtime_error("Input Framebuffer Resize Slot not valid!\n");
+    }
 }
 
 

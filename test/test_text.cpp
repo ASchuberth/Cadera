@@ -22,7 +22,7 @@ protected:
 
 };
 
-// @brief Test if id of Point without an input id is -1
+// @brief
 TEST_F(TextRenderTest, clearTexts) { 
 
     mTextRender.clearTexts();
@@ -44,6 +44,16 @@ TEST_F(TextRenderTest, generateQuads) {
     
     EXPECT_EQ(vertices.size(), 4);
 
+    cad::txt::Text T;
+
+    T.text = "b";
+
+    mTextRender.addText(T);
+
+   vertices = mTextRender.generateQuads(glm::vec3{});
+   
+   EXPECT_EQ(vertices.size(), 8);
+
 }
 
 TEST_F(TextRenderTest, generateIndices) { 
@@ -53,6 +63,16 @@ TEST_F(TextRenderTest, generateIndices) {
     std::vector<uint32_t> indices{mTextRender.generateIndices()};
     
     EXPECT_EQ(indices.size(), 6);
+
+    cad::txt::Text T;
+
+    T.text = "b";
+
+    mTextRender.addText(T);
+
+    vertices = mTextRender.generateQuads(glm::vec3{});
+    indices = mTextRender.generateIndices();
+    EXPECT_EQ(indices.size(), 12);
 
 }
 

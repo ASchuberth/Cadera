@@ -19,10 +19,8 @@ add_library(sketchlib ${CMAKE_CURRENT_LIST_DIR}/relation.cpp
 target_include_directories(sketchlib PRIVATE ${CMAKE_CURRENT_LIST_DIR}/)
 target_include_directories(sketchlib PRIVATE ${CMAKE_SOURCE_DIR}/src/text/)
 
-target_link_libraries(sketchlib PUBLIC pch_interface)
 
-
-target_link_libraries(sketchlib PRIVATE textlib)
+target_link_libraries(sketchlib PUBLIC textlib)
 
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(sketchlib PRIVATE glm::glm)

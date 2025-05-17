@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ux/command/input.hpp"
+#include "input/input.hpp"
 
 namespace CADERA_APP_NAMESPACE {
 namespace gui {

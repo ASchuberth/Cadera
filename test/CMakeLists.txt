@@ -27,7 +27,15 @@ find_package(GTest REQUIRED)
 # target_include_directories(Test_Cadera_Camera PRIVATE ${GTEST_INCLUDE_DIRS} )                               
 # target_link_libraries(Test_Cadera_Camera PRIVATE ${GTEST_BOTH_LIBRARIES})
 
+# Test_Input
+add_executable(Test_Cadera_Input test_input.cpp)
+target_include_directories(Test_Cadera_Input PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
+
+target_link_libraries(Test_Cadera_Input PRIVATE inputlib)
+
+target_include_directories(Test_Cadera_Input PRIVATE ${GTEST_INCLUDE_DIRS} )                               
+target_link_libraries(Test_Cadera_Input PRIVATE ${GTEST_BOTH_LIBRARIES})
 
 # Test_Sketch
 add_executable(Test_Cadera_Sketch test_sketch.cpp) 
@@ -54,5 +62,6 @@ target_link_libraries(Test_Cadera_Text PRIVATE ${GTEST_BOTH_LIBRARIES})
 
 
 include(GoogleTest)
+gtest_discover_tests(Test_Cadera_Input)
 gtest_discover_tests(Test_Cadera_Sketch)
 gtest_discover_tests(Test_Cadera_Text)

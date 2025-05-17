@@ -7,4 +7,3 @@ add_library(renderlib ${CMAKE_CURRENT_LIST_DIR}/cadrender.cpp
 
 
 target_link_libraries(renderlib PUBLIC sketchlib)
-target_link_libraries(renderlib PUBLIC textlib)

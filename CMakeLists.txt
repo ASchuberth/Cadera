@@ -40,6 +40,7 @@ target_include_directories(pch_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/s
 
 target_include_directories(CaderaApp PRIVATE src/)
 
+add_subdirectory(src/input)
 add_subdirectory(src/render)
 add_subdirectory(src/sketch)
 add_subdirectory(src/text)
@@ -66,7 +67,7 @@ find_package(Stb REQUIRED)
 target_include_directories(pch_interface INTERFACE ${Stb_INCLUDE_DIR})
 
 # Cadera Project Libraries
-target_link_libraries(CaderaApp PRIVATE renderlib)
+target_link_libraries(CaderaApp PRIVATE inputlib)
 
 # Precompiled Headers
 target_link_libraries(CaderaApp PUBLIC pch_interface)
