@@ -26,8 +26,7 @@ public:
   std::vector<glm::vec3> points;
   std::vector<GridRotationAxis> gridAxii;
   std::vector<glm::vec3> gridLine;
-  // std::vector<glm::vec3> Points;
-  // std::vector<glm::vec3> Points;
+  std::vector<txt::Text> texts;
 };
 
 class Observer {

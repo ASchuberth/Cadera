@@ -1578,17 +1578,17 @@ void CADRender::createCommandBuffers() {
     }
 
     // Text
-    // if (!mBuffers[BufferName::text_vertices].isEmpty) {
-    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-    //                                   mTextPipeline);
-    //   mCommandBuffers[i].bindVertexBuffers(
-    //       0, 1, &mBuffers[BufferName::text_vertices].mBuffer, offsets);
-    //   mCommandBuffers[i].bindIndexBuffer(
-    //       mBuffers[BufferName::text_indices].mBuffer, 0,
-    //       vk::IndexType::eUint32);
-    //   mCommandBuffers[i].drawIndexed(
-    //       mBuffers[BufferName::text_indices].mPointSize, 1, 0, 0, 0);
-    // }
+    if (!mBuffers[3].isEmpty) {
+      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+                                      mTextPipeline);
+      mCommandBuffers[i].bindVertexBuffers(
+          0, 1, &mBuffers[3].mBuffer, offsets);
+      mCommandBuffers[i].bindIndexBuffer(
+          mBuffers[4].mBuffer, 0,
+          vk::IndexType::eUint32);
+      mCommandBuffers[i].drawIndexed(
+          mBuffers[4].mPointSize, 1, 0, 0, 0);
+    }
 
     ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
 
@@ -1825,8 +1825,6 @@ void CADRender::onNotify(int id, const RenderItems& renderables) {
   }
 
   // Create Grid buffers
-
-
   std::vector<Vertex> gridVertices;
   
   std::vector<GridRotationAxis> axii;
@@ -1849,6 +1847,26 @@ void CADRender::onNotify(int id, const RenderItems& renderables) {
     deleteBuffer(2);
   }
 
+
+  // Create Text buffers
+
+  TxtRend.clearTexts();
+
+  
+  TxtRend.addText(renderables.texts);
+
+  std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
+  std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
+
+  if (!txtVertices.empty()) {
+    updateBuffer(3, txtVertices,
+                 vk::BufferUsageFlagBits::eVertexBuffer);
+    updateBuffer(4, txtIndices,
+                 vk::BufferUsageFlagBits::eIndexBuffer);
+  } else if (!mBuffers[3].isEmpty) {
+    deleteBuffer(3);
+    deleteBuffer(4);
+  }
 
 }
 

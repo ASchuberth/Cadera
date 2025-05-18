@@ -229,11 +229,19 @@ void Sketch::notify() {
   mRenderItems.gridAxii = mGrid.createGridInstanceAxii();
   mRenderItems.gridLine = mGrid.line;
 
+  
+
+  mRenderItems.texts.clear();
+
+  for (const auto& note : Notes) {
+
+    mRenderItems.texts.push_back(note.second);
+
+  }
+  
   for (const auto& observer : observers) {
     observer->onNotify(getId(), mRenderItems);
   }
-
-
 
 }
 
