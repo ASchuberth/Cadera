@@ -57,6 +57,8 @@ void TextRender::loadFont(std::string filePath) {
 
     Characters[(int)values[0]] = C;
   }
+
+  fontAtlasCsv.close();
 }
 
 void TextRender::setCursorPos(glm::vec3 pos) { mCursorPos = pos; }

@@ -9,6 +9,8 @@ const int MAX_FRAMES_IN_FLIGHT = 2;
 
 namespace CADERA_APP_NAMESPACE {
 
+CADRender::CADRender() {}
+
 void CADRender::setup() {
 
   // GLFW
@@ -17,13 +19,16 @@ void CADRender::setup() {
   // mInstance
   createInstance();
   createSurface();
-
+  
   // Physical mDevice
   pickPhysicalDevice();
-
+  
   // Logical mDevice
   createLogicalDevice();
 
+  // Debug
+  setupDebugUtils();
+  
   // Swapchain
   createSwapChain();
   createImageViews();
@@ -63,12 +68,14 @@ void CADRender::createWindow() {
   glfwSetInputMode(mMainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-void CADRender::createInstance() {
+vk::Result CADRender::createInstance() {
 
   vkGetInstanceProcAddr =
       dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
 
+  
   VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+  // VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
   vk::InstanceCreateInfo createInfo;
 
@@ -92,7 +99,8 @@ void CADRender::createInstance() {
 
   VULKAN_HPP_DEFAULT_DISPATCHER.init(mInstance);
 
-  
+  return result;
+
 }
 
 void CADRender::createSurface() {
@@ -101,6 +109,83 @@ void CADRender::createSurface() {
                               reinterpret_cast<VkSurfaceKHR *>(&mSurface)) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create window surface!");
+  }
+}
+
+void CADRender::setupDebugUtils() {
+
+  // Check if the debug utils extension is present (which is the case if run from a graphics debugger)
+  bool extensionPresent = false;
+  uint32_t extensionCount;
+  vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+  std::vector<VkExtensionProperties> extensions(extensionCount) ;//= vk::enumerateInstanceExtensionProperties();
+  vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+  for (auto& extension : extensions) {
+    if (strcmp(extension.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0) {
+      extensionPresent = true;
+      break;
+    }
+  }
+
+  if (extensionPresent) {
+    // As with an other extension, function pointers need to be manually loaded
+    vkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(mInstance, "vkCreateDebugUtilsMessengerEXT"));
+    vkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(mInstance, "vkDestroyDebugUtilsMessengerEXT"));
+    vkCmdBeginDebugUtilsLabelEXT = reinterpret_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkCmdBeginDebugUtilsLabelEXT"));
+    vkCmdInsertDebugUtilsLabelEXT = reinterpret_cast<PFN_vkCmdInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkCmdInsertDebugUtilsLabelEXT"));
+    vkCmdEndDebugUtilsLabelEXT = reinterpret_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkCmdEndDebugUtilsLabelEXT"));
+    vkQueueBeginDebugUtilsLabelEXT = reinterpret_cast<PFN_vkQueueBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkQueueBeginDebugUtilsLabelEXT"));
+    vkQueueInsertDebugUtilsLabelEXT = reinterpret_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkQueueInsertDebugUtilsLabelEXT"));
+    vkQueueEndDebugUtilsLabelEXT = reinterpret_cast<PFN_vkQueueEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(mInstance, "vkQueueEndDebugUtilsLabelEXT"));
+    vkSetDebugUtilsObjectNameEXT = reinterpret_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(mInstance, "vkSetDebugUtilsObjectNameEXT"));
+    pfnDebugMarkerSetObjectTag = (PFN_vkDebugMarkerSetObjectTagEXT)vkGetDeviceProcAddr(mDevice, "vkDebugMarkerSetObjectTagEXT");
+
+    // Set flag if at least one function pointer is present
+    debugUtilsSupported = (vkCreateDebugUtilsMessengerEXT != VK_NULL_HANDLE);
+  }
+  else {
+    std::cout << "Warning: " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " not present, debug utils are disabled.";
+    std::cout << "Try running the sample from inside a Vulkan graphics debugger (e.g. RenderDoc)" << std::endl;
+  }
+}
+
+void CADRender::cmd_begin_label(vk::CommandBuffer cmdBuffer, const char* name, glm::vec4 color ) {
+
+  if (debugUtilsSupported && vkCmdBeginDebugUtilsLabelEXT) {
+    
+    float col[4] = {color.x, color.y, color.z, color.w};
+    VkDebugUtilsLabelEXT labelInfo {
+      VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+      nullptr,
+      name
+    };
+
+    std::copy(std::begin(col), std::end(col), std::begin(labelInfo.color));
+    // memcpy(labelInfo.color, &color[0], sizeof(float)*4);
+    vkCmdBeginDebugUtilsLabelEXT(cmdBuffer, &labelInfo);
+
+  }
+}
+
+void CADRender::cmd_end_label(vk::CommandBuffer cmdBuffer) {
+
+  if (debugUtilsSupported && vkCmdEndDebugUtilsLabelEXT)
+    vkCmdEndDebugUtilsLabelEXT(cmdBuffer);
+}
+
+void CADRender::setObjectName(VkDevice device, uint64_t object, VkDebugReportObjectTypeEXT objectType, const char *name) {
+  // Check for valid function pointer (may not be present if not running in a debugging application)
+  if (debugUtilsSupported && pfnDebugMarkerSetObjectTag) {
+      VkDebugMarkerObjectTagInfoEXT tagInfo = {};
+      tagInfo.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT;
+      tagInfo.objectType = objectType;
+      tagInfo.object = object;
+      tagInfo.tagName = 0;
+      tagInfo.pTag = name;
+      tagInfo.tagSize = strlen(name);
+
+      //tagInfo.pObjectName = name;
+      pfnDebugMarkerSetObjectTag(device, &tagInfo);
   }
 }
 
@@ -1126,7 +1211,7 @@ void CADRender::createSketchPointPipeline() {
   PipelineCreateInfo.basePipelineIndex = -1;
   PipelineCreateInfo.layout = mPipelineLayout;
 
-  Pipelines.SketchPoint =
+  pipelines.SketchPoint =
       mDevice
           .createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr)
           .value;
@@ -1227,13 +1312,16 @@ void CADRender::createSketchLinePipeline() {
   PipelineCreateInfo.basePipelineIndex = -1;
   PipelineCreateInfo.layout = mPipelineLayout;
 
-  Pipelines.SketchLine =
+  pipelines.SketchLine =
       mDevice
           .createGraphicsPipeline(mPipelineCache, PipelineCreateInfo, nullptr)
           .value;
 
   mDevice.destroyShaderModule(vertShaderModule, nullptr);
   mDevice.destroyShaderModule(fragShaderModule, nullptr);
+
+  // setObjectName(mDevice, VK_OBJECT_TYPE_PIPELINE, (uint64_t)0, "Sketch Line pipeline");
+  
 }
 
 void CADRender::createSketchGridPipeline() {
@@ -1351,7 +1439,7 @@ void CADRender::createSketchGridPipeline() {
   PipelineCreateInfo.basePipelineIndex = -1;
   PipelineCreateInfo.layout = mPipelineLayout;
 
-  Pipelines.SketchGrid =
+  pipelines.SketchGrid =
       mDevice.createGraphicsPipeline({}, PipelineCreateInfo, nullptr).value;
 
   mDevice.destroyShaderModule(vertShaderModule, nullptr);
@@ -1526,6 +1614,8 @@ void CADRender::createCommandBuffers() {
         mRenderPass, mFramebuffers[i], renderArea,
         static_cast<uint32_t>(clearValues.size()), clearValues.data());
 
+    cmd_begin_label(mCommandBuffers[i], "Model Render", {0.5f, 0.76f, 0.34f, 1.0f});
+
     mCommandBuffers[i].beginRenderPass(renderPassInfo,
                                        vk::SubpassContents::eInline);
 
@@ -1538,27 +1628,28 @@ void CADRender::createCommandBuffers() {
     // Selection Points
     // if (!mBuffers[BufferName::selection_points].isEmpty) {
     //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-    //                                   Pipelines.SketchPoint);
+    //                                   pipelines.SketchPoint);
     //   mCommandBuffers[i].bindVertexBuffers(
     //       0, 1, &mBuffers[BufferName::selection_points].mBuffer, offsets);
     //   mCommandBuffers[i].draw(mBuffers[BufferName::selection_points].mPointSize,
     //                           1, 0, 0);
     // }
 
+    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Points", {1.0f, 1.0f, 1.0f, 1.0f});
     // Sketch Points
     if (!mBuffers[0].isEmpty) {
       mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      Pipelines.SketchPoint);
+                                      pipelines.SketchPoint);
       mCommandBuffers[i].bindVertexBuffers(
           0, 1, &mBuffers[0].mBuffer, offsets);
       mCommandBuffers[i].draw(
           mBuffers[0].mPointSize + 2, 1, 0, 0);
     }
-
+    cmd_end_label(mCommandBuffers[i]);
     // Sketch Tools
     // if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
     //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-    //                                   Pipelines.SketchPoint);
+    //                                   pipelines.SketchPoint);
     //   mCommandBuffers[i].bindVertexBuffers(
     //       0, 1, &mBuffers[BufferName::sketch_point_tool].mBuffer, offsets);
     //   mCommandBuffers[i].draw(
@@ -1566,9 +1657,10 @@ void CADRender::createCommandBuffers() {
     // }
 
     // Grid
+    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Grid", {0.0f, 0.0f, 0.0f, 1.0f});
     if (!mBuffers[1].isEmpty) {
       mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      Pipelines.SketchGrid);
+                                      pipelines.SketchGrid);
       mCommandBuffers[i].bindVertexBuffers(
           0, 1, &mBuffers[1].mBuffer, offsets);
       mCommandBuffers[i].bindVertexBuffers(
@@ -1576,8 +1668,10 @@ void CADRender::createCommandBuffers() {
       mCommandBuffers[i].draw(
           2, mBuffers[2].mPointSize, 0, 0);
     }
+    cmd_end_label(mCommandBuffers[i]);
 
     // Text
+    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Text", {1.0f, 0.0f, 0.0f, 1.0f});
     if (!mBuffers[3].isEmpty) {
       mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
                                       mTextPipeline);
@@ -1589,10 +1683,16 @@ void CADRender::createCommandBuffers() {
       mCommandBuffers[i].drawIndexed(
           mBuffers[4].mPointSize, 1, 0, 0, 0);
     }
+    cmd_end_label(mCommandBuffers[i]);
 
+    cmd_begin_label(mCommandBuffers[i], "Draw ImGui", {0.0f, 1.0f, 0.0f, 1.0f});
     ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
+    cmd_end_label(mCommandBuffers[i]);
 
     mCommandBuffers[i].endRenderPass();
+
+
+    cmd_end_label(mCommandBuffers[i]);
 
     mCommandBuffers[i].end();
   }
@@ -1692,9 +1792,9 @@ void CADRender::drawFrame() {
 
 void CADRender::destroyPipelines() {
 
-  mDevice.destroyPipeline(Pipelines.SketchPoint);
-  mDevice.destroyPipeline(Pipelines.SketchLine);
-  mDevice.destroyPipeline(Pipelines.SketchGrid);
+  mDevice.destroyPipeline(pipelines.SketchPoint);
+  mDevice.destroyPipeline(pipelines.SketchLine);
+  mDevice.destroyPipeline(pipelines.SketchGrid);
   mDevice.destroyPipeline(mTextPipeline);
 }
 
@@ -1773,10 +1873,10 @@ void CADRender::cleanup() {
 
   mDevice.destroySwapchainKHR(mSwapchain, nullptr);
 
-  vkDestroyDevice(mDevice, nullptr);
-  vkDestroySurfaceKHR(mInstance, mImguiSurface, nullptr);
-  vkDestroySurfaceKHR(mInstance, mSurface, nullptr);
-  vkDestroyInstance(mInstance, nullptr);
+  mDevice.destroy();
+  mInstance.destroySurfaceKHR(mImguiSurface);
+  mInstance.destroySurfaceKHR(mSurface);
+  mInstance.destroy();
 
   glfwTerminate();
 }
@@ -1820,6 +1920,7 @@ void CADRender::onNotify(int id, const RenderItems& renderables) {
   if (!pointVertices.empty()) {
     updateBuffer(id, pointVertices,
                  vk::BufferUsageFlagBits::eVertexBuffer);
+    setObjectName(mDevice, (uint64_t)(VkBuffer)mBuffers[id].mBuffer, VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, "Sketch Points Buffer");
   } else if (!mBuffers[id].isEmpty) {
     deleteBuffer(id);
   }

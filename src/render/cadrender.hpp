@@ -61,6 +61,13 @@ struct RendorColors {
   glm::vec4 sketchGridColor = {0.5f, 0.5f, 0.5f, 1.0f};
 };
 
+struct Pipelines {
+
+  vk::Pipeline SketchPoint;
+  vk::Pipeline SketchLine;
+  vk::Pipeline SketchGrid;
+
+}; 
 
 class CADRender : public Observer{
 
@@ -74,27 +81,33 @@ private:
   vk::DescriptorPool mGuiDescriptorPool;
   VkAllocationCallbacks *mGuiAllocator;
 
-  PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-  PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
-  PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = 0;
-  PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTag = 0;
-  PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectName = 0;
-  PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBegin = 0;
-  PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEnd = 0;
-  PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsert = 0;
+  PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr{nullptr};
+  PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr{nullptr};
 
-  struct {
-
-    vk::Pipeline SketchPoint;
-    vk::Pipeline SketchLine;
-    vk::Pipeline SketchGrid;
-
-  } Pipelines;
   
-  
+
+   
+  Pipelines pipelines;
   
 
 public:
+
+    CADRender();
+  
+  // PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties;
+  
+  PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT{nullptr};
+  PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT{ nullptr };
+  PFN_vkCmdBeginDebugUtilsLabelEXT vkCmdBeginDebugUtilsLabelEXT{ nullptr };
+	PFN_vkCmdInsertDebugUtilsLabelEXT vkCmdInsertDebugUtilsLabelEXT{ nullptr };
+  PFN_vkCmdEndDebugUtilsLabelEXT vkCmdEndDebugUtilsLabelEXT{ nullptr };
+	PFN_vkQueueBeginDebugUtilsLabelEXT vkQueueBeginDebugUtilsLabelEXT{ nullptr };
+	PFN_vkQueueInsertDebugUtilsLabelEXT vkQueueInsertDebugUtilsLabelEXT{ nullptr };
+	PFN_vkQueueEndDebugUtilsLabelEXT vkQueueEndDebugUtilsLabelEXT{ nullptr };
+	PFN_vkSetDebugUtilsObjectNameEXT vkSetDebugUtilsObjectNameEXT{ nullptr };
+  PFN_vkDebugMarkerSetObjectTagEXT pfnDebugMarkerSetObjectTag = VK_NULL_HANDLE;
+
+
 
   // GLFW
   GLFWwindow *mMainWindow;
@@ -109,12 +122,16 @@ public:
 
   // mInstance
   vk::detail::DynamicLoader dl;
+  vk::detail::DispatchLoaderDynamic dld;
   vk::detail::DispatchLoaderDynamic dldy;
   VkDebugUtilsMessengerEXT mDebug;
   vk::ApplicationInfo mAppInfo;
   bool enableValidationLayers;
   vk::DebugUtilsMessengerEXT mCallback;
   vk::SurfaceKHR mSurface;
+
+  // Debugging
+  bool debugUtilsSupported = false;
 
   // Physical mDevice
   QueueFamilyIndices mIndices;
@@ -207,9 +224,29 @@ public:
 
   // Instance
 
-  void createInstance();
+  vk::Result createInstance();
 
   void createSurface();
+
+  // Debug
+
+  void setupDebugUtils();
+
+  // void cmd_begin_label(vk::CommandBuffer &cmdBuffer, const char *name,
+  //                      glm::vec4 color);
+
+  void cmd_begin_label(vk::CommandBuffer cmdBuffer, const char *name,
+                       glm::vec4 color);
+
+  void cmd_end_label(vk::CommandBuffer cmdBuffer);
+
+  // void cmd_begin_label(vk::CommandBuffer cmdBuffer, const char *name,
+                      //  float color[4]);
+
+  // void cmd_end_label(vk::CommandBuffer &cmdBuffer);
+
+  void setObjectName(VkDevice device, uint64_t object,
+                     VkDebugReportObjectTypeEXT objectType, const char *name);
 
   // Physical Device
 

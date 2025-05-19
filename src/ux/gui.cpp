@@ -232,6 +232,12 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
   if (ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_None)) {
 
+    if (Render.debugUtilsSupported)
+      ImGui::Text("Debug Utils Supported!");
+    
+    if (Render.vkSetDebugUtilsObjectNameEXT)
+      ImGui::Text("vkSetDebugUtilsObjectNameEXT");
+
     // Copy of selection point color to check for changes
     glm::vec4 selPointColor = Render.mRenderColors.selPointColor;
 
