@@ -32,7 +32,7 @@ public:
   virtual std::vector<glm::vec3> getVertices(std::vector<glm::vec3> &colors);
 
 protected:
-  RenderItems mRenderItems;
+  RenderData mRenderItems;
 
 private:
   int mId;

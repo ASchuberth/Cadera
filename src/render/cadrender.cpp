@@ -9,6 +9,8 @@ const int MAX_FRAMES_IN_FLIGHT = 2;
 
 namespace CADERA_APP_NAMESPACE {
 
+
+
 CADRender::CADRender() {}
 
 void CADRender::setup() {
@@ -1625,65 +1627,65 @@ void CADRender::createCommandBuffers() {
                                           mPipelineLayout, 0, 1,
                                           &mDescriptorSets[i], 0, nullptr);
 
-    // Selection Points
-    // if (!mBuffers[BufferName::selection_points].isEmpty) {
-    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-    //                                   pipelines.SketchPoint);
-    //   mCommandBuffers[i].bindVertexBuffers(
-    //       0, 1, &mBuffers[BufferName::selection_points].mBuffer, offsets);
-    //   mCommandBuffers[i].draw(mBuffers[BufferName::selection_points].mPointSize,
-    //                           1, 0, 0);
-    // }
+    
 
-    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Points", {1.0f, 1.0f, 1.0f, 1.0f});
-    // Sketch Points
-    if (!mBuffers[0].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      pipelines.SketchPoint);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[0].mBuffer, offsets);
-      mCommandBuffers[i].draw(
-          mBuffers[0].mPointSize + 2, 1, 0, 0);
-    }
-    cmd_end_label(mCommandBuffers[i]);
-    // Sketch Tools
-    // if (!mBuffers[BufferName::sketch_point_tool].isEmpty) {
-    //   mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-    //                                   pipelines.SketchPoint);
-    //   mCommandBuffers[i].bindVertexBuffers(
-    //       0, 1, &mBuffers[BufferName::sketch_point_tool].mBuffer, offsets);
-    //   mCommandBuffers[i].draw(
-    //       mBuffers[BufferName::sketch_point_tool].mPointSize, 1, 0, 0);
-    // }
+    for (const auto& rData : mRenderData) {
 
-    // Grid
-    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Grid", {0.0f, 0.0f, 0.0f, 1.0f});
-    if (!mBuffers[1].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      pipelines.SketchGrid);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[1].mBuffer, offsets);
-      mCommandBuffers[i].bindVertexBuffers(
-          1, 1, &mBuffers[2].mBuffer, offsets);
-      mCommandBuffers[i].draw(
-          2, mBuffers[2].mPointSize, 0, 0);
-    }
-    cmd_end_label(mCommandBuffers[i]);
+      int renderId = rData.first;
 
-    // Text
-    cmd_begin_label(mCommandBuffers[i], "Draw Sketch Text", {1.0f, 0.0f, 0.0f, 1.0f});
-    if (!mBuffers[3].isEmpty) {
-      mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                      mTextPipeline);
-      mCommandBuffers[i].bindVertexBuffers(
-          0, 1, &mBuffers[3].mBuffer, offsets);
-      mCommandBuffers[i].bindIndexBuffer(
-          mBuffers[4].mBuffer, 0,
-          vk::IndexType::eUint32);
-      mCommandBuffers[i].drawIndexed(
-          mBuffers[4].mPointSize, 1, 0, 0, 0);
+      if (renderId == 0) {
+        cmd_begin_label(mCommandBuffers[i], "Selection Points", {1.0f, 1.0f, 1.0f, 1.0f});
+          if (!mBuffers[0].isEmpty) {
+            mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+                                            pipelines.SketchPoint);
+            mCommandBuffers[i].bindVertexBuffers(
+                0, 1, &mBuffers[0].mBuffer, offsets);
+            mCommandBuffers[i].draw(
+                mBuffers[0].mPointSize, 1, 0, 0);
+           }
+
+        cmd_end_label(mCommandBuffers[i]);
+
+        continue;
+      }
+
+      // Sketch Points
+      if (!mBuffers[renderId * number_of_buffers_per_model].isEmpty) {
+        mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+                                        pipelines.SketchPoint);
+        mCommandBuffers[i].bindVertexBuffers(
+            0, 1, &mBuffers[renderId * number_of_buffers_per_model].mBuffer, offsets);
+        mCommandBuffers[i].draw(
+            mBuffers[renderId * number_of_buffers_per_model].mPointSize + 2, 1, 0, 0);
+      }
+
+      // Sketch Grid
+      if (!mBuffers[renderId * number_of_buffers_per_model + 1].isEmpty) {
+        mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+                                        pipelines.SketchGrid);
+        mCommandBuffers[i].bindVertexBuffers(
+            0, 1, &mBuffers[renderId * number_of_buffers_per_model + 1].mBuffer, offsets);
+        mCommandBuffers[i].bindVertexBuffers(
+            1, 1, &mBuffers[renderId * number_of_buffers_per_model + 2].mBuffer, offsets);
+        mCommandBuffers[i].draw(
+            2, mBuffers[renderId * number_of_buffers_per_model + 2].mPointSize, 0, 0);
+      }
+
+      // Text
+    
+      if (!mBuffers[renderId * number_of_buffers_per_model + 3].isEmpty) {
+        mCommandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics,
+                                        mTextPipeline);
+        mCommandBuffers[i].bindVertexBuffers(
+            0, 1, &mBuffers[renderId * number_of_buffers_per_model + 3].mBuffer, offsets);
+        mCommandBuffers[i].bindIndexBuffer(
+            mBuffers[renderId * number_of_buffers_per_model + 4].mBuffer, 0,
+            vk::IndexType::eUint32);
+        mCommandBuffers[i].drawIndexed(
+            mBuffers[renderId * number_of_buffers_per_model + 4].mPointSize, 1, 0, 0, 0);
+      }
+
     }
-    cmd_end_label(mCommandBuffers[i]);
 
     cmd_begin_label(mCommandBuffers[i], "Draw ImGui", {0.0f, 1.0f, 0.0f, 1.0f});
     ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), mCommandBuffers[i]);
@@ -1905,102 +1907,106 @@ void CADRender::runCamera() {
   Cam.update();
 }
 
-void CADRender::onNotify(int id, const RenderItems& renderables) {
+void CADRender::render() {
 
-  // Create Sketch Points buffers
-  std::vector<Vertex> pointVertices;
+  for (const auto& rData : mRenderData) {
 
-  for (const auto& point : renderables.points) {
-    pointVertices.push_back({point, {mRenderColors.sketchPointColor.x, 
-                                mRenderColors.sketchPointColor.y, 
-                                mRenderColors.sketchPointColor.z}});
-  }
+    int renderId = rData.first;
 
-  
-  if (!pointVertices.empty()) {
-    updateBuffer(id, pointVertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-    setObjectName(mDevice, (uint64_t)(VkBuffer)mBuffers[id].mBuffer, VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, "Sketch Points Buffer");
-  } else if (!mBuffers[id].isEmpty) {
-    deleteBuffer(id);
-  }
+    if (renderId == 0) {
 
-  // Create Grid buffers
-  std::vector<Vertex> gridVertices;
-  
-  std::vector<GridRotationAxis> axii;
-  std::vector<glm::vec3> line;
-  
-  // Convert gridLine to vector of Vertex
-  for (const auto& point : renderables.gridLine) {
-    gridVertices.push_back({point, mRenderColors.sketchGridColor});
-  }
+      std::vector<Vertex> pointVertices;
 
-  axii = renderables.gridAxii;
+      for (const auto& point : rData.second.points) {
+        pointVertices.push_back({point, {mRenderColors.selPointColor.x, 
+                                    mRenderColors.selPointColor.y, 
+                                    mRenderColors.selPointColor.z}});
+      }
 
-  if (!axii.empty() && !gridVertices.empty()) {
-    updateBuffer(1, gridVertices,
+      
+      if (!pointVertices.empty()) {
+        updateBuffer(0, pointVertices,
+                    vk::BufferUsageFlagBits::eVertexBuffer);
+      } else if (!mBuffers[0].isEmpty) {
+        deleteBuffer(0);
+      }
+
+      continue;
+    }
+
+
+    // Create Sketch Points buffers
+    std::vector<Vertex> pointVertices;
+
+    for (const auto& point : rData.second.points) {
+      pointVertices.push_back({point, {mRenderColors.sketchPointColor.x, 
+                                  mRenderColors.sketchPointColor.y, 
+                                  mRenderColors.sketchPointColor.z}});
+    }
+
+    
+    if (!pointVertices.empty()) {
+      updateBuffer(renderId * number_of_buffers_per_model, pointVertices,
                   vk::BufferUsageFlagBits::eVertexBuffer);
-    updateBuffer(2, axii,
+    } else if (!mBuffers[renderId * number_of_buffers_per_model].isEmpty) {
+      deleteBuffer(renderId * number_of_buffers_per_model);
+    }
+
+    // Create Grid buffers
+    std::vector<Vertex> gridVertices;
+    
+    std::vector<GridRotationAxis> axii;
+    std::vector<glm::vec3> line;
+    
+    // Convert gridLine to vector of Vertex
+    for (const auto& point : rData.second.gridLine) {
+      gridVertices.push_back({point, mRenderColors.sketchGridColor});
+    }
+
+    axii = rData.second.gridAxii;
+
+    if (!axii.empty() && !gridVertices.empty()) {
+      updateBuffer(renderId * number_of_buffers_per_model + 1, gridVertices,
+                    vk::BufferUsageFlagBits::eVertexBuffer);
+      updateBuffer(renderId * number_of_buffers_per_model + 2, axii,
+                    vk::BufferUsageFlagBits::eVertexBuffer);
+    } else {
+      deleteBuffer(renderId * number_of_buffers_per_model + 1);
+      deleteBuffer(renderId * number_of_buffers_per_model + 2);
+    }
+
+
+    // Create Text buffers
+
+    TxtRend.clearTexts();
+
+    
+    TxtRend.addText(rData.second.texts);
+
+    std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
+    std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
+
+    if (!txtVertices.empty()) {
+      updateBuffer(renderId * number_of_buffers_per_model + 3, txtVertices,
                   vk::BufferUsageFlagBits::eVertexBuffer);
-  } else {
-    deleteBuffer(1);
-    deleteBuffer(2);
+      updateBuffer(renderId * number_of_buffers_per_model + 4, txtIndices,
+                  vk::BufferUsageFlagBits::eIndexBuffer);
+    } else if (!mBuffers[renderId * number_of_buffers_per_model + 3].isEmpty) {
+      deleteBuffer(renderId * number_of_buffers_per_model + 3);
+      deleteBuffer(renderId * number_of_buffers_per_model + 4);
+    }
+    
   }
-
-
-  // Create Text buffers
-
-  TxtRend.clearTexts();
-
-  
-  TxtRend.addText(renderables.texts);
-
-  std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
-  std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
-
-  if (!txtVertices.empty()) {
-    updateBuffer(3, txtVertices,
-                 vk::BufferUsageFlagBits::eVertexBuffer);
-    updateBuffer(4, txtIndices,
-                 vk::BufferUsageFlagBits::eIndexBuffer);
-  } else if (!mBuffers[3].isEmpty) {
-    deleteBuffer(3);
-    deleteBuffer(4);
-  }
-
 }
 
-void CADRender::renderSketchNotes(Model &S) {
 
-  TxtRend.clearTexts();
+void CADRender::onNotify(int id, const RenderData& rData) {
 
-  for (const auto &N : S.Notes) {
-    TxtRend.addText(N.second);
-  }
 
-  // Relation Symbols
-  std::vector<txt::Text> RelationTexts;
-  RelationTexts = S.getRelationTexts();
+  mRenderData[id] = rData;
 
-  for (const auto &T : RelationTexts) {
-    TxtRend.addText(T);
-  }
 
-  std::vector<txt::Vertex> txtVertices = TxtRend.generateQuads(mRenderColors.bgColor);
-  std::vector<uint32_t> txtIndices = TxtRend.generateIndices();
-
-  // if (!txtVertices.empty()) {
-  //   updateBuffer(BufferName::text_vertices, txtVertices,
-  //                vk::BufferUsageFlagBits::eVertexBuffer);
-  //   updateBuffer(BufferName::text_indices, txtIndices,
-  //                vk::BufferUsageFlagBits::eIndexBuffer);
-  // } else if (!mBuffers[BufferName::text_vertices].isEmpty) {
-  //   deleteBuffer(BufferName::text_vertices);
-  //   deleteBuffer(BufferName::text_indices);
-  // }
 }
-
 
 
 } // namespace CADERA_APP_NAMESPACE

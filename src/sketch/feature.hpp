@@ -15,6 +15,7 @@ enum FeatureType {
 class Feature {
 
   int mId;
+  
 
 public:
   Feature();

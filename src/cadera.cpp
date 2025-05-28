@@ -47,6 +47,7 @@ void Cadera::run() {
 
   mRender.initImgui();
 
+  mSelector.addRender(&mRender);
 
   //Keyboard and Mouse Commands
   // TODO: Determine better way to handle commands
@@ -114,6 +115,8 @@ void Cadera::mainLoop() {
     mRender.createCommandBuffers();
     mRender.drawFrame();
     mRender.runCamera();
+
+    mRender.render();
 
     glfwWaitEvents();
   }

@@ -4,9 +4,9 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-class RenderItems {
+class RenderData {
 
-  friend std::ostream &operator<<(std::ostream &os, const RenderItems &ri) {
+  friend std::ostream &operator<<(std::ostream &os, const RenderData &ri) {
 
     os << "RenderItems:" << std::endl;
 
@@ -35,7 +35,7 @@ public:
   Observer();
   virtual ~Observer();
 
-  virtual void onNotify(int id, const RenderItems &renderables);
+  virtual void onNotify(int id, const RenderData &renderables);
 
 private:
 };

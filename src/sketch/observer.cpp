@@ -7,7 +7,7 @@ Observer::Observer() {}
 
 Observer::~Observer() {}
 
-void Observer::onNotify(int id, const RenderItems& renderables)
+void Observer::onNotify(int id, const RenderData& renderables)
 {
     std::cout << renderables << std::endl;
 }

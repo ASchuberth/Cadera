@@ -5,6 +5,8 @@
 
 namespace CADERA_APP_NAMESPACE {
 
+static constexpr int number_of_buffers_per_model = 5;
+
 struct Vertex {
   glm::vec3 pos;
   glm::vec3 col;
@@ -87,7 +89,11 @@ private:
   
 
    
+  std::map<int, RenderData> mRenderData;
   Pipelines pipelines;
+
+
+ 
   
 
 public:
@@ -215,7 +221,9 @@ public:
   //-------------------------------------------
 
   // Functions
-
+  
+  void render();
+  
   void setBGColor(glm::vec4 color);
 
   // GLFW
@@ -435,7 +443,7 @@ public:
 
   void runCamera();
 
-  void onNotify(int id, const RenderItems& renderables) override;
+  void onNotify(int id, const RenderData& renderables) override;
 
   void renderSketchNotes(Model &S);
 };

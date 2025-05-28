@@ -23,7 +23,7 @@ void Subject::notify() {
 
     for (const auto& observer : observers) {
         std::cout << "Subject notifies." << std::endl;
-        observer->onNotify(int {0}, RenderItems{});
+        observer->onNotify(int {0}, RenderData{});
     }
 
 }

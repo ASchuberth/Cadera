@@ -238,8 +238,9 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
     if (Render.vkSetDebugUtilsObjectNameEXT)
       ImGui::Text("vkSetDebugUtilsObjectNameEXT");
 
-    // Copy of selection point color to check for changes
+    // Copies of point colors to check for changes
     glm::vec4 selPointColor = Render.mRenderColors.selPointColor;
+    glm::vec4 sketchPointColor = Render.mRenderColors.sketchPointColor;
 
     ImGui::ColorPicker4("Background Color", (float *)&Render.mRenderColors.bgColor);
     ImGui::ColorPicker4("Selection Point Color",
@@ -253,8 +254,12 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
     // Update rendering if selection point color has changed
     if (selPointColor != Render.mRenderColors.selPointColor) {
-      Render.flags.set(render_update_sketch);
-      std::cout << "Selection Point Color has changed!" << std::endl;
+      Sel.notify();
+    }
+
+    // Update rendering if sketch point color has changed
+    if (sketchPointColor != Render.mRenderColors.sketchPointColor) {
+      Sketch.notify();
     }
   }
 

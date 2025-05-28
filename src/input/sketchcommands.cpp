@@ -84,6 +84,7 @@ void SketchMovePointCommand::execute() {
         mSelector->flags.reset(cad::sel::select_first_click);
 
         mSketch->notify();
+        mSelector->notify();
 
     }
 }
@@ -119,6 +120,7 @@ void SketchSelectPointCommand::execute() {
 
         if (id >= 0 || mSelector->selectedPoints.empty()) {
             mSketch->notify();
+            mSelector->notify();
         }
 
         mSketch->flags.set(cad::sketch::skt_move_points);
@@ -159,6 +161,7 @@ void SketchDeselectPointCommand::execute() {
 
             if (id >= 0 || mSelector->selectedPoints.empty()) {
                 mSketch->notify();
+                mSelector->notify();
             }
         }
     
@@ -224,7 +227,7 @@ void SketchDisableToolsCommand::execute() {
 }
 //-----------------------------------------------------------------------------
 
-// Sketch Add Point Command
+// Sketch Delete Point Command
 //-----------------------------------------------------------------------------
 SketchDeleteCommand::SketchDeleteCommand() : mSketch{nullptr},
                                              mSelector{nullptr} {}
@@ -245,6 +248,7 @@ void SketchDeleteCommand::execute() {
             mSelector->setFlags();
 
             mSketch->notify();
+            mSelector->notify();
         }
     }
 }

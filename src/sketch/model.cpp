@@ -3,7 +3,7 @@
 
 namespace CADERA_APP_NAMESPACE {
 
-Model::Model() : mId{0} {}
+Model::Model() : mId{1} {}
 
 Model::Model(int id) { mId = id; }
 
