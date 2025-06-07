@@ -22,20 +22,6 @@ Cadera::Cadera() {
 
 Cadera::~Cadera() { mRender.destroy(); }
 
-void Cadera::SketchEvents() {
-
-  if (mSketch.flags.test(sketch::skt_tool_active)) {
-    input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
-    input.mouse.setLeftMouseHoldSlot(nullptr);
-    input.mouse.setLeftMouseReleaseSlot(nullptr);
-  } else {
-    input.mouse.setLeftMouseSlot(&sketchSelectPointCmd);
-    input.mouse.setLeftMouseHoldSlot(&sketchMovePointCmd);
-    input.mouse.setLeftMouseReleaseSlot(&sketchDeselectPointCmd);
-  }
-
-}
-
 void Cadera::run() {
 
   mRender.setBGColor(glm::vec4(0.3f, 0.3f, 0.3f, 0.1f));
@@ -50,49 +36,14 @@ void Cadera::run() {
   mSelector.addRender(&mRender);
 
   //Keyboard and Mouse Commands
-  // TODO: Determine better way to handle commands
-  sketchAddPointCmd.setSketch(&mSketch);
-  sketchAddPointCmd.setSelector(&mSelector);
-  sketchAddPointCmd.setCamera(&mRender.Cam);
+  input.setSketchCommands(&mSketch, &mRender.Cam, &mSelector);
+  input.setCameraCommands(&mRender.Cam);
+  input.setRenderCommands(&mRender);
 
-  sketchMovePointCmd.setSketch(&mSketch);
-  sketchMovePointCmd.setSelector(&mSelector);
-  sketchMovePointCmd.setCamera(&mRender.Cam);
+  input.setMouse();
+  input.setKeyboard();
 
-  sketchSelectPointCmd.setSketch(&mSketch);
-  sketchSelectPointCmd.setSelector(&mSelector);
-  sketchSelectPointCmd.setCamera(&mRender.Cam);
-
-  sketchDeselectPointCmd.setSketch(&mSketch);
-  sketchDeselectPointCmd.setSelector(&mSelector);
-  sketchDeselectPointCmd.setCamera(&mRender.Cam);
-
-  sketchSelectSetCtrlCmd.setSelector(&mSelector);
-  sketchSelectUnsetCtrlCmd.setSelector(&mSelector);
-
-  sketchDisableToolsCmd.setSketch(&mSketch);
-  sketchDeleteCmd.setSketch(&mSketch);
-  sketchDeleteCmd.setSelector(&mSelector);
-
-
-  cameraZoomCmd.setCamera(&mRender.Cam);
-  cameraPanCmd.setCamera(&mRender.Cam);
-  cameraUnsetPanCmd.setCamera(&mRender.Cam);
-
-  renderFramebufferResizeCmd.setRender(&mRender);
-
-
-  input.mouse.setScrollMouseSlot(&cameraZoomCmd);
-  input.mouse.setLeftMouseSlot(&sketchAddPointCmd);
-  input.mouse.setMiddleMouseSlot(&cameraPanCmd);
-  input.mouse.setMiddleMouseReleaseSlot(&cameraUnsetPanCmd);
-
-  input.keyboard.setEscapeSlot(&sketchDisableToolsCmd);
-  input.keyboard.setDeleteSlot(&sketchDeleteCmd);
-  input.keyboard.setLCtrlSlot(&sketchSelectSetCtrlCmd);
-  input.keyboard.setLCtrlReleaseSlot(&sketchSelectUnsetCtrlCmd);
-  
-  input.setFramebufferResizeSlot(&renderFramebufferResizeCmd);
+ 
 
   mainLoop();
 }
@@ -110,7 +61,7 @@ void Cadera::mainLoop() {
 
     gui::imguiRun(mSketch, mRender, mSelector);
 
-    SketchEvents();
+    input.sketchMode(mSketch.flags);
 
     mRender.createCommandBuffers();
     mRender.drawFrame();
