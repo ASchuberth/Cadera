@@ -79,6 +79,10 @@ vk::Result CADRender::createInstance() {
   VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
   // VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
+  mAppInfo.pApplicationName = "Cadera";
+  mAppInfo.applicationVersion = 1;
+  mAppInfo.apiVersion = 0;
+
   vk::InstanceCreateInfo createInfo;
 
   createInfo.enabledLayerCount = 0;
