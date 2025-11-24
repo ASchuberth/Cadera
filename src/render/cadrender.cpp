@@ -90,15 +90,15 @@ vk::Result CADRender::createInstance() {
   auto glfwExtensionCount = 0u;
   auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-  const char *layers = "VK_LAYER_KHRONOS_validation";
+  const char* layers = "";
 
-  createInfo.enabledLayerCount = 1; // static_cast<uint32_t>(layers.size());
+  createInfo.enabledLayerCount = 0;
   createInfo.ppEnabledLayerNames = &layers;
 
   createInfo.enabledExtensionCount =
-      glfwExtensionCount; // static_cast<uint32_t>(glfwExtensionsVector.size());
+      glfwExtensionCount; 
   createInfo.ppEnabledExtensionNames =
-      glfwExtensions; // glfwExtensionsVector.data();
+      glfwExtensions; 
   createInfo.pApplicationInfo = &mAppInfo;
 
   vk::Result result = vk::createInstance(&createInfo, nullptr, &mInstance);
