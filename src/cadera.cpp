@@ -31,7 +31,7 @@ void Cadera::run() {
 
   initCallbacks();
 
-  mRender.initImgui();
+  // mRender.initImgui();
 
   mSelector.addRender(&mRender);
 
@@ -59,15 +59,15 @@ void Cadera::mainLoop() {
 
     glfwPollEvents();
 
-    gui::imguiRun(mSketch, mRender, mSelector);
+  //   // gui::imguiRun(mSketch, mRender, mSelector);
 
-    input.sketchMode(mSketch.flags);
+  //   // input.sketchMode(mSketch.flags);
 
-    mRender.createCommandBuffers();
-    mRender.drawFrame();
-    mRender.runCamera();
+  //   // mRender.createCommandBuffers();
+  //   // mRender.drawFrame();
+  //   // mRender.runCamera();
 
-    mRender.render();
+  //   // mRender.render();
 
     glfwWaitEvents();
   }

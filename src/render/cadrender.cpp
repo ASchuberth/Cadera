@@ -18,41 +18,41 @@ void CADRender::setup() {
   // GLFW
   createWindow();
 
-  // mInstance
-  createInstance();
-  createSurface();
+  // // mInstance
+  // createInstance();
+  // createSurface();
   
-  // Physical mDevice
-  pickPhysicalDevice();
+  // // Physical mDevice
+  // pickPhysicalDevice();
   
-  // Logical mDevice
-  createLogicalDevice();
+  // // Logical mDevice
+  // createLogicalDevice();
 
-  // Debug
-  setupDebugUtils();
+  // // Debug
+  // setupDebugUtils();
   
-  // Swapchain
-  createSwapChain();
-  createImageViews();
+  // // Swapchain
+  // createSwapChain();
+  // createImageViews();
 
-  // Graphics Pipelines
-  createRenderPass();
-  createDescriptorSetLayout();
-  createPipelineLayout();
-  loadFonts();
-  preparePipelines();
+  // // Graphics Pipelines
+  // createRenderPass();
+  // createDescriptorSetLayout();
+  // createPipelineLayout();
+  // loadFonts();
+  // preparePipelines();
 
-  createCommandPool();
-  createDepthResources();
-  createTextureImage();
-  createTextureImageView();
-  createTextureSampler();
-  createFramebuffers();
-  createUniformBuffer();
-  createDescriptorPool();
-  createDescriptorSets();
-  allocCommandBuffers();
-  createSyncObjects();
+  // createCommandPool();
+  // createDepthResources();
+  // createTextureImage();
+  // createTextureImageView();
+  // createTextureSampler();
+  // createFramebuffers();
+  // createUniformBuffer();
+  // createDescriptorPool();
+  // createDescriptorSets();
+  // allocCommandBuffers();
+  // createSyncObjects();
 }
 
 void CADRender::setBGColor(glm::vec4 color) { mRenderColors.bgColor = color; }
@@ -1889,11 +1889,15 @@ void CADRender::cleanup() {
 
 void CADRender::destroy() {
 
-  ImGui_ImplVulkan_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
+  // ImGui_ImplVulkan_Shutdown();
+  // ImGui_ImplGlfw_Shutdown();
+  // ImGui::DestroyContext();
 
-  cleanup();
+  // cleanup();
+
+    glfwDestroyWindow(mMainWindow);
+
+		glfwTerminate();
 }
 
 void CADRender::runCamera() {
