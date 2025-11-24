@@ -10,16 +10,12 @@ void coutVec3(glm::vec3 v) {
 namespace CADERA_APP_NAMESPACE {
 namespace txt {
 
-TextRender::TextRender() {
-  mFontSize = 100.0;
-  mAtlasSize = 2864.0f;
-
-  mCursorPos = {0.0f, 0.0f, 0.0f};
-  mCursorDirX = {0.0f, 0.0f, 1.0f};
-  mCursorDirY = {0.0f, 1.0f, 0.0f};
-
-  textCounter = 0;
-}
+TextRender::TextRender() : mFontSize{100.0f},
+                           mAtlasSize{2864.0f},
+                           mCursorPos{0.0f, 0.0f, 0.0f}, 
+                           mCursorDirX{0.0f, 0.0f, 0.0f}, 
+                           mCursorDirY{0.0f, 0.0f, 0.0f}, 
+                           textCounter{0} {}
 
 TextRender::~TextRender() {}
 
@@ -61,6 +57,8 @@ void TextRender::loadFont(std::string filePath) {
 
     Characters[(int)values[0]] = C;
   }
+
+  fontAtlasCsv.close();
 }
 
 void TextRender::setCursorPos(glm::vec3 pos) { mCursorPos = pos; }

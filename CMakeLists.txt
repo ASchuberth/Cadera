@@ -16,7 +16,6 @@ enable_testing()
 # Targets
 #=========================================
 add_executable(CaderaApp    src/cadera.cpp
-                            src/selection.cpp
                             src/callbacks.cpp
                             src/main.cpp  
 )
@@ -41,6 +40,7 @@ target_include_directories(pch_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/s
 
 target_include_directories(CaderaApp PRIVATE src/)
 
+add_subdirectory(src/input)
 add_subdirectory(src/render)
 add_subdirectory(src/sketch)
 add_subdirectory(src/text)
@@ -50,8 +50,6 @@ add_subdirectory(src/ux)
 #=========================================
 # Libraries
 #=========================================
-
-
 
 find_package(Vulkan REQUIRED)
 target_link_libraries(pch_interface INTERFACE Vulkan::Vulkan)
@@ -68,8 +66,8 @@ target_link_libraries(pch_interface INTERFACE glm::glm)
 find_package(Stb REQUIRED)
 target_include_directories(pch_interface INTERFACE ${Stb_INCLUDE_DIR})
 
-target_link_libraries(CaderaApp PRIVATE sketchlib)
-target_link_libraries(CaderaApp PRIVATE textlib)
+# Cadera Project Libraries
+target_link_libraries(CaderaApp PRIVATE inputlib)
 
 # Precompiled Headers
 target_link_libraries(CaderaApp PUBLIC pch_interface)
@@ -112,5 +110,12 @@ add_subdirectory(test)
 #=========================================
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-install(TARGETS CaderaApp RUNTIME DESTINATION bin)
+install(TARGETS CaderaApp 
+            RUNTIME 
+                DESTINATION bin)
+
+if(WIN32)
+    include(InstallRequiredSystemLibraries)
+endif(WIN32)
+
 include(CPack)

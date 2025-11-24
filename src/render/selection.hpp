@@ -29,9 +29,13 @@ enum SelectionFlags {
   select_number_flags // Number of flags for bitset
 };
 
-class Selector {
+class Selector : public Subject {
 
   sketch::Sketch *pActiveSketch = nullptr;
+
+  int mId;
+
+  RenderData mRenderData;
 
 public:
   std::bitset<select_number_flags> flags;
@@ -68,6 +72,8 @@ public:
   std::vector<glm::vec3> getVertices();
 
   std::vector<int> getSelectedPointIds();
+
+  void notify() override;
 };
 } // namespace sel
 } // namespace CADERA_APP_NAMESPACE

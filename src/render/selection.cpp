@@ -96,7 +96,7 @@ glm::vec3 calcCurrentRay(float x, float y, glm::mat4 viewMat, glm::mat4 projMat,
   return currentRay;
 }
 
-Selector::Selector() {
+Selector::Selector() : mId{0} {
 
   point = {0.0f, 0.0f, 0.0f};
 
@@ -188,6 +188,7 @@ int Selector::add(glm::vec3 pointToAdd, std::map<int, Point> &points,
   if (!flags.test(select_isCTRL)) {
 
     selectedPoints.clear();
+
     setFlags();
   }
 
@@ -304,6 +305,21 @@ std::vector<int> Selector::getSelectedPointIds() {
   }
 
   return ids;
+}
+
+void Selector::notify() {
+
+  mRenderData.points.clear();
+
+  for (const auto& point : selectedPoints) {
+    mRenderData.points.push_back(point.second.pos);
+  }
+
+  for (const auto& observer : observers) {
+
+    observer->onNotify(mId, mRenderData);
+  }
+
 }
 
 } // namespace sel

@@ -94,9 +94,10 @@ void startMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
       Sketch.flags.set(sketch::skt_active);
       Sketch.setType(cad_sketch);
       Sketch.setCameraDistance(&Render.Cam.camDistance);
+      Sketch.addRender(&Render);
       Sel.setActiveSketch(&Sketch);
 
-      Render.flags.set(render_update_sketch);
+      Sketch.notify();
 
       flags.reset(gui_start_menu);
     }
@@ -231,8 +232,15 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
   if (ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_None)) {
 
-    // Copy of selection point color to check for changes
+    if (Render.debugUtilsSupported)
+      ImGui::Text("Debug Utils Supported!");
+    
+    if (Render.vkSetDebugUtilsObjectNameEXT)
+      ImGui::Text("vkSetDebugUtilsObjectNameEXT");
+
+    // Copies of point colors to check for changes
     glm::vec4 selPointColor = Render.mRenderColors.selPointColor;
+    glm::vec4 sketchPointColor = Render.mRenderColors.sketchPointColor;
 
     ImGui::ColorPicker4("Background Color", (float *)&Render.mRenderColors.bgColor);
     ImGui::ColorPicker4("Selection Point Color",
@@ -246,8 +254,12 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
     // Update rendering if selection point color has changed
     if (selPointColor != Render.mRenderColors.selPointColor) {
-      Render.flags.set(render_update_sketch);
-      std::cout << "Selection Point Color has changed!" << std::endl;
+      Sel.notify();
+    }
+
+    // Update rendering if sketch point color has changed
+    if (sketchPointColor != Render.mRenderColors.sketchPointColor) {
+      Sketch.notify();
     }
   }
 
@@ -322,13 +334,13 @@ void showDebugWindow(sketch::Sketch &Sketch, CADRender &Render,
 
     ImGui::Text("Selection Flags");
     ImGui::Text("First Click: %d",
-                Render.Sel.flags.test(sel::select_first_click));
+                Sel.flags.test(sel::select_first_click));
     ImGui::Text("Single Point: %d",
-                Render.Sel.flags.test(sel::select_single_point));
+                Sel.flags.test(sel::select_single_point));
     ImGui::Text("Double Point: %d",
-                Render.Sel.flags.test(sel::select_double_point));
+                Sel.flags.test(sel::select_double_point));
     ImGui::Text("Multi Point: %d",
-                Render.Sel.flags.test(sel::select_multi_point));
+                Sel.flags.test(sel::select_multi_point));
 
     ImGui::NewLine();
 
