@@ -47,6 +47,8 @@ void Input::setSketchCommands(sketch::Sketch *sketch, cam::Camera *camera,
     sketchDeleteCmd.setSelector(selector);
 
 }
+
+
 void Input::setCameraCommands(cam::Camera *camera) {
 
 

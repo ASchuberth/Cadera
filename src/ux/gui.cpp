@@ -216,7 +216,8 @@ void gridMenu(sketch::Sketch &Sketch, CADRender &Render, sel::Selector &Sel,
               Sketch.mGrid.spacing = 10000;
 
   if (ImGui::Button("OK")) {
-    Render.flags.set(render_update_sketch);
+
+    Sketch.notify();
     flags.reset(gui_sketch_grid_menu);
   }
 
