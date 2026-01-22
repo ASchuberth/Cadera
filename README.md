@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repo has been archived!
+
 # Cadera
 Open Source Cad Program
 
